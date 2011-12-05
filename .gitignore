@@ -1,0 +1,16 @@
+# generated
+*.pyc
+*.pyo
+*.pid
+migrations
+# eclipse project config
+.project
+.pydevproject
+# db
+sqlite3.db
+data.txt
+data
+webroot
+# logs
+logs
+settings.py
