@@ -124,7 +124,7 @@ class ImageFile(models.Model):
     def gen_dirname(self):
         return datetime.now().strftime('uimg/%Y/%m/%d')
     
-    def gen_filename(self, size=self.SIZE_FULL):
+    def gen_filename(self, size=SIZE_FULL):
         if self.SIZE_FULL == size:
             size = ''
         else:
@@ -245,7 +245,7 @@ class ImageFile(models.Model):
     md5 = models.CharField(max_length=255, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     
-    file = models.ImageField(upload_to=gen_filename_f, null=True)
+    file = models.ImageField(upload_to=gen_filename, null=True)
 
 class Album(models.Model):
     '''

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="language" content="zh_cn" />
+    <title>{% block title %}Ikran{% endblock %}</title>
+    
+    <!--<base href="/w/" />-->
+    
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}webapp/c/common.css?r=0.1.0" />
+    
+    {% if debug %}    
+    <script src="{{ STATIC_URL }}common/s/jquery-1.7.1.min.js"></script>
+    {% else %}    
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    {% endif %}
+    <script type="text/javascript" src="{{ STATIC_URL }}common/s/jquery.ba-bbq-1.2.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}pyrcp/s/django.js?r=0.1.2"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webapp/s/common.js?r=0.1.0"></script>
+</head>
+
+<body>{% csrf_token %}
+    <header>
+        <div class="logogroup">{% block logo %}<a class="logo" href="/">IKR</a><span class="logo_sp">&lt;</span><h1 class="page_title">{% block page_title %}{% endblock %}</h1>{% endblock %}</div>
+        {% block hd_buttons %}{% endblock %}
+    </header>
+    <section class="pgbd">{% block bd %}{% endblock %}</section>
+</body>
+</html>

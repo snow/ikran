@@ -1,0 +1,20 @@
+{% extends 'webapp/base.html' %}
+
+{% block logo %}<h1>Ikran</h1>{% endblock %}
+{% block page_class %}index{% endblock %}
+
+{% block bd %}
+<article class="introikr">
+    <h1>Ikran</h1>
+    <p>Your image collection</p>
+</article>
+<section>
+    <h3>Signup</h3>
+    <strong>No! I have enough accounts! No more!</strong>
+    <ul class="singinwith">
+        <li><a class="google" href="#">with Google</a></li>
+        <li><a class="twitter" href="#">with Twitter</a></li>
+        <li><a class="douban" href="#">with Douban</a></li>
+    </ul>
+</section>
+{% endblock %}

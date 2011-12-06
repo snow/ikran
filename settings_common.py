@@ -148,6 +148,7 @@ INSTALLED_APPS = (
     'django_pyrcp',
     'core',
     'api',
+    'webapp',
 )
 
 # A sample logging configuration. The only tangible logging

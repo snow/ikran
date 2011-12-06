@@ -4,8 +4,6 @@ from django.conf.urls.defaults import patterns, include, url
 # from django.contrib import admin
 # admin.autodiscover()
 
-import api
-
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'ikran.views.home', name='home'),
@@ -16,5 +14,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    url(r'^api/', include(api.urls)),
+    url(r'^api/', include('api.urls')),
+    
+    url(r'^', include('webapp.urls')),
 )
