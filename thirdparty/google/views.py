@@ -72,13 +72,14 @@ class AuthReturnV(BaseV):
             self.ax_resp = ax.FetchResponse.fromSuccessResponse(resp)
             oauth_resp = resp.extensionResponse(GoogleOAuthExt.ns_uri, True)
             
-            if 'request_token' in oauth_resp:
-                self.access_token = exchange_access_token(
-                                                    oauth_resp.request_token)
+            try:
+                request_token = oauth_resp['request_token']
+            except KeyError:
+                raise Exception('request_token not found')
+            else:
+                self.access_token = exchange_access_token(request_token)
                 if not self.access_token:
                     raise Exception('failed to get access token')
-            else:
-                raise Exception('request_token not found')
         else:
             pass # TODO openid failed
             

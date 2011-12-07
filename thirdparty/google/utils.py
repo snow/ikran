@@ -1,8 +1,10 @@
-from urllib2 import Request, urlopen
+import logging
+from urllib2 import Request, urlopen, HTTPError
+
+from tweepy import oauth
 
 from openid import extension
 from openid.extensions import ax
-from tweepy import oauth
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -10,17 +12,22 @@ from django.contrib.auth.backends import ModelBackend
 
 from thirdparty.models import DuplicatedUsername
 
+_l = logging.getLogger(__name__)
+
 class GoogleOAuthExt(extension.Extension):
     ns_uri = 'http://specs.openid.net/extensions/oauth/1.0'
     ns_alias = 'oauth'
     _scopes = False
     
     def __init__(self):
-        self._scopes = []
+        # at least one scope is required
+        # or google will ignore oauth extension
+        self._scopes = ['https://www.googleapis.com/auth/plus.me']
     
     def add_scope(self, scope):
         '''Add a Google service to request access'''
-        self._scopes.append(scope)
+        if scope not in self._scopes:
+            self._scopes.append(scope)
     
     def getExtensionArgs(self):
         return {
@@ -54,17 +61,25 @@ def exchange_access_token(request_token):
     consumer = oauth.OAuthConsumer(settings.GOOGLE_CONSUMER_KEY,
                                    settings.GOOGLE_CONSUMER_SECRET)
     sigmethod = oauth.OAuthSignatureMethod_HMAC_SHA1()
+    request_token = oauth.OAuthToken(request_token, 
+                                     settings.GOOGLE_CONSUMER_SECRET)
                 
     request = oauth.OAuthRequest.\
                 from_consumer_and_token(consumer,
                                         token=request_token, 
                                         http_url=_GOOGLE_ACCESS_TOKEN_URI)
-                
+    #request.set_parameter('oauth_verifier', '')
     request.sign_request(sigmethod, consumer, request_token)
 
     # send request
-    resp = urlopen(Request(url, headers=request.to_header()))
-    return oauth.OAuthToken.from_string(resp.read())
+    headers = request.to_header()
+    try:
+        resp = urlopen(Request(_GOOGLE_ACCESS_TOKEN_URI, headers=headers))
+    except HTTPError as err:
+        _l.debug(err.fp.read())
+        raise
+    else:        
+        return oauth.OAuthToken.from_string(resp.read())
 
 class GoogleBackend(ModelBackend):
     '''Google auth backend'''

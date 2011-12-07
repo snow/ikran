@@ -185,6 +185,14 @@ LOGGING = {
             'class':'logging.StreamHandler',
             'formatter': 'custom'
         },
+        'debug': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'formatter': 'custom',
+            'filename': PROJECT_ROOT+'/logs/debug.log',
+            'when': 'd',
+            'backupCount': 7,
+        },
     },
     'loggers': {
         'django.request': {
@@ -193,8 +201,8 @@ LOGGING = {
             'propagate': True,
         },
         'thirdparty':{
-            'handlers': ['console'],
-            'level': 'INFO',
+            'handlers': ['debug'],
+            'level': 'DEBUG',
         },
     }
 }
