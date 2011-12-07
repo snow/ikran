@@ -1,5 +1,3 @@
-from openid import extension
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.backends import ModelBackend
@@ -16,6 +14,7 @@ class TwitterAccount(models.Model):
     # override default AutoField pk to force id to be assigned
     id = models.IntegerField(primary_key=True)
     username = models.CharField(max_length=255)
+    #fullname = models.CharField(max_length=255)
     key = models.CharField(max_length=255)
     secret = models.CharField(max_length=255)
     
@@ -70,17 +69,14 @@ class TwitterBackend(ModelBackend):
                 taccount.save()
                 return user
             
-class GoogleOAuthExt(extension.Extension):
-    ns_uri = 'http://specs.openid.net/extensions/oauth/1.0'
-    ns_alias = 'ext2'
+class GoogleAccount(models.Model):
+    '''A google account that linked with a django user'''
+    username = models.CharField(max_length=255)
+    fullname = models.CharField(max_length=255, blank=True)
+    language = models.CharField(max_length=255, blank=True)
+    contry = models.CharField(max_length=255, blank=True)
     
-    def add_scope(self):
-        '''Add a Google service to request access'''
-        raise NotImplemented 
+    key = models.CharField(max_length=255)
+    secret = models.CharField(max_length=255)
     
-    def getExtensionArgs(self):
-        return {
-            'consumer': settings.GOOGLE_CONSUMER_KEY,
-            'scope': 'https://picasaweb.google.com/data/',
-        }
-                    
+    user = models.ForeignKey(User, unique=True)

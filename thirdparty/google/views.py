@@ -6,28 +6,20 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 
 from openid.consumer import consumer
-from openid.extensions import ax
-from openid.server.trustroot import RP_RETURN_TO_URL_TYPE
 
 from django_openid.models import DjangoOpenIDStore
 
-from thirdparty.models import GoogleOAuthExt
+from thirdparty.google.utils import get_openid_start_url, \
+                                    exchange_access_token, GoogleBackend
 
 #from thirdparty.models import *
 _GOOGLE_OPENID_URI = 'https://www.google.com/accounts/o8/id'
 _l = logging.getLogger(__name__)
 
-class BaseOAuthV(View):
-    '''Base class for all views that will use OAuth handler'''
+class BaseV(View):
+    '''Base class for all views that will use openid consumer'''
     _consumer = False
     _openidstore = False
-    
-    def __init__(self, *args, **kwargs):
-#        self.oauth = OAuthHandler(settings.TWITTER_CONSUMER_KEY,
-#                                  settings.TWITTER_CONSUMER_SECRET,
-#                                  secure=True)
-        
-        super(BaseOAuthV, self).__init__(*args, **kwargs)
         
     def get_openid_store(self):
         if not self._openidstore:
@@ -36,88 +28,99 @@ class BaseOAuthV(View):
         
     def get_consumer(self, session):
         if not self._consumer:
-            self._consumer = consumer.Consumer(session, 
-                                               self.get_openid_store())
+            self._consumer = consumer.Consumer(session, self.get_openid_store())
         return self._consumer
 
         
-class AuthStartV(BaseOAuthV):        
+class AuthStartV(BaseV):        
     '''
-    OAuth start from here.
+    start from here.
     
-    oauth_callback MUST be provieded, either by subclassing or kwargs
-    this view will build oauth request and 
-    redirect to twitter authorize or auchenticate page
+    callback MUST be provieded, either by subclassing or kwargs
+    this view will build openid request and 
+    redirect to google authorize page
     '''
     callback = False
-    is_signin = False
     
     def get(self, request):
         if not self.callback:
             raise NotImplementedError('Subclass of AuthStartV must provide oauth_callback')
         
         c = self.get_consumer(request.session)
-        
-        auth_request = c.begin(_GOOGLE_OPENID_URI)
-        
-        ax_request = ax.FetchRequest()
-        ax_request.add(ax.AttrInfo('http://axschema.org/contact/email',
-                                   required=True))
-        #auth_request.addExtension(ax_request)
-        
-        auth_request.addExtension(GoogleOAuthExt())
-        
         trust_root = request.build_absolute_uri('/')
         callback = request.build_absolute_uri(self.callback)
-        go_to = auth_request.redirectURL(trust_root, callback)
         
-        #_l.info(go_to)
-        
-        return HttpResponseRedirect(go_to)
-        
-#        self.oauth.callback = request.build_absolute_uri(self.oauth_callback)
-#        #redirect_to = self.oauth.get_authorization_url()
-#        redirect_to = self.oauth.get_authorization_url(self.signin_with_twitter)
-#        # request token could only being get after get_authorization_url()
-#        request.session['unauthed_token'] = self.oauth.request_token
-#        return HttpResponseRedirect(redirect_to)
+        return HttpResponseRedirect(get_openid_start_url(c, trust_root,
+                                                         callback))
     
-class AuthReturnV(BaseOAuthV):        
+class AuthReturnV(BaseV):        
     '''
-    Twitter redirect user to here after authorize
+    Google redirect user to here after authorize
     
     Subclass MUST override get() to provide actual business logic.
     DO call super get() first to make self.access_token available
     '''
-    #access_token = None
+    ax_resp = None
+    access_token = None
     
     def get(self, request):
         c = self.get_consumer(request.session)
         resp = c.complete(request.GET, request.build_absolute_uri(request.path))
         
         if consumer.SUCCESS == resp.status:
-            ax_response = ax.FetchResponse.fromSuccessResponse(resp)
-            #_l.info(resp)
-            #_l.info(resp.message)
-            #_l.info(ax_response)
-            #_l.info(resp.extensionResponse(GoogleOAuthExt.ns_uri, True))
+            self.ax_resp = ax.FetchResponse.fromSuccessResponse(resp)
+            oauth_resp = resp.extensionResponse(GoogleOAuthExt.ns_uri, True)
             
+            if oauth_resp.request_token:
+                self.access_token = exchange_access_token(
+                                                    oauth_resp.request_token)
+            else:
+                raise Exception('request_token not found')
         else:
-            pass
-            #_l.info(resp.status)
+            pass # TODO openid failed
+            
+    
+class AuthenticateReturnV(AuthReturnV):
+    '''
+    Return from Google authenticate
+    '''
+    def success(self, user):
+        '''
+        Called after authenticate success and logged user in.
         
-        return HttpResponse(resp.extensionResponse(GoogleOAuthExt.ns_uri, True)) 
+        Subclass should override this method to provide actual business
+        '''
+        return HttpResponse('linked with {}'.format(user.username))
         
-#        if request.session['unauthed_token'].key == request.GET['oauth_token']:
-#            self.oauth.set_request_token(request.GET['oauth_token'], 
-#                                         settings.TWITTER_CONSUMER_SECRET)
-#            # give a oauth.OAuthToken object to override
-#            self.access_token = self.oauth.get_access_token(
-#                                    request.GET['oauth_verifier'])
-#        else:
-#            raise Exception('token not match, something went wrong')
+    def failed(self):
+        '''
+        Called after authenticate failed.
         
-        # give a tweepy.models.User object to override
-        # self.twitter_user = API(auth_handler=self.oauth).verify_credentials()
+        Subclass should override this method to provide actual business
+        '''
+        return HttpResponse('authenticate failed')
+    
+    def get(self, request):
+        '''
+        Try to authenticate user with the google info
+        '''
+        # get self.access_token available
+        super(AuthenticateReturnV, self).get(request)
         
- 
+        try:
+            user = authenticate(cid=GoogleBackend.CID,
+                                key=self.access_token.key, 
+                                secret=self.access_token.secret,
+                                email=self.ax_resp.email,
+                                firstname=self.ax_resp.firstname,
+                                lastname=self.ax_resp.lastname,
+                                language=self.ax_resp.language,
+                                country=self.ax_resp.country)
+        except DuplicatedUsername:            
+            raise # TODO
+        else:
+            if user:
+                login(request, user)
+                return self.success(user)
+            else:
+                return self.failed()
