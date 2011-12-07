@@ -4,9 +4,11 @@ import os
 from datetime import datetime
 
 from django.db import models
-from django.contrib.auth.models import User
 from django.db.models.fields.files import FieldFile
+from django.db.models.signals import post_save
+from django.contrib.auth.models import User
 from django.core.files import File
+from django.dispatch import receiver
 from PIL import Image
 import pyexiv2 
 from pyrcp import struk
@@ -21,15 +23,14 @@ class UserProfile(models.Model):
     '''
     user = models.ForeignKey(User, unique=True)
     
-#    twitter_id = models.CharField(max_length=255, blank=True)
-#    twitter_username = models.CharField(max_length=255, blank=True)
-#    twitter_key = models.CharField(max_length=255, blank=True)
-#    twitter_secret = models.CharField(max_length=255, blank=True)
-#    
-#    flikcr_id = models.CharField(max_length=255, blank=True)
-#    flikcr_username = models.CharField(max_length=255, blank=True)
-#    flikcr_key = models.CharField(max_length=255, blank=True)
-#    flikcr_secret = models.CharField(max_length=255, blank=True)
+    @classmethod
+    @receiver(post_save, sender=User, 
+              dispatch_uid='ikran.core.models.createuserprofile')
+    def _user_create_receiver(cls, instance, created, **kwargs):
+        '''Create empty user profile on user model created'''
+        if created:
+            profile = cls(user=instance)
+            profile.save()
     
 class ImageFile(models.Model):
     '''

@@ -10,4 +10,6 @@ from webapp.views import *
 urlpatterns = patterns('',
     url(r'^$', IndexV.as_view()),
     url(r'^dashboard/$', login_required(DashboardV.as_view())),
+    
+    #url(r'')
 )

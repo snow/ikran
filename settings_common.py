@@ -9,6 +9,9 @@ PROJECT_NAME = PROJECT_ROOT.split('/')[-1]
 AUTH_PROFILE_MODULE = 'core.UserProfile'
 LOGIN_URL = '/accounts/signin/'
 
+#PYRCP_THIRDPARTYSERVICE_URI_ROOT = '/thirdparty'
+#PYRCP_THIRDPARTYSERVICE_BASETPL = 'webapp'
+
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     "django.contrib.auth.context_processors.auth",
@@ -149,6 +152,7 @@ INSTALLED_APPS = (
     'core',
     'api',
     'webapp',
+    'thirdparty',
 )
 
 # A sample logging configuration. The only tangible logging
