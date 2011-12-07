@@ -1,3 +1,5 @@
+from openid import extension
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.backends import ModelBackend
@@ -67,3 +69,18 @@ class TwitterBackend(ModelBackend):
                 taccount.user = user
                 taccount.save()
                 return user
+            
+class GoogleOAuthExt(extension.Extension):
+    ns_uri = 'http://specs.openid.net/extensions/oauth/1.0'
+    ns_alias = 'ext2'
+    
+    def add_scope(self):
+        '''Add a Google service to request access'''
+        raise NotImplemented 
+    
+    def getExtensionArgs(self):
+        return {
+            'consumer': settings.GOOGLE_CONSUMER_KEY,
+            'scope': 'https://picasaweb.google.com/data/',
+        }
+                    

@@ -2,6 +2,7 @@ from django.conf.urls.defaults import patterns, include, url
 from django.contrib.auth.decorators import login_required
 
 import thirdparty.twitter.views as ttv
+import thirdparty.google.views as tgv
 #import webapps.thirdparty.twitter.views as wttv
 
 urlpatterns = patterns('',
@@ -22,4 +23,8 @@ urlpatterns = patterns('',
     ),
     url(r'^twitter/authenticate_return/', ttv.AuthenticateReturnV.as_view()),
     #url(r'^twitter/authorize_return/', wttv.AuthorizeReturnV.as_view()),
+    
+    url(r'google/auth/', 
+        tgv.AuthStartV.as_view(callback='/thirdparty/google/return/')),
+    url(r'google/return/', tgv.AuthReturnV.as_view()),
 )

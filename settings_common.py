@@ -131,6 +131,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django_openid.consumer.SessionConsumer',
 )
 
 ROOT_URLCONF = PROJECT_NAME + '.urls'
@@ -153,6 +154,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     #'south',
+    'django_openid',
     'django_pyrcp',
     'core',
     'api',
@@ -190,13 +192,9 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-        'demo':{
+        'thirdparty':{
             'handlers': ['console'],
             'level': 'INFO',
         },
-        'core':{
-            'handlers': ['console'],
-            'level': 'INFO',
-        }
     }
 }

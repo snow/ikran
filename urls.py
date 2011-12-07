@@ -1,5 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
+from django_openid.registration import RegistrationConsumer
+#from django_openid.consumer import SessionConsumer
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -19,5 +21,6 @@ urlpatterns = patterns('',
     
     url(r'^', include('webapp.urls')),
     
-    
+    #(r'^openid/(.*)', RegistrationConsumer()),
+    #(r'^openid/(.*)', SessionConsumer()),
 )
