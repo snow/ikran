@@ -5,15 +5,16 @@ from django.views.generic import View
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 
+from openid.extensions import ax
 from openid.consumer import consumer
 
 from django_openid.models import DjangoOpenIDStore
 
 from thirdparty.google.utils import get_openid_start_url, \
-                                    exchange_access_token, GoogleBackend
+                                    exchange_access_token, GoogleBackend, \
+                                    GoogleOAuthExt
+from thirdparty.models import DuplicatedUsername
 
-#from thirdparty.models import *
-_GOOGLE_OPENID_URI = 'https://www.google.com/accounts/o8/id'
 _l = logging.getLogger(__name__)
 
 class BaseV(View):
@@ -71,9 +72,11 @@ class AuthReturnV(BaseV):
             self.ax_resp = ax.FetchResponse.fromSuccessResponse(resp)
             oauth_resp = resp.extensionResponse(GoogleOAuthExt.ns_uri, True)
             
-            if oauth_resp.request_token:
+            if 'request_token' in oauth_resp:
                 self.access_token = exchange_access_token(
                                                     oauth_resp.request_token)
+                if not self.access_token:
+                    raise Exception('failed to get access token')
             else:
                 raise Exception('request_token not found')
         else:
@@ -104,7 +107,7 @@ class AuthenticateReturnV(AuthReturnV):
         '''
         Try to authenticate user with the google info
         '''
-        # get self.access_token available
+        # get self.access_token and self.ax_resp available
         super(AuthenticateReturnV, self).get(request)
         
         try:

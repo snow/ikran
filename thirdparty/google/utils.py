@@ -4,10 +4,11 @@ from openid import extension
 from openid.extensions import ax
 from tweepy import oauth
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.backends import ModelBackend
 
-from thirdparty.google.utils import GoogleOAuthExt
+from thirdparty.models import DuplicatedUsername
 
 class GoogleOAuthExt(extension.Extension):
     ns_uri = 'http://specs.openid.net/extensions/oauth/1.0'
@@ -26,7 +27,8 @@ class GoogleOAuthExt(extension.Extension):
             'consumer': settings.GOOGLE_CONSUMER_KEY,
             'scope': '+'.join(self._scopes),
         }
-        
+
+_GOOGLE_OPENID_URI = 'https://www.google.com/accounts/o8/id'        
 def get_openid_start_url(consumer, trust_root, callback):
     '''build openid request and return as string'''
     auth_request = consumer.begin(_GOOGLE_OPENID_URI)
