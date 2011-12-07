@@ -38,13 +38,25 @@ class TwitterBackend(ModelBackend):
         
         try:
             taccount = TwitterAccount.objects.\
-                            filter(id=self.twitter_user.id).get()
+                            filter(id=twitter_user.id).get()
+                            
+            # update key and secret if changed                            
+            if taccount.key != key:
+                taccount.key = key
+                taccount.secret = secret
+                taccount.save()
+            
+            # update username if changed    
+            if taccount.username != twitter_user.screen_name:
+                taccount.username = twitter_user.screen_name
+                taccount.save()
+                
             return taccount.user
-        except TwitterUser.DoesNotExist:
-            taccount = TwitterAccount(id=self.twitter_user.id, 
-                                      username=self.twitter_user.screen_name,
-                                      key=self.access_token.key,
-                                      secret=self.access_token.secret)
+        except TwitterAccount.DoesNotExist:
+            taccount = TwitterAccount(id=twitter_user.id, 
+                                      username=twitter_user.screen_name,
+                                      key=key,
+                                      secret=secret)
             
             if User.objects.filter(username=taccount.username).exists():
                 raise DuplicatedUsername(taccount.username)

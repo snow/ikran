@@ -62,7 +62,9 @@ class AuthReturnV(BaseOAuthV):
         
         
 class AuthenticateReturnV(AuthReturnV):
-    '''TODO'''
+    '''
+    Return from twitter authenticate
+    '''
     def success(self, user):
         '''
         Called after authenticate success and logged user in.
@@ -80,6 +82,9 @@ class AuthenticateReturnV(AuthReturnV):
         return HttpResponse('authenticate failed')
     
     def get(self, request):
+        '''
+        Try to authenticate user with the access key just returned from twitter
+        '''
         # get self.access_token available
         super(AuthenticateReturnV, self).get(request)
         
@@ -88,11 +93,10 @@ class AuthenticateReturnV(AuthReturnV):
                                 key=self.access_token.key, 
                                 secret=self.access_token.secret)
         except DuplicatedUsername:            
-            pass # TODO
+            raise # TODO
         else:
             if user:
                 login(request, user)
-                
                 return self.success(user)
             else:
                 return self.failed()
