@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib.auth.decorators import login_required
 
-import thridparty.twitter.views as ttv
+import thirdparty.twitter.views as ttv
 #import webapps.thirdparty.twitter.views as wttv
 
 urlpatterns = patterns('',
