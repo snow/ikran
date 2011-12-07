@@ -39,7 +39,7 @@ class TwitterBackend(ModelBackend):
         try:
             taccount = TwitterAccount.objects.\
                             filter(id=self.twitter_user.id).get()
-            user = taccount.user
+            return taccount.user
         except TwitterUser.DoesNotExist:
             taccount = TwitterAccount(id=self.twitter_user.id, 
                                       username=self.twitter_user.screen_name,
@@ -54,5 +54,4 @@ class TwitterBackend(ModelBackend):
                                                     format(taccount.username))
                 taccount.user = user
                 taccount.save()
-        finally:
-            return user
+                return user
