@@ -4,8 +4,6 @@ from django.contrib.auth.backends import ModelBackend
 from django.conf import settings
 from tweepy import OAuthHandler, API
 
-from thirdparty.models import TwitterAccount
-
 class DuplicatedUsername(Exception):
     '''Username got from openid/oauth provider was taken here'''
     def __init__(self, username):
