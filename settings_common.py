@@ -35,6 +35,11 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+AUTHENTICATION_BACKENDS = (
+    'thirdparty.models.TwitterBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 MANAGERS = ADMINS
 
 #DATABASES = {

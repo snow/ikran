@@ -5,8 +5,6 @@ from django.conf import settings
 # from django.contrib import admin
 # admin.autodiscover()
 
-import django_pyrcp.thirdparty.twitter.views as twitter
-
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'ikran.views.home', name='home'),
@@ -21,6 +19,5 @@ urlpatterns = patterns('',
     
     url(r'^', include('webapp.urls')),
     
-    url(r'^thirdparty/twitter/auth', twitter.AuthStartV.as_view()),
-    url(r'^thirdparty/twitter/return', twitter.AuthReturnV.as_view()),
+    
 )

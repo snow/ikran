@@ -23,14 +23,13 @@ class UserProfile(models.Model):
     '''
     user = models.ForeignKey(User, unique=True)
     
-    @classmethod
-    @receiver(post_save, sender=User, 
-              dispatch_uid='ikran.core.models.createuserprofile')
-    def _user_create_receiver(cls, instance, created, **kwargs):
-        '''Create empty user profile on user model created'''
-        if created:
-            profile = cls(user=instance)
-            profile.save()
+@receiver(post_save, sender=User, 
+          dispatch_uid='ikran.core.models.createuserprofile')
+def _user_create_receiver(instance, created, **kwargs):
+    '''Create empty user profile on user model created'''
+    if created:
+        profile = UserProfile(user=instance)
+        profile.save()    
     
 class ImageFile(models.Model):
     '''
