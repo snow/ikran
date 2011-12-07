@@ -84,8 +84,9 @@ class AuthenticateReturnV(AuthReturnV):
         super(AuthenticateReturnV, self).get(request)
         
         try:
-            user = authenticate(TwitterBackend.CID,
-                                self.access_token.key, self.access_token.secret)
+            user = authenticate(cid=TwitterBackend.CID,
+                                key=self.access_token.key, 
+                                secret=self.access_token.secret)
         except DuplicatedUsername:            
             pass # TODO
         else:
