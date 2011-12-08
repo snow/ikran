@@ -36,6 +36,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 AUTHENTICATION_BACKENDS = (
+    'pyfyd.douban.utils.DoubanBackend',
     'pyfyd.google.utils.GoogleBackend',
     'pyfyd.twitter.utils.TwitterBackend',
     'django.contrib.auth.backends.ModelBackend',
@@ -186,7 +187,7 @@ LOGGING = {
             'class':'logging.StreamHandler',
             'formatter': 'custom'
         },
-        'debug': {
+        'debuglog': {
             'level': 'DEBUG',
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'formatter': 'custom',
@@ -201,8 +202,12 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-        'debug':{
-            'handlers': ['debug'],
+        'd':{
+            'handlers': ['debuglog'],
+            'level': 'DEBUG',
+        },
+        'c':{
+            'handlers': ['console'],
             'level': 'DEBUG',
         },
     }

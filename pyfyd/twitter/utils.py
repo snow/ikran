@@ -6,7 +6,7 @@ from pyfyd.models import TwitterAccount, DuplicatedUsername
 
 class TwitterBackend(ModelBackend):
     '''Twitter auth backend'''
-    CID = 'pyfyd.models.TwitterBackend'
+    CID = 'pyfyd.twitter.utils.TwitterBackend'
     
     def authenticate(self, cid, key, secret):
         if self.CID != cid:

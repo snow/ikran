@@ -51,3 +51,14 @@ urlpatterns += patterns('',
     url(r'thirdparty/google/authenticate_return/', 
         pgv.AuthenticateReturnV.as_view()),
 )
+
+import pyfyd.douban.views as pdv
+
+urlpatterns += patterns('',
+    url(r'thirdparty/douban/authenticate/', 
+        pdv.AuthStartV.as_view(
+            callback='/thirdparty/douban/authenticate_return/')
+    ),
+    url(r'thirdparty/douban/authenticate_return/', 
+        pdv.AuthenticateReturnV.as_view()),
+)
