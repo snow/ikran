@@ -36,8 +36,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 AUTHENTICATION_BACKENDS = (
-    'thirdparty.google.utils.GoogleBackend',
-    'thirdparty.twitter.utils.TwitterBackend',
+    'pyfyd.google.utils.GoogleBackend',
+    'pyfyd.twitter.utils.TwitterBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -155,12 +155,12 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     #'south',
-    'django_openid',
+    #'django_openid',
     'django_pyrcp',
+    'pyfyd',
     'core',
     'api',
     'webapp',
-    'thirdparty',
 )
 
 # A sample logging configuration. The only tangible logging

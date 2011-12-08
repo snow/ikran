@@ -4,13 +4,10 @@ import logging
 from django.views.generic import View
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
-from openid.extensions import ax
 from openid.consumer import consumer
-from django_openid.models import DjangoOpenIDStore
 
 from pyfyd.google.utils import get_openid_start_url, parse_hybrid_response,\
-                                    GoogleBackend
-                                    
+                                    GoogleBackend                                    
 from pyfyd.models import DuplicatedUsername
 
 class BaseV(View):
@@ -19,8 +16,10 @@ class BaseV(View):
     _openidstore = False
         
     def get_openid_store(self):
+        from openid.store.memstore import MemoryStore
+        
         if not self._openidstore:
-            self._openidstore = DjangoOpenIDStore()
+            self._openidstore = MemoryStore()
         return self._openidstore
         
     def get_consumer(self, session):

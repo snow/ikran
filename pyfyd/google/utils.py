@@ -95,7 +95,7 @@ def parse_hybrid_response(resp):
     else:
         access_token = exchange_access_token(request_token)
         
-        if not self.access_token:
+        if not access_token:
             raise Exception('failed to get access token')
         
         return user_attrs, access_token
