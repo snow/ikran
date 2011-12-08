@@ -36,7 +36,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 AUTHENTICATION_BACKENDS = (
-    'thirdparty.models.TwitterBackend',
+    'thirdparty.google.utils.GoogleBackend',
+    'thirdparty.twitter.utils.TwitterBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -200,7 +201,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-        'thirdparty':{
+        'debug':{
             'handlers': ['debug'],
             'level': 'DEBUG',
         },

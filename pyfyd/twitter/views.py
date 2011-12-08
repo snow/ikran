@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 from tweepy import OAuthHandler, API
 
-from thirdparty.models import *
+from pyfyd.models import *
 
 class BaseOAuthV(View):
     '''Base class for all views that will use OAuth handler'''
@@ -20,20 +20,20 @@ class AuthStartV(BaseOAuthV):
     '''
     OAuth start from here.
     
-    oauth_callback MUST be provieded, either by subclassing or kwargs
+    callback MUST be provieded, either by subclassing or kwargs
     this view will build oauth request and 
     redirect to twitter authorize or auchenticate page
     '''
-    oauth_callback = False
-    signin_with_twitter = False
+    callback = False
+    signin = False
     
-    def get(self, request, signin_with_twitter=True):
-        if not self.oauth_callback:
-            raise Exception('Subclass of AuthStartV must provide oauth_callback')
+    def get(self, request, signin=True):
+        if not self.callback:
+            raise Exception('Subclass of AuthStartV must provide callback')
         
-        self.oauth.callback = request.build_absolute_uri(self.oauth_callback)
+        self.oauth.callback = request.build_absolute_uri(self.callback)
         #redirect_to = self.oauth.get_authorization_url()
-        redirect_to = self.oauth.get_authorization_url(self.signin_with_twitter)
+        redirect_to = self.oauth.get_authorization_url(self.signin)
         # request token could only being get after get_authorization_url()
         request.session['unauthed_token'] = self.oauth.request_token
         return HttpResponseRedirect(redirect_to)

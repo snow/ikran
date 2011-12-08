@@ -14,7 +14,7 @@ class TwitterAccount(models.Model):
     # override default AutoField pk to force id to be assigned
     id = models.IntegerField(primary_key=True)
     username = models.CharField(max_length=255)
-    #fullname = models.CharField(max_length=255)
+    fullname = models.CharField(max_length=255)
     key = models.CharField(max_length=255)
     secret = models.CharField(max_length=255)
     
@@ -22,7 +22,7 @@ class TwitterAccount(models.Model):
 
 class TwitterBackend(ModelBackend):
     '''Twitter auth backend'''
-    CID = 'thirdparty.models.TwitterBackend'
+    CID = 'pyfyd.models.TwitterBackend'
     
     def authenticate(self, cid, key, secret):
         if self.CID != cid:
@@ -74,7 +74,7 @@ class GoogleAccount(models.Model):
     username = models.CharField(max_length=255)
     fullname = models.CharField(max_length=255, blank=True)
     language = models.CharField(max_length=255, blank=True)
-    contry = models.CharField(max_length=255, blank=True)
+    country = models.CharField(max_length=255, blank=True)
     
     key = models.CharField(max_length=255)
     secret = models.CharField(max_length=255)

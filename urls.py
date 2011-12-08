@@ -21,33 +21,33 @@ urlpatterns = patterns('',
     #(r'^openid/(.*)', SessionConsumer()),
 )
 
-import thirdparty.twitter.views as ttv
+import pyfyd.twitter.views as ptv
 #import webapps.thirdparty.twitter.views as wttv
 
 urlpatterns += patterns('',
     url(r'^thirdparty/twitter/authenticate/', 
-        ttv.AuthStartV.as_view(
+        ptv.AuthStartV.as_view(
             # TODO: is there any way to dymically determin 
             # the "/thirdparty/" part?
-            oauth_callback='/thirdparty/twitter/authenticate_return/', 
-            signin_with_twitter=True)
+            callback='/thirdparty/twitter/authenticate_return/', 
+            signin=True)
     ),
     url(r'^thirdparty/twitter/authorize/', 
-        ttv.AuthStartV.as_view(
-            oauth_callback='/thirdparty/twitter/authorize_return/', 
-            signin_with_twitter=False)
+        ptv.AuthStartV.as_view(
+            callback='/thirdparty/twitter/authorize_return/', 
+            signin=False)
     ),
     url(r'^thirdparty/twitter/authenticate_return/', 
-        ttv.AuthenticateReturnV.as_view()),
+        ptv.AuthenticateReturnV.as_view()),
 )
 
-import thirdparty.google.views as tgv
+import pyfyd.google.views as pgv
 
 urlpatterns += patterns('',
     url(r'thirdparty/google/authenticate/', 
-        tgv.AuthStartV.as_view(
+        pgv.AuthStartV.as_view(
             callback='/thirdparty/google/authenticate_return/')
     ),
     url(r'thirdparty/google/authenticate_return/', 
-        tgv.AuthenticateReturnV.as_view()),
+        pgv.AuthenticateReturnV.as_view()),
 )

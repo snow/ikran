@@ -4,18 +4,14 @@ import logging
 from django.views.generic import View
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
-
 from openid.extensions import ax
 from openid.consumer import consumer
-
 from django_openid.models import DjangoOpenIDStore
 
-from thirdparty.google.utils import get_openid_start_url, \
-                                    exchange_access_token, GoogleBackend, \
-                                    GoogleOAuthExt
-from thirdparty.models import DuplicatedUsername
-
-_l = logging.getLogger(__name__)
+from pyfyd.google.utils import get_openid_start_url, parse_hybrid_response,\
+                                    GoogleBackend
+                                    
+from pyfyd.models import DuplicatedUsername
 
 class BaseV(View):
     '''Base class for all views that will use openid consumer'''
@@ -61,7 +57,7 @@ class AuthReturnV(BaseV):
     Subclass MUST override get() to provide actual business logic.
     DO call super get() first to make self.access_token available
     '''
-    ax_resp = None
+    user_attrs = None
     access_token = None
     
     def get(self, request):
@@ -69,19 +65,10 @@ class AuthReturnV(BaseV):
         resp = c.complete(request.GET, request.build_absolute_uri(request.path))
         
         if consumer.SUCCESS == resp.status:
-            self.ax_resp = ax.FetchResponse.fromSuccessResponse(resp)
-            oauth_resp = resp.extensionResponse(GoogleOAuthExt.ns_uri, True)
-            
-            try:
-                request_token = oauth_resp['request_token']
-            except KeyError:
-                raise Exception('request_token not found')
-            else:
-                self.access_token = exchange_access_token(request_token)
-                if not self.access_token:
-                    raise Exception('failed to get access token')
+            self.user_attrs, self.access_token = parse_hybrid_response(resp)
         else:
-            pass # TODO openid failed
+            # TODO openid failed
+            raise Exception('openid auth failed')
             
     
 class AuthenticateReturnV(AuthReturnV):
@@ -115,13 +102,10 @@ class AuthenticateReturnV(AuthReturnV):
             user = authenticate(cid=GoogleBackend.CID,
                                 key=self.access_token.key, 
                                 secret=self.access_token.secret,
-                                email=self.ax_resp.email,
-                                firstname=self.ax_resp.firstname,
-                                lastname=self.ax_resp.lastname,
-                                language=self.ax_resp.language,
-                                country=self.ax_resp.country)
+                                user_attrs=self.user_attrs)
         except DuplicatedUsername:            
-            raise # TODO
+            # TODO
+            raise 
         else:
             if user:
                 login(request, user)
