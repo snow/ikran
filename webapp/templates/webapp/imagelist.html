@@ -1,0 +1,21 @@
+{% extends 'webapp/base.html' %}
+{% block page_class %}image list{% endblock %}
+
+{% block layout_bd %}
+<section class="main">
+    <h2>{{ username }}'s stream</h2>
+    <div>
+    {% for img in object_list %}
+    <figure>
+        <img src="{{ img.uri_s }}" width="{{ img.width_s }}" height="{{ img.height_s }}" alt="{{ img.desc }}" />
+        <figcaption>{{ img.desc }}</figcaption>
+    </figure>
+    {% endfor %}
+    </div>
+    <div class="c"></div>
+</section>
+
+<section class="right">
+    {% include 'webapp/com/upload_form.html' %}
+</section>
+{% endblock %}

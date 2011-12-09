@@ -1,9 +1,11 @@
 import json
 import hashlib
 import os
+from os.path import splitext
 import logging
 from datetime import datetime
 import tempfile
+import logging
 
 from django.db import models
 from django.db.models.fields.files import FieldFile
@@ -11,6 +13,7 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.conf import settings
 from django.dispatch import receiver
 from PIL import Image
 import pyexiv2 
@@ -58,23 +61,6 @@ class ImageFile(models.Model):
         SIZE_THUMB_SMALL: (72, 72),
     }
     
-    @classmethod
-    def md5sum(cls, file):
-        '''
-        Calculate md5 sum of given file
-        '''
-        # md5
-        md5 = hashlib.md5()
-        
-        if file.multiple_chunks():
-            for chunk in file.chunks():
-                md5.update(chunk)
-        else:
-            file.seek(0)
-            md5.update(file.read())
-            
-        return md5.hexdigest()
-    
     def gen_dirname(self):
         return datetime.now().strftime('uimg/%Y/%m/%d')
     
@@ -86,6 +72,20 @@ class ImageFile(models.Model):
         
         return '{dir}/{id_str}{size}.jpg'.format(dir=self.gen_dirname(), 
                                                  id_str=self.id_str, size=size)
+        
+    def get_uri(self, size=SIZE_SMALL):
+        uri = self.file.url
+        l = logging.getLogger('c')
+        #l.debug(uri)
+        
+        if self.SIZE_FULL == size:
+            return uri
+        else:
+            path, ext = splitext(uri)
+            #l.debug(path)
+            #l.debug(ext)
+            #l.debug(''.join(('{}_{}'.format(path, size), ext)))
+            return ''.join((['{}_{}'.format(path, size), ext])) 
         
     def resample(self):
         '''Generate image file of all sizes from FULL'''
@@ -143,6 +143,25 @@ class ImageFile(models.Model):
                 
             curpath = '{}_{}.jpg'.format(imgpath_noext, size)    
             curimg.save(curpath)
+            setattr(self, 'width_'+size, curimg.size[0])
+            setattr(self, 'height_'+size, curimg.size[1])
+            
+    @classmethod
+    def md5sum(cls, file):
+        '''
+        Calculate md5 sum of given file
+        '''
+        # md5
+        md5 = hashlib.md5()
+        
+        if file.multiple_chunks():
+            for chunk in file.chunks():
+                md5.update(chunk)
+        else:
+            file.seek(0)
+            md5.update(file.read())
+            
+        return md5.hexdigest()
     
     @classmethod
     def from_file(cls, file):
@@ -177,8 +196,12 @@ class ImageFile(models.Model):
                     img = Image.open(file.temporary_file_path())
                 
                 img.save(imgf.file.path)
+                imgf.width_f = img.size[0]
+                imgf.height_f = img.size[1]
                 del img
                 imgf.resample()
+                # save updated width and height of sizes
+                imgf.save()
             except:
                 imgf.delete()
                 raise
@@ -190,6 +213,21 @@ class ImageFile(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     
     file = models.ImageField(upload_to=gen_filename, null=True)
+    
+    width_f = models.PositiveIntegerField(default=0)
+    height_f = models.PositiveIntegerField(default=0)
+    width_l = models.PositiveIntegerField(default=0)
+    height_l = models.PositiveIntegerField(default=0)
+    width_m = models.PositiveIntegerField(default=0)
+    height_m = models.PositiveIntegerField(default=0)
+    width_s = models.PositiveIntegerField(default=0)
+    height_s = models.PositiveIntegerField(default=0)
+    width_tl = models.PositiveIntegerField(default=0)
+    height_tl = models.PositiveIntegerField(default=0)
+    width_tm = models.PositiveIntegerField(default=0)
+    height_tm = models.PositiveIntegerField(default=0)
+    width_ts = models.PositiveIntegerField(default=0)
+    height_ts = models.PositiveIntegerField(default=0)
 
 class Album(models.Model):
     '''
@@ -223,6 +261,21 @@ class ImageCopy(models.Model):
     
     file = models.ForeignKey(ImageFile)
     
+    width_f = property(lambda self: self.file.width_f)
+    height_f = property(lambda self: self.file.height_f)
+    width_l = property(lambda self: self.file.width_l)
+    height_l = property(lambda self: self.file.height_l)
+    width_m = property(lambda self: self.file.width_m)
+    height_m = property(lambda self: self.file.height_m)
+    width_s = property(lambda self: self.file.width_s)
+    height_s = property(lambda self: self.file.height_s)
+    width_tl = property(lambda self: self.file.width_tl)
+    height_tl = property(lambda self: self.file.height_tl)
+    width_tm = property(lambda self: self.file.width_tm)
+    height_tm = property(lambda self: self.file.height_tm)
+    width_ts = property(lambda self: self.file.width_ts)
+    height_ts = property(lambda self: self.file.height_ts)
+    
     T_LOCAL = 0
     T_TWITTER = 1
     T_FLICKER = 2
@@ -235,6 +288,30 @@ class ImageCopy(models.Model):
                                               default=T_LOCAL)
     external_id = models.CharField(max_length=255, blank=True)
     external_data = models.TextField(blank=True)
+    
+    def uri(self, size=ImageFile.SIZE_SMALL):
+        return self.file.get_uri(size)
+    
+    def uri_f(self):
+        return self.uri(ImageFile.SIZE_FULL)
+    
+    def uri_l(self):
+        return self.uri(ImageFile.SIZE_LARGE)
+    
+    def uri_m(self):
+        return self.uri(ImageFile.SIZE_MEDIAN)
+    
+    def uri_s(self):
+        return self.uri(ImageFile.SIZE_SMALL)
+    
+    def uri_tl(self):
+        return self.uri(ImageFile.SIZE_THUMB_LARGE)
+    
+    def uri_tm(self):
+        return self.uri(ImageFile.SIZE_THUMB_MEDIAN)
+    
+    def uri_ts(self):
+        return self.uri(ImageFile.SIZE_THUMB_SMALL)
     
     @classmethod
     def from_filename(cls, filename, user):

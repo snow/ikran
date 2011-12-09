@@ -39,7 +39,7 @@
         
         {% if user.is_authenticated %}
         <section class="curuser">
-            <span class="username">{{ user.username }}</span>
+            <span class="username">{{ user.username }}</span> &gt;
             <a class="settings" href="/accounts/settings/">settings</a>
             <a class="signout" href="/accounts/signout/">signout</a>
         </section>

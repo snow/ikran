@@ -1,12 +1,33 @@
 # Create your views here.
-from django.views.generic import View, TemplateView, DetailView, RedirectView
+import django.views.generic as gv
 from django.contrib.auth.models import User
 
-class IndexV(TemplateView):
+import core.models as ikr
+
+class IndexV(gv.TemplateView):
     template_name = 'webapp/index.html'
 
-class DashboardV(TemplateView):
+class DashboardV(gv.TemplateView):
     template_name = 'webapp/dashboard.html'
+    
+class ImageListV(gv.TemplateView):
+    template_name = 'webapp/imagelist.html'
+    
+class PeopleStreamV(gv.ListView):
+    '''List recent images by username'''
+    template_name = 'webapp/imagelist.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super(PeopleStreamV, self).get_context_data(**kwargs)
+        context['username'] = self.kwargs['username']
+        return context
+    
+    def get(self, request, username, *args, **kwargs):
+        user = User.objects.filter(username=username).get()
+        self.queryset = ikr.ImageCopy.objects.filter(owner=user).\
+                            order_by('-created').all()
+            
+        return super(PeopleStreamV, self).get(request, *args, **kwargs) 
     
 #class PeopleRecentImagesV(TemplateView):
 #    template_name = 'webapp/dashboard.html'    
