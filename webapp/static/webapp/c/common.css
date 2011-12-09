@@ -7,10 +7,48 @@
 /*
  * components
  * ----------------
-
 /*
  * header
  */
+body > header {padding:0 10px; margin-bottom:10px; border-bottom:1px dashed #666; 
+               color:#666}
+    /* position & size */
+    body > header .logo,
+    body > header nav,
+        body > header nav a {float:left}
+    body > header .curuser {float:right}
+    
+    body > header .logo,
+    body > header nav a {display:block; height:2em; line-height:2em;
+                         font-size:1.5em}
+                         
+    body > header .logo {padding:0 10px}
+    
+    body > header nav {margin-left:10px; padding-left:10px}
+        body > header nav a {padding:0 10px}
+    
+        
+    body > header .curuser span,
+    body > header .curuser a {display:inline-block; height:2.5em; 
+                              line-height:2.5em; font-size:1.2em}   
+                               
+    body > header .curuser span {margin-right:5px}
+    
+    body > header .curuser a {display:none; padding:0 5px}
+        body > header .curuser:hover a {display:inline-block}
+    
+    /* style */
+    body > header a {text-decoration:none}    
+        body > header a:hover {background:#eee}
+    
+    body > header nav {border-left:1px solid #eee}
+    
+/*
+ * body
+ */
+/* layout */
+body > .main {float:left; padding-right:40px}
+body > .right {width:310px}
 /*
  * forms
  */

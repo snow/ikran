@@ -38,7 +38,7 @@ urlpatterns += patterns('',
             signin=False)
     ),
     url(r'^thirdparty/twitter/authenticate_return/', 
-        ptv.AuthenticateReturnV.as_view()),
+        ptv.AuthenticateReturnV.as_view(success_uri='/dashboard/')),
 )
 
 import pyfyd.google.views as pgv
@@ -49,7 +49,7 @@ urlpatterns += patterns('',
             callback='/thirdparty/google/authenticate_return/')
     ),
     url(r'thirdparty/google/authenticate_return/', 
-        pgv.AuthenticateReturnV.as_view()),
+        pgv.AuthenticateReturnV.as_view(success_uri='/dashboard/')),
 )
 
 import pyfyd.douban.views as pdv
@@ -60,5 +60,5 @@ urlpatterns += patterns('',
             callback='/thirdparty/douban/authenticate_return/')
     ),
     url(r'thirdparty/douban/authenticate_return/', 
-        pdv.AuthenticateReturnV.as_view()),
+        pdv.AuthenticateReturnV.as_view(success_uri='/dashboard/')),
 )

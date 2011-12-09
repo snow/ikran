@@ -1,13 +1,16 @@
 import json
 import hashlib
 import os
+import logging
 from datetime import datetime
+import tempfile
 
 from django.db import models
 from django.db.models.fields.files import FieldFile
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.core.files import File
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.dispatch import receiver
 from PIL import Image
 import pyexiv2 
@@ -55,69 +58,20 @@ class ImageFile(models.Model):
         SIZE_THUMB_SMALL: (72, 72),
     }
     
-    
-#    file_l = models.ImageField(upload_to=gen_filename_l, null=True)
-#    file_m = models.ImageField(upload_to=gen_filename_m, null=True)
-#    file_s = models.ImageField(upload_to=gen_filename_s, null=True)
-#    file_tl = models.ImageField(upload_to=gen_filename_tl, null=True)
-#    file_tm = models.ImageField(upload_to=gen_filename_tm, null=True)
-#    file_ts = models.ImageField(upload_to=gen_filename_ts, null=True)
-    
-#    file_f = models.ImageField(upload_to='uimg/%Y/%m/%d', 
-#                               width_field='width_f', 
-#                               height_field='height_f')
-#    width_f = models.PositiveSmallIntegerField() # in pixels
-#    height_f = models.PositiveSmallIntegerField()
-#    
-#    file_l = models.ImageField(upload_to='uimg/%Y/%m/%d', 
-#                               width_field='width_l', 
-#                               height_field='height_l')
-#    width_l = models.PositiveSmallIntegerField()
-#    height_l = models.PositiveSmallIntegerField()
-#    
-#    file_m = models.ImageField(upload_to='uimg/%Y/%m/%d', 
-#                               width_field='width_m', 
-#                               height_field='height_m')
-#    width_m = models.PositiveSmallIntegerField()
-#    height_m = models.PositiveSmallIntegerField()
-#    
-#    file_s = models.ImageField(upload_to='uimg/%Y/%m/%d', 
-#                               width_field='width_s', 
-#                               height_field='height_s')
-#    width_s = models.PositiveSmallIntegerField()
-#    height_s = models.PositiveSmallIntegerField()
-#    
-#    file_tl = models.ImageField(upload_to='uimg/%Y/%m/%d', 
-#                                width_field='width_tl', 
-#                                height_field='height_tl')
-#    width_tl = models.PositiveSmallIntegerField()
-#    height_tl = models.PositiveSmallIntegerField()
-#    
-#    file_tm = models.ImageField(upload_to='uimg/%Y/%m/%d', 
-#                                width_field='width_tm', 
-#                                height_field='height_tm')
-#    width_tm = models.PositiveSmallIntegerField()
-#    height_tm = models.PositiveSmallIntegerField()
-#    
-#    file_ts = models.ImageField(upload_to='uimg/%Y/%m/%d', 
-#                                width_field='width_ts', 
-#                                height_field='height_ts')
-#    width_ts = models.PositiveSmallIntegerField()
-#    height_ts = models.PositiveSmallIntegerField() 
-    
     @classmethod
-    def md5sum(cls, filename):
+    def md5sum(cls, file):
         '''
         Calculate md5 sum of given file
         '''
         # md5
-        f = open(filename, 'r')
         md5 = hashlib.md5()
-        while True:
-            data = f.read(128)
-            if not data:
-                break
-            md5.update(data)
+        
+        if file.multiple_chunks():
+            for chunk in file.chunks():
+                md5.update(chunk)
+        else:
+            file.seek(0)
+            md5.update(file.read())
             
         return md5.hexdigest()
     
@@ -133,34 +87,10 @@ class ImageFile(models.Model):
         return '{dir}/{id_str}{size}.jpg'.format(dir=self.gen_dirname(), 
                                                  id_str=self.id_str, size=size)
         
-#    def gen_filename_f(self):
-#        return self.gen_filename(self.SIZE_FULL)
-#    
-#    def gen_filename_l(self):
-#        return self.gen_filename(self.SIZE_LARGE)
-#    
-#    def gen_filename_m(self):
-#        return self.gen_filename(self.SIZE_MEDIAN)
-#    
-#    def gen_filename_s(self):
-#        return self.gen_filename(self.SIZE_SMALL)
-#    
-#    def gen_filename_tl(self):
-#        return self.gen_filename(self.SIZE_THUMB_LARGE)
-#    
-#    def gen_filename_tm(self):
-#        return self.gen_filename(self.SIZE_THUMB_MEDIAN)
-#    
-#    def gen_filename_ts(self):
-#        return self.gen_filename(self.SIZE_THUMB_SMALL)
-#    
-#    def get_resample_size(self, size):
-#        '''Calculate width and height for given size'''
-        
     def resample(self):
         '''Generate image file of all sizes from FULL'''
-        img_f = Image.open(self.file_f.path)
-        imgpath_noext = os.path.splitext(self.file_f.path)[0]
+        img_f = Image.open(self.file.path)
+        imgpath_noext = os.path.splitext(self.file.path)[0]
         ORIGIN_WIDTH = img_f.size[0]
         ORIGIN_HEIGHT = img_f.size[1]
         
@@ -215,11 +145,11 @@ class ImageFile(models.Model):
             curimg.save(curpath)
     
     @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, file):
         '''
-        Construct an ImageFile from filename
+        Construct an ImageFile from file
         '''
-        md5 = cls.md5sum(filename)
+        md5 = cls.md5sum(file)
         
         try:
             imgf = cls.objects.filter(md5=md5).get()
@@ -227,17 +157,31 @@ class ImageFile(models.Model):
             imgf = cls(md5=md5)
             imgf.save()
             
-            imgf.id_str = struk.int2str(imgf.id)
-            imgf.file = FieldFile(imgf, imgf.file, imgf.gen_filename())
-            imgf.save()
-            
-            dir = os.path.dirname(imgf.file.path)
-            if not os.path.exists(dir):    
-                os.makedirs(dir)
-            
-            # make sure converted to jpg
-            Image.open(filename).save(imgf.file.path)
-            imgf.resample()
+            try:
+                imgf.id_str = struk.int2str(imgf.id)
+                imgf.file = FieldFile(imgf, imgf.file, imgf.gen_filename())
+                imgf.save()
+                
+                dir = os.path.dirname(imgf.file.path)
+                if not os.path.exists(dir):    
+                    os.makedirs(dir)
+                
+                # make sure converted to jpg
+                if isinstance(file, InMemoryUploadedFile):
+                    tmp = tempfile.NamedTemporaryFile()
+                    file.seek(0)
+                    tmp.write(file.read())
+                    tmp.flush()
+                    img = Image.open(tmp.name)
+                else:
+                    img = Image.open(file.temporary_file_path())
+                
+                img.save(imgf.file.path)
+                del img
+                imgf.resample()
+            except:
+                imgf.delete()
+                raise
         
         return imgf
         
@@ -293,24 +237,37 @@ class ImageCopy(models.Model):
     external_data = models.TextField(blank=True)
     
     @classmethod
-    def from_file(cls, filename, user, desc=''):
+    def from_filename(cls, filename, user):
+        '''
+        Construct an ImageCopy from an filepath
+        '''
+        return cls.from_filen(File(open(filename)), user)
+    
+    @classmethod
+    def from_file(cls, file, user):
         '''
         Construct an ImageCopy from an uploaded file
         '''
-        img = ImageCopy(user=user, description=desc)
+        img = ImageCopy(owner=user)
         
         # strip exif from given image
-        exif_dict = dict()
-        exif = pyexiv2.ImageMetadata(filename)
+        file.seek(0)
+        exif = pyexiv2.ImageMetadata.from_buffer(file.read())
         exif.read()
+        
+        exif_dict = dict()
         for k in exif.exif_keys:
-            exif_dict[exif[k].label] = exif[k].human_value
+            try:
+                exif_dict[exif[k].label] = exif[k].human_value.decode('utf-8')
+            except UnicodeDecodeError:
+                # ignore invalid chars
+                pass
+            
             del exif[k]
             
         img.exif_str = json.dumps(exif_dict)
-        img.file = ImageFile.from_file(filename)
+            
+        img.file = ImageFile.from_file(file)
         img.save()
         
         return img
-    
-    

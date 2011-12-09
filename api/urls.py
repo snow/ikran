@@ -4,8 +4,6 @@ from django.conf.urls.defaults import patterns, include, url
 # from django.contrib import admin
 # admin.autodiscover()
 
-from api import img
-
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'ikran.views.home', name='home'),
@@ -15,5 +13,5 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    url(r'^img/', include(img.urls)),
+    url(r'^img/', include('api.img.urls')),
 )

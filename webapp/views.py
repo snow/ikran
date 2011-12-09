@@ -8,6 +8,9 @@ class IndexV(TemplateView):
 class DashboardV(TemplateView):
     template_name = 'webapp/dashboard.html'
     
+#class PeopleRecentImagesV(TemplateView):
+#    template_name = 'webapp/dashboard.html'    
+    
 #class InitV(TemplateView):
 #    template_name = 'webapp/init.html'
 #    

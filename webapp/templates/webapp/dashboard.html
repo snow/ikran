@@ -1,7 +1,24 @@
 {% extends 'webapp/base.html' %}
-
-{% block logo %}<h1>Ikran</h1>{% endblock %}
 {% block page_class %}dashboard{% endblock %}
 
-{% block bd %}
+{% block layout_bd %}
+<section class="left">
+    this is the letf sidebar
+</section>
+
+<section class="main">
+    this is the main
+</section>
+
+<section class="right">
+    <form class="uploadimg" action="/api/img/upload/" method="POST" 
+          enctype="multipart/form-data">
+        <h3>upload</h3>
+        <input name="img" type="file" placeholder="select one or more images" 
+               multiple="multiple" required="true" />
+        <input name="success_uri" type="hidden" value="{{ request.path }}" /> 
+        <button type="submit">upload</button>
+        {% csrf_token %}
+    </form>
+</section>
 {% endblock %}

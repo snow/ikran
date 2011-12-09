@@ -68,13 +68,19 @@ class AuthenticateReturnV(AuthReturnV):
     '''
     Return from douban authenticate
     '''
+    success_uri = None
+    
     def success(self, user):
         '''
         Called after authenticate success and logged user in.
         
         Subclass should override this method to provide actual business
         '''
-        return HttpResponse('linked with {}'.format(user.username))
+        if self.success_uri:
+            return HttpResponseRedirect(self.success_uri)
+        else:
+            # should be override
+            return HttpResponse('linked with {}'.format(user.username))
         
     def failed(self):
         '''
