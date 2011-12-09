@@ -62,4 +62,5 @@ body>.right {position:fixed; right:0; width:310px; overflow-x:hidden}
 /*
  * image list
  */
-figure {display:inline-block} 
+figure {float:left; display:inline; min-height:230px; margin:0 10px}
+figcaption {color:#999} 
