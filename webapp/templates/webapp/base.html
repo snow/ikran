@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}common/c/blueprint-1.0.1/reset.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}common/c/blueprint-1.0.1/typography.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}common/c/blueprint-1.0.1/forms.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}common/c/fileuploader.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}webapp/c/common.css?r=0.1.0" />
     
     {% if debug %}    
@@ -17,9 +18,11 @@
     {% else %}    
     <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     {% endif %}
+    <script type="text/javascript" src="{{ STATIC_URL }}common/s/jquery.cookie.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}common/s/jquery.ba-bbq-1.2.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}common/s/fileuploader.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}common/s/rcp.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}pyrcp/s/django.js?r=0.1.2"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}common/s/rcp.django.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}webapp/s/common.js?r=0.1.0"></script>
     {% block extra_scripts %}{% endblock %}
 </head>

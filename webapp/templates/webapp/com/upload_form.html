@@ -1,9 +1,113 @@
-<form class="uploadimg" action="/api/img/upload/" method="POST" 
-      enctype="multipart/form-data">
+<section class="upload">
     <h3>upload</h3>
-    <input name="img" type="file" placeholder="select one or more images" 
-           multiple="multiple" required="true" />
-    <input name="success_uri" type="hidden" value="{{ request.path }}" /> 
-    <button type="submit">upload</button>
-    {% csrf_token %}
-</form>
+    <noscript>
+        <form class="uploadimg" action="/api/img/upload/" method="POST" 
+          enctype="multipart/form-data">
+            <input name="img" type="file" multiple="multiple" required="true" />
+            <input name="success_uri" type="hidden" value="{{ request.path }}" /> 
+            <button type="submit">upload</button>
+            {% csrf_token %}
+        </form>
+    </noscript>
+    <div class="dropzone" id="dropzone_2_init">
+    </div>
+</section>
+<!--<div class="dropzone">
+    <span class="dragmsg">Or drag images here</span>
+    <span class="dropmsg">Now drop them</span>
+    <span class="ingmsg">Uploading...</span>
+    <span class="donemsg">Done</span>
+</div>-->
+
+<script>
+(function($){
+    qq.UploadHandlerXhr.prototype._upload = function(id, params){
+        var file = this._files[id],
+            name = this.getName(id),
+            size = this.getSize(id);
+                
+        this._loaded[id] = 0;
+                                
+        var xhr = this._xhrs[id] = new XMLHttpRequest();
+        var self = this;
+                                        
+        xhr.upload.onprogress = function(e){
+            if (e.lengthComputable){
+                self._loaded[id] = e.loaded;
+                self._options.onProgress(id, name, e.loaded, e.total);
+            }
+        };
+
+        xhr.onreadystatechange = function(){            
+            if (xhr.readyState == 4){
+                self._onComplete(id, xhr);                    
+            }
+        };
+
+        // build query string
+        params = params || {};
+        params['filename'] = name;
+        var queryString = qq.obj2url(params, this._options.action);
+
+        xhr.open("POST", queryString, true);
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhr.setRequestHeader("X-File-Name", encodeURIComponent(name));
+        xhr.setRequestHeader("Content-Type", "application/octet-stream");
+        xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+        xhr.send(file);
+    }
+    
+    var uploader = new qq.FileUploader({
+        element: $('#dropzone_2_init').removeAttr('id')[0],
+        action: '/api/img/upload.json',
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+        sizeLimit: 10 * 1024 * 1024,   
+        minSizeLimit: 10 * 1024,      
+        params: {'success_uri': '{{ request.path }}'},
+        debug: true
+    });
+    
+    /*rcp.j_doc.on({
+        'dragenter': function(evt){
+            $(this).addClass('on');
+            return false;
+        },
+        'dragleave': function(evt){
+            $(this).removeClass('on');
+            return false;
+        },
+        'dragover': function(evt){
+            evt.stopPropagation();
+            evt.preventDefault();
+            evt.originalEvent.dataTransfer.dropEffect = 'copy';
+        },
+        'drop': function(evt){
+            evt.stopPropagation();
+            evt.preventDefault();
+            
+            rcp.l(evt);
+            
+            var dt = evt.originalEvent.dataTransfer,
+                files = dt.files,
+                j_imgfield = $('.uploading [name=img]');
+                
+            $.each(files, function(idx, el){
+                var reader = new FileReader();
+                reader.onload = function(evt){
+                    var dataurl = evt.target.result;
+                    $('.imgls').prepend($('<img src="'+dataurl+'" />'));
+                    j_imgfield.val(j_imgfield.val()+','+dataurl);
+                }
+                
+                reader.readAsDataURL(el);
+            });
+        }
+    }, '.dropzone');
+    
+    $('.uploadimg').submit(function(evt){
+        evt.preventDefault();
+        
+        rcp.l($(this).serialize());
+    });*/
+})(jQuery);
+</script>

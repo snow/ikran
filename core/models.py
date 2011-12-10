@@ -192,8 +192,8 @@ class ImageFile(models.Model):
                     tmp.write(file.read())
                     tmp.flush()
                     img = Image.open(tmp.name)
-                else:
-                    img = Image.open(file.temporary_file_path())
+                else: # TemporaryUploadedFile or File
+                    img = Image.open(file.file.name)
                 
                 img.save(imgf.file.path)
                 imgf.width_f = img.size[0]

@@ -49,9 +49,30 @@ body>header {padding:0 10px; margin-bottom:10px; border-bottom:1px dashed #666;
 /* layout */
 body>.main {float:left; padding:0 350px 20px 20px}
 body>.right {position:fixed; right:0; width:310px; overflow-x:hidden}
+
+/*
+ * right sidebar
+ */
+body>.right h3 {margin-top:0.5em; color:#666}
+body>.right h3:before {content:'> '; color:#999}
+
 /*
  * forms
  */
+.qq-upload-spinner {width:16px; height:16px; background:url(/s/common/i/loading-16.gif)}
+/*.dropzone {margin:10px 10px 20px 0; padding:10px; height:100px; 
+           border:4px dashed #ccc; color:#ccc; font-size:2em; text-align:center}
+    .dropzone.on {border-color:#666}
+    .dropzone .dropmsg {color:#666}
+    
+    .dropzone.on .dragmsg,
+    .dropzone.ing .dragmsg,
+    .dropzone.done .dragmsg {display:none}
+    .dropzone:not(.on) .dropmsg {display:none}
+    .dropzone:not(.ing) .ingmsg {display:none}
+    .dropzone:not(.done) .donemsg {display:none}*/
+    
+    
 /*
  * page specifics
  * ----------------

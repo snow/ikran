@@ -4,7 +4,7 @@
 {% block layout_bd %}
 <section class="main">
     <h2>{{ username }}'s stream</h2>
-    <div>
+    <div class="imgls">
     {% for img in object_list %}
     <figure>
         <img src="{{ img.uri_s }}" width="{{ img.width_s }}" height="{{ img.height_s }}" alt="{{ img.desc }}" />
