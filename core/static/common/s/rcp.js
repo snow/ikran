@@ -3,7 +3,9 @@
  * --------------------
  */
 (function($){
-    window.rcp = {}
+    window.rcp = {
+        j_doc: $(document)
+    }
 })(jQuery);
 
 /**
