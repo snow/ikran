@@ -57,9 +57,19 @@ body>.right h3 {margin-top:0.5em; color:#666}
 body>.right h3:before {content:'> '; color:#999}
 
 /*
- * forms
+ * upload
  */
-.qq-upload-spinner {width:16px; height:16px; background:url(/s/common/i/loading-16.gif)}
+body>.right>.upload .selectfile,
+body>.right>.upload p {font-size:1.5em}
+
+body>.right>.upload .selectfile {text-decoration:none}
+
+body>.dropzone {position:fixed; top:0; left:0; width:100%; height:100%}
+body>.dropzone .inr {position:absolute; top:0; 
+                     padding:100px; border:10px dashed #999; color:#333;
+                     font-size:6em; vertical-align:middle; text-align:center} 
+body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}                                    
+/*.qq-upload-spinner {width:16px; height:16px; background:url(/s/common/i/loading-16.gif)}*/
 /*.dropzone {margin:10px 10px 20px 0; padding:10px; height:100px; 
            border:4px dashed #ccc; color:#ccc; font-size:2em; text-align:center}
     .dropzone.on {border-color:#666}

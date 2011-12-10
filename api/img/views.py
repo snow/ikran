@@ -23,7 +23,7 @@ class UploadV(View):
         
         imgls = []
     
-        if request.GET['filename']:
+        if 'filename' in request.GET:
             tmp = tempfile.NamedTemporaryFile()
             tmp.write(request.raw_post_data)
             tmp.flush()

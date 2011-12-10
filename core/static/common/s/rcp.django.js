@@ -10,13 +10,22 @@
  * csrf
  */
 (function($){
-    function safeMethod(method) {
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    var csrftoken = '';
+    rcp.django.get_csrftoken = function(){
+        if('' === csrftoken){
+            csrf_token = $.cookie('csrftoken');
+        }
+        return csrftoken;
+    }
+    
+    rcp.django.is_method_safe = function(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/i.test(method));
     }
     
     rcp.j_doc.ajaxSend(function(evt, xhr, settings) {
-        if (!safeMethod(settings.type) && !settings.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+        if (!rcp.django.is_method_safe(settings.type) &&
+                !settings.crossDomain) {
+            xhr.setRequestHeader('X-CSRFToken', rcp.django.get_csrftoken());
         }
     });
 })(jQuery);
