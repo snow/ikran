@@ -13,7 +13,7 @@
     var csrftoken = '';
     rcp.django.get_csrftoken = function(){
         if('' === csrftoken){
-            csrf_token = $.cookie('csrftoken');
+            csrftoken = $.cookie('csrftoken');
         }
         return csrftoken;
     }

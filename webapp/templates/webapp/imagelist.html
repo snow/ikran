@@ -6,11 +6,26 @@
     <h2>{{ username }}'s stream</h2>
     <div class="imgls">
     {% for img in object_list %}
-    <figure>
-        <img src="{{ img.uri_s }}" width="{{ img.width_s }}" height="{{ img.height_s }}" alt="{{ img.desc }}" />
-        <figcaption>{{ img.desc }}</figcaption>
+    <figure class="img">
+        <img src="{{ img.uri_s }}" width="{{ img.width_s }}" height="{{ img.height_s }}" alt="{{ img.description }}" />        
+        <figcaption>
+            <h5 class="title">{{ img.description }}</h5>
+            <p class="desc"></p>
+        </figcaption>
     </figure>
     {% endfor %}
+    <figure class="img tpl">
+        <div class="wrap">
+            <img />
+            <div class="mask"></div>
+        </div>
+        <figcaption>
+            <h5 class="title"></h5>
+            <p class="desc"></p>
+            <span class="status"></span>
+            <span class="meta tpl"></span>
+        </figcaption>
+    </figure>
     </div>
     <div class="c"></div>
 </section>

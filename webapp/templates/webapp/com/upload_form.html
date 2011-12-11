@@ -2,21 +2,14 @@
     <h3>upload</h3>
     <form class="uploadimg" action="/api/img/upload/" method="POST" 
           enctype="multipart/form-data">
-        <input id="filefield_to_init" name="img" type="file" multiple="multiple" required="true" />
+        <input id="filefield_to_init" name="img" type="file" 
+               multiple="multiple" required="true" accept="image/*" />
         <p>Or drop images on this page</p>
         <input name="success_uri" type="hidden" value="{{ request.path }}" /> 
         <button type="submit">upload</button>
         {% csrf_token %}
     </form>
-    <div class="dropzone" id="dropzone_to_init">
-    </div>
 </section>
-<!--<div class="dropzone">
-    <span class="dragmsg">Or drag images here</span>
-    <span class="dropmsg">Now drop them</span>
-    <span class="ingmsg">Uploading...</span>
-    <span class="donemsg">Done</span>
-</div>-->
 
 <script>
 (function($){
@@ -25,56 +18,5 @@
     });
     
     ikr.upload.enhanceform($('#filefield_to_init').removeAttr('id'));
-    
-    rcp.l(FileReader);
-    
-    /*ikr.upload.init({
-        element: $('#dropzone_to_init').removeAttr('id')[0],
-        action: '/api/img/upload.json'
-        //debug: true
-    });*/
-    
-    /*rcp.j_doc.on({
-        'dragenter': function(evt){
-            $(this).addClass('on');
-            return false;
-        },
-        'dragleave': function(evt){
-            $(this).removeClass('on');
-            return false;
-        },
-        'dragover': function(evt){
-            evt.stopPropagation();
-            evt.preventDefault();
-            evt.originalEvent.dataTransfer.dropEffect = 'copy';
-        },
-        'drop': function(evt){
-            evt.stopPropagation();
-            evt.preventDefault();
-            
-            rcp.l(evt);
-            
-            var dt = evt.originalEvent.dataTransfer,
-                files = dt.files,
-                j_imgfield = $('.uploading [name=img]');
-                
-            $.each(files, function(idx, el){
-                var reader = new FileReader();
-                reader.onload = function(evt){
-                    var dataurl = evt.target.result;
-                    $('.imgls').prepend($('<img src="'+dataurl+'" />'));
-                    j_imgfield.val(j_imgfield.val()+','+dataurl);
-                }
-                
-                reader.readAsDataURL(el);
-            });
-        }
-    }, '.dropzone');
-    
-    $('.uploadimg').submit(function(evt){
-        evt.preventDefault();
-        
-        rcp.l($(this).serialize());
-    });*/
 })(jQuery);
 </script>

@@ -18,21 +18,19 @@ class UploadV(View):
     * redirect
     '''
     def post(self, request, format=None):
-        import logging
-        l = logging.getLogger('c')
-        
         imgls = []
     
         if 'filename' in request.GET:
             tmp = tempfile.NamedTemporaryFile()
             tmp.write(request.raw_post_data)
             tmp.flush()
-            img = ikr.ImageCopy.from_file(File(tmp), request.user)
+            img = ikr.ImageCopy.from_file(File(tmp), request.user, 
+                                          request.GET['filename'])
             tmp.close()
             imgls.append(dict(id=img.id, urs_s=img.uri_s()))
         else:        
             for img in request.FILES.getlist('img'):
-                img = ikr.ImageCopy.from_file(img, request.user)
+                img = ikr.ImageCopy.from_file(img, request.user, img.name)
                 imgls.append(dict(id=img.id, urs_s=img.uri_s()))
                 
         if 'json' == format:

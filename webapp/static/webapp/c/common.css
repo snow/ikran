@@ -4,6 +4,7 @@
  * ----------------
  */
 .c {clear:both}
+.tpl {display:none}
 /*
  * components
  * ----------------
@@ -60,29 +61,19 @@ body>.right h3:before {content:'> '; color:#999}
  * upload
  */
 body>.right>.upload .selectfile,
-body>.right>.upload p {font-size:1.5em}
+body>.right>.upload p {font-size:1.8em; margin-bottom:5px}
+body>.right>.upload p {color:#666}
 
 body>.right>.upload .selectfile {text-decoration:none}
+body>.right>.upload .wrap [name=img] {position:absolute; opacity:0}
+body>.right>.upload .wrap:hover .selectfile {text-decoration:underline}
 
-body>.dropzone {position:fixed; top:0; left:0; width:100%; height:100%}
+body>.dropzone {position:fixed; top:0; left:0; width:100%; height:100%; 
+                cursor:pointer}
 body>.dropzone .inr {position:absolute; top:0; 
                      padding:100px; border:10px dashed #999; color:#333;
                      font-size:6em; vertical-align:middle; text-align:center} 
-body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}                                    
-/*.qq-upload-spinner {width:16px; height:16px; background:url(/s/common/i/loading-16.gif)}*/
-/*.dropzone {margin:10px 10px 20px 0; padding:10px; height:100px; 
-           border:4px dashed #ccc; color:#ccc; font-size:2em; text-align:center}
-    .dropzone.on {border-color:#666}
-    .dropzone .dropmsg {color:#666}
-    
-    .dropzone.on .dragmsg,
-    .dropzone.ing .dragmsg,
-    .dropzone.done .dragmsg {display:none}
-    .dropzone:not(.on) .dropmsg {display:none}
-    .dropzone:not(.ing) .ingmsg {display:none}
-    .dropzone:not(.done) .donemsg {display:none}*/
-    
-    
+body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
 /*
  * page specifics
  * ----------------
@@ -93,5 +84,26 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
 /*
  * image list
  */
-figure {float:left; display:inline; min-height:230px; margin:0 10px}
-figcaption {color:#999} 
+figure.img {float:left; display:inline; margin:0 10px; max-width:180px; 
+            min-height:230px; text-align:center}
+    figure.img .wrap {position:relative; display:inline-block}
+        figure.img img {max-width:180px; max-height:180px}
+        figure.img .mask {position:absolute; display:none; top:0; left:0; width:100%; 
+                          height:100%; background:#000; opacity:0.8}
+            figure.img.ing .mask,
+            figure.img.queue .mask,
+            figure.img.err .mask {display:block}
+            
+            figure.img .mask .retry {display:block; width:100%; height:100%; 
+                                     font-size:2em; text-align:center}
+
+    figure.img figcaption {color:#999}
+        figure.img .title {height:1.5em; line-height:1.5em; margin:0}
+        figure.img .desc,
+        figure.img .size,
+        figure.img .status {overflow:hidden}
+        figure.img.ing .status {padding-left:18px; 
+            background:url(/s/common/i/loading-16.gif) no-repeat center left}
+        figure.img .file_id {display:none}
+        figure.img p {margin:0}
+        figure.img.err .status {color:#666}

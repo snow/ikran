@@ -314,18 +314,18 @@ class ImageCopy(models.Model):
         return self.uri(ImageFile.SIZE_THUMB_SMALL)
     
     @classmethod
-    def from_filename(cls, filename, user):
+    def from_filename(cls, filename, user, desc=''):
         '''
         Construct an ImageCopy from an filepath
         '''
-        return cls.from_filen(File(open(filename)), user)
+        return cls.from_filen(File(open(filename)), user, desc)
     
     @classmethod
-    def from_file(cls, file, user):
+    def from_file(cls, file, user, desc=''):
         '''
         Construct an ImageCopy from an uploaded file
         '''
-        img = ImageCopy(owner=user)
+        img = ImageCopy(owner=user, description=desc)
         
         # strip exif from given image
         file.seek(0)
