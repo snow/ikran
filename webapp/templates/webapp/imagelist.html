@@ -6,17 +6,25 @@
     <h2>{{ username }}'s stream</h2>
     <div class="imgls">
     {% for img in object_list %}
-    <figure class="img">
-        <img src="{{ img.uri_s }}" width="{{ img.width_s }}" height="{{ img.height_s }}" alt="{{ img.description }}" />        
+    <figure class="imgctn">
+        <div class="wrap">
+            <img src="{{ img.uri_s }}" alt="{{ img.get_title }}"
+                 uri_m = "{{ img.uri_m }}" uri_l = "{{ img.uri_l }}" 
+                 width="{{ img.width_s }}" height="{{ img.height_s }}"
+                 width_m="{{ img.width_m }}" height_m="{{ img.height_m }}"
+                 width_l="{{ img.width_l }}" height_l="{{ img.height_l }}"  />
+            <a class="view" href="#"></a>
+        </div>        
         <figcaption>
-            <h5 class="title">{{ img.description }}</h5>
-            <p class="desc"></p>
+            <h5 class="title">{{ img.get_title }}</h5>
+            <p class="desc">{{ img.get_desc_body }}</p>
         </figcaption>
     </figure>
     {% endfor %}
-    <figure class="img tpl">
+    <figure class="imgctn tpl">
         <div class="wrap">
             <img />
+            <a class="view" href="#"></a>
             <div class="mask"></div>
         </div>
         <figcaption>
@@ -33,4 +41,9 @@
 <section class="right">
     {% include 'webapp/com/upload_form.html' %}
 </section>
+
+<div class="darkbox">
+    <!--<div class="mask"></div>-->
+    <div class="wrap"><img src="" alt=""/></div>
+</div>
 {% endblock %}

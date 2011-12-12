@@ -5,6 +5,7 @@
  */
 .c {clear:both}
 .tpl {display:none}
+body {overflow-y:scroll}
 /*
  * components
  * ----------------
@@ -84,26 +85,37 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
 /*
  * image list
  */
-figure.img {float:left; display:inline; margin:0 10px; max-width:180px; 
+.imgctn {float:left; display:inline; margin:0 10px; max-width:180px; 
             min-height:230px; text-align:center}
-    figure.img .wrap {position:relative; display:inline-block}
-        figure.img img {max-width:180px; max-height:180px}
-        figure.img .mask {position:absolute; display:none; top:0; left:0; width:100%; 
+    .imgctn .wrap {position:relative; display:inline-block}
+        .imgctn img {max-width:180px; max-height:180px}
+        .imgctn .mask {position:absolute; display:none; top:0; left:0; width:100%; 
                           height:100%; background:#000; opacity:0.8}
-            figure.img.ing .mask,
-            figure.img.queue .mask,
-            figure.img.err .mask {display:block}
+            .imgctn.ing .mask,
+            .imgctn.queue .mask,
+            .imgctn.err .mask {display:block}
             
-            figure.img .mask .retry {display:block; width:100%; height:100%; 
+            .imgctn .view {position:absolute; display:none; right:5px; top:5px; 
+                           width:40px; height:40px; opacity:0.6;
+                           background:#fff url(/s/common/i/view-40.png)}
+                .imgctn:hover .view {display:block}
+                .imgctn .view:hover {opacity:0.8}
+                
+            .imgctn .retry {display:block; width:100%; height:100%; 
                                      font-size:2em; text-align:center}
+                                     
 
-    figure.img figcaption {color:#999}
-        figure.img .title {height:1.5em; line-height:1.5em; margin:0}
-        figure.img .desc,
-        figure.img .size,
-        figure.img .status {overflow:hidden}
-        figure.img.ing .status {padding-left:18px; 
+    .imgctn figcaption {color:#999}
+        .imgctn .title {height:1.5em; line-height:1.5em; margin:0}
+        .imgctn .desc,
+        .imgctn .size,
+        .imgctn .status {overflow:hidden}
+        .imgctn.ing .status {padding-left:18px; 
             background:url(/s/common/i/loading-16.gif) no-repeat center left}
-        figure.img .file_id {display:none}
-        figure.img p {margin:0}
-        figure.img.err .status {color:#666}
+        .imgctn .file_id {display:none}
+        .imgctn p {margin:0}
+        .imgctn.err .status {color:#666}
+
+.darkbox {display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+          background:#000; text-align:center}
+    .darkbox .wrap {display:table-cell; vertical-align:middle}

@@ -1,14 +1,34 @@
 # Create your views here.
 import django.views.generic as gv
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 
 import core.models as ikr
 
 class IndexV(gv.TemplateView):
     template_name = 'webapp/index.html'
+    
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect('/dashboard/')
+        else:
+            return super(IndexV, self).get(request, *args, **kwargs)
 
-class DashboardV(gv.TemplateView):
-    template_name = 'webapp/dashboard.html'
+class DashboardV(gv.ListView):
+    #template_name = 'webapp/dashboard.html'
+    template_name = 'webapp/imagelist.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super(DashboardV, self).get_context_data(**kwargs)
+        context['username'] = self.request.user.username
+        return context
+    
+    def get(self, request, *args, **kwargs):
+        user = User.objects.filter(username=request.user.username).get()
+        self.queryset = ikr.ImageCopy.objects.filter(owner=user).\
+                            order_by('-created').all()
+            
+        return super(DashboardV, self).get(request, *args, **kwargs) 
     
 class ImageListV(gv.TemplateView):
     template_name = 'webapp/imagelist.html'
@@ -27,7 +47,7 @@ class PeopleStreamV(gv.ListView):
         self.queryset = ikr.ImageCopy.objects.filter(owner=user).\
                             order_by('-created').all()
             
-        return super(PeopleStreamV, self).get(request, *args, **kwargs) 
+        return super(PeopleStreamV, self).get(request, *args, **kwargs)
     
 #class PeopleRecentImagesV(TemplateView):
 #    template_name = 'webapp/dashboard.html'    

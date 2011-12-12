@@ -313,6 +313,46 @@ class ImageCopy(models.Model):
     def uri_ts(self):
         return self.uri(ImageFile.SIZE_THUMB_SMALL)
     
+    def get_title(self):
+        return self.description.split('\n')[0]
+    
+    def get_desc_body(self):
+        try:
+            title, body = self.description.split('\n', 1)
+        except ValueError:
+            return ''
+        else:
+            return body
+        
+    def get_dict(self):
+        return dict(id=self.id,
+                    title=self.get_title(),
+                    desc=self.get_desc_body(),
+                    exif=json.loads(self.exif_str),
+                
+                    uri_f=self.uri_f(),
+                    uri_l=self.uri_l(),
+                    uri_m=self.uri_m(),
+                    uri_s=self.uri_s(),
+                    uri_tl=self.uri_tl(),
+                    uri_tm=self.uri_tm(),
+                    uri_ts=self.uri_ts(),
+                
+                    width_f=self.width_f,
+                    height_f=self.height_f,
+                    width_l=self.width_l,
+                    height_l=self.height_l,
+                    width_m=self.width_m,
+                    height_m=self.height_m,
+                    width_s=self.width_s,
+                    height_s=self.height_s,
+                    width_tl=self.width_tl,
+                    height_tl=self.height_tl,
+                    width_tm=self.width_tm,
+                    height_tm=self.height_tm,
+                    width_ts=self.width_ts,
+                    height_ts=self.height_ts)
+    
     @classmethod
     def from_filename(cls, filename, user, desc=''):
         '''

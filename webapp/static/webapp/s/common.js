@@ -7,32 +7,76 @@
 })(jQuery);
 
 /**
+ * darkbox
+ * --------------------
+ */
+(function($){
+    ikr.darkbox = {};
+    
+    var initialized = false,
+        j_darkbox,
+        j_dbimg;
+        
+    function init(){
+        j_darkbox = $('.darkbox');
+        j_dbimg = j_darkbox.find('img');
+        initialized = true;
+        
+        rcp.j_doc.on('keydown', function(evt){
+            (27===evt.which) && j_darkbox.fadeOut();
+        });
+    }
+    
+    ikr.darkbox.show = function(j_imgctn){
+        if(!initialized){
+            init();
+        }
+        
+        j_img = j_imgctn.find('img');
+        
+        j_dbimg.attr('src', j_img.attr('uri_m'));
+        j_dbimg.attr('alt', j_img.attr('alt'));
+        j_dbimg.attr('width', j_img.attr('width_m'));
+        j_dbimg.attr('height', j_img.attr('height_m'));
+        
+        j_darkbox.fadeIn();
+        j_darkbox.css('display', 'table');
+    };
+})(jQuery);
+
+/**
  * stream
  * --------------------
  */
 (function($){
     ikr.stream = {};
     
-    var j_imgls, j_imgtpl, j_metatpl;
+    var j_imgls, j_imgctn_tpl, j_meta_tpl;
     function init(){
         j_imgls = $('.imgls');
-        j_imgtpl = j_imgls.find('.img.tpl').remove().removeClass('tpl');
-        j_metatpl = j_imgtpl.find('.meta.tpl').remove().removeClass('tpl');
+        j_imgctn_tpl = j_imgls.find('.imgctn.tpl').remove().removeClass('tpl');
+        j_meta_tpl = j_imgctn_tpl.find('.meta.tpl').remove().removeClass('tpl');
+        
+        j_imgls.on('click', '.view', function(evt)
+        {
+            ikr.darkbox.show($(evt.target).closest('.imgctn'));
+            return false;
+        });
     }
     
     ikr.stream.add_img = function(src, status, meta, append){
-        var j_img = j_imgtpl.clone().addClass(status);
+        var j_imgctn = j_imgctn_tpl.clone().addClass(status);
             
-        j_img.find('img').attr('src', src);
-        j_img.find('.status').text(status);
+        j_imgctn.find('img').attr('src', src);
+        j_imgctn.find('.status').text(status);
         
         if('object' === typeof meta){
-            var caption = j_img.find('figcaption');
+            var caption = j_imgctn.find('figcaption');
             $.each(meta, function(key, value){
                 var j_meta = caption.find('.'+key);
                 
                 if(0===j_meta.length){
-                    j_meta = j_metatpl.clone().addClass(key).appendTo(caption);
+                    j_meta = j_meta_tpl.clone().addClass(key).appendTo(caption);
                 }
                 
                 if('size' === key){
@@ -46,9 +90,9 @@
         }
         
         if(true === append){
-            j_img.appendTo(j_imgls);
+            j_imgctn.appendTo(j_imgls);
         } else {
-            j_img.prependTo(j_imgls);
+            j_imgctn.prependTo(j_imgls);
         }
     }
     
@@ -120,11 +164,10 @@
     
         j_mask,
         j_inr,
-        j_imgls,
-        j_imgtpl,        
+        j_imgls,     
         j_retrytpl = $('<a class="retry" href=#>retry</a>'),
         
-        API_UPLOAD_URI = '/api/img/upload.json?filename={filename}',
+        API_UPLOAD_URI = '/api/img/uploadraw/?filename={filename}',
         MAX_UPLOAD_CONN = 2,
         E_UPLOAD_START = 'upload_start',
         E_UPLOAD_DONE = 'upload_done',
@@ -133,10 +176,10 @@
         
     function on_upload_start(evt){
         while(cur_upload_conn < MAX_UPLOAD_CONN){
-            var j_img = j_imgls.find('figure.img.queue:first');
+            var j_imgctn = j_imgls.find('.imgctn.queue:first');
             
-            if(j_img.length){
-                upload_file(j_img);
+            if(j_imgctn.length){
+                upload_file(j_imgctn);
             } else {
                 break;
             }
@@ -147,13 +190,13 @@
         j_imgls.trigger(E_UPLOAD_START);
     }
     
-    function upload_file(j_img){
-        var id = j_img.find('.file_id').text(),
-            filename = j_img.find('.title').text(),
+    function upload_file(j_imgctn){
+        var id = j_imgctn.find('.file_id').text(),
+            filename = j_imgctn.find('.title').text(),
             file = files_to_upload[id];
             
         cur_upload_conn += 1;
-        j_img.removeClass('queue').addClass('ing').find('.status').empty();
+        j_imgctn.removeClass('queue').addClass('ing').find('.status').empty();
         
         $.ajax(API_UPLOAD_URI.replace('{filename}', filename), {
             type: 'POST',
@@ -162,17 +205,34 @@
             dataType: 'json',
             contentType: 'application/octet-stream',
             success: function(resp, textStatus, jqXHR){
-                j_img.removeClass('ing').addClass('done');
-                j_img.find('.size').remove();
-                j_img.find('.status').empty();
+                j_imgctn.removeClass('ing').addClass('done');
+                j_imgctn.find('.size').remove();
+                j_imgctn.find('.status').empty();
+                
+                rcp.l(resp);
+                
+                var j_img = j_imgctn.find('img');
+                j_img.attr('src', resp.result.uri_s).
+                      attr('alt', resp.result.title).
+                      attr('uri_m', resp.result.uri_m).
+                      attr('uri_l', resp.result.uri_l).
+                      attr('width', resp.result.width_s).
+                      attr('height', resp.result.height_s).
+                      attr('width_m', resp.result.width_m).
+                      attr('height_m', resp.result.height_m).
+                      attr('width_l', resp.result.width_l).
+                      attr('height_l', resp.result.height_l);
+                      
+                j_imgctn.find('.title').text(resp.result.title);
+                j_imgctn.find('.desc').text(resp.result.desc);
                 
                 delete files_to_upload[id];
                 j_imgls.trigger(E_UPLOAD_DONE);
             },
             error: function(jqXHR, textStatus, errorThrown){
-                j_img.removeClass('ing').addClass('err');
-                j_img.find('.status').text('error');
-                j_img.find('.mask').append(j_retrytpl.clone());
+                j_imgctn.removeClass('ing').addClass('err');
+                j_imgctn.find('.status').text('error');
+                j_imgctn.find('.mask').append(j_retrytpl.clone());
             },
             complete: function(){
                 cur_upload_conn -= 1;
@@ -184,10 +244,10 @@
         evt.preventDefault();
         
         var j_link = $(evt.target),
-            j_img = j_link.closest('.img');
+            j_imgctn = j_link.closest('.imgctn');
             
-        j_img.removeClass('err').addClass('queue');
-        j_img.find('.status').text('queue');
+        j_imgctn.removeClass('err').addClass('queue');
+        j_imgctn.find('.status').text('queue');
         j_link.remove();
         
         j_imgls.trigger(E_UPLOAD_START);
@@ -251,7 +311,7 @@
         j_mask = $(settings.MASK_TPL);
         j_inr = j_mask.find('.inr');
         j_imgls = $('.imgls');
-        j_imgtpl = j_imgls.find('.img.tpl').remove().removeClass('tpl');
+        j_imgctn_tpl = j_imgls.find('.imgctn.tpl').remove().removeClass('tpl');
         
         rcp.j_doc.on({
             'dragover': on_drag_over,
