@@ -6,6 +6,7 @@
 .c {clear:both}
 .tpl {display:none}
 body {overflow-y:scroll}
+#rcp-preimg {display:none}
 /*
  * components
  * ----------------
@@ -95,7 +96,7 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
             
             .imgctn .view {position:absolute; display:none; right:5px; top:5px; 
                            width:40px; height:40px; opacity:0.6;
-                           background:#fff url(/s/common/i/view-40.png)}
+                           background:#fff url('/s/common/i/view-40.png')}
                 .imgctn:hover .view {display:block}
                 .imgctn .view:hover {opacity:0.8}
                 
@@ -110,9 +111,9 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
         .imgctn .file_id {display:none}
         .imgctn p {margin:0}
         .imgctn.ing .status {padding-left:18px; 
-            background:url(/s/common/i/loading-16.gif) no-repeat center left}        
+            background:url('/s/common/i/loading-16.gif') no-repeat center left}        
         .imgctn.err .status {padding-left:18px; 
-            background:url(/s/common/i/alert-16.png) no-repeat center left}
+            background:url('/s/common/i/alert-16.png') no-repeat center left}
 
 .darkbox {display:none; position:fixed; top:0; left:0; width:100%; height:100%;
           background:#000; text-align:center}
