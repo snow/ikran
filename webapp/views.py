@@ -9,7 +9,7 @@ class IndexV(gv.TemplateView):
     template_name = 'webapp/index.html'
     
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
+        if request.user.is_authenticated():
             return HttpResponseRedirect('/dashboard/')
         else:
             return super(IndexV, self).get(request, *args, **kwargs)

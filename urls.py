@@ -17,6 +17,9 @@ urlpatterns = patterns('',
     
     url(r'^', include('webapp.urls')),
     
+    url(r'^accounts/signout/$', 'django.contrib.auth.views.logout', 
+        {'next_page': '/'}),
+    
     #(r'^openid/(.*)', RegistrationConsumer()),
     #(r'^openid/(.*)', SessionConsumer()),
 )
