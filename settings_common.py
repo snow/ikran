@@ -157,7 +157,6 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     #'south',
     #'django_openid',
-    'django_pyrcp',
     'pyfyd',
     'core',
     'api',
