@@ -116,4 +116,28 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
 
 .darkbox {display:none; position:fixed; top:0; left:0; width:100%; height:100%;
           background:#000; text-align:center}
-    .darkbox .wrap {display:table-cell; vertical-align:middle}
+          
+    .darkbox header {position:fixed; width:100%; height:20px; 
+                     border-bottom:2px dashed #666}
+    
+    .darkbox .bd {display:table-cell; vertical-align:middle}
+    .darkbox .prev,
+    .darkbox .next {position:fixed; display:table-cell; top:0;
+                    width:30%; height:100%; vertical-align:middle; color:#666; 
+                    opacity:0; background:no-repeat center center}
+        .darkbox .prev:hover,
+        .darkbox .next:hover {opacity:1}
+        .darkbox .prev {left:0; background-image:url('/s/common/i/arrow-l-45_93.png')}
+        .darkbox .next {right:0; background-image:url('/s/common/i/arrow-r-45_93.png')}
+    
+    .darkbox footer {position:fixed; left:0; bottom:0; width:100%; height:78px; 
+                     overflow:hidden}
+        .darkbox .thumb {position:relative; display:inline-block; padding:2px; 
+                         margin-right:-2px;z-index;2; cursor:pointer}
+            .darkbox .thumb img {border:1px solid transparent}
+            .darkbox .thumb .mask {position:absolute; top:0; left:0; width:100%; 
+                                   height:100%; background:#000; opacity:0.7}
+            
+            .darkbox .thumb.on {padding:1px; border:1px solid #000; background:#fff}
+            .darkbox .thumb.on img {border:1px solid #000}
+            .darkbox .thumb.on .mask {display:none}

@@ -14,17 +14,97 @@
     ikr.darkbox = {};
     
     var initialized = false,
+        is_shown = false,
+        
+        E_NEXT = 'evt-ikr-darkbox-next',
+        E_PREV = 'evt-ikr-darkbox-prev',
+        
         j_darkbox,
-        j_dbimg;
+        j_db_hd,
+        j_db_img,
+        j_db_ft,
+        j_db_thumbs,
+        j_db_thumb_tpl;
+        
+    function get_origin(j_thumb){
+        return $('.imgctn').filter('[imgid='+j_thumb.attr('imgid')+']');
+    }
+        
+    function on_next(evt){
+        var j_t = get_origin(j_db_thumbs.find('.on').next('[imgid]'));
+        j_t.length && ikr.darkbox.show(j_t);
+    }
+    
+    function on_prev(evt){
+        var j_t = get_origin(j_db_thumbs.find('.on').prev('[imgid]'));
+        j_t.length && ikr.darkbox.show(j_t);
+    }
         
     function init(){
         j_darkbox = $('.darkbox');
-        j_dbimg = j_darkbox.find('img');
-        initialized = true;
+        j_db_hd = j_darkbox.find('header');
+        j_db_img = j_darkbox.find('img');
+        j_db_ft = j_darkbox.find('footer');
+        j_db_thumbs = j_db_ft.find('.thumbs');
+        j_db_thumb_tpl = j_db_thumbs.find('.thumb.tpl').remove().
+                            removeClass('tpl');
+        
+        var j_imgs = $('.imgctn');
+            
+        $.each(j_imgs, function(idx, el){
+            var j_origin = $(el),
+                j_thumb = j_db_thumb_tpl.clone();
+            
+            j_thumb.attr('imgid', j_origin.attr('imgid'));
+            j_thumb.find('img').attr('src', j_origin.attr('uri_ts'));            
+            j_db_thumbs.append(j_thumb);
+        });
+        
+        j_darkbox.on('click', '.thumb', function(evt){
+            ikr.darkbox.show(get_origin($(this)));
+            return false;
+        }).
+        on('click', '.next', function(evt){
+            j_darkbox.trigger(E_NEXT);
+            return false;
+        }).
+        on('click', '.prev', function(evt){
+            j_darkbox.trigger(E_PREV);
+            return false;
+        }).
+        on('click', function(evt){
+            if(j_db_ft.is(':visible')){                
+                j_db_ft.hide();
+            } else {
+                j_db_ft.show();
+            }
+        }).
+        on(E_NEXT, on_next).
+        on(E_PREV, on_prev);
         
         rcp.j_doc.on('keydown', function(evt){
-            (27===evt.which) && j_darkbox.fadeOut();
+            if(is_shown){
+                switch(evt.which){
+                case 27:
+                    ikr.darkbox.hide();
+                    break;
+                    
+                case 37: // left
+                case 72: // h
+                case 65: //a
+                    j_darkbox.trigger(E_PREV);
+                    break;
+                    
+                case 39: // right
+                case 76: // l
+                case 68: //d
+                    j_darkbox.trigger(E_NEXT);
+                    break;
+                }
+            }
         });
+        
+        initialized = true;
     }
     
     ikr.darkbox.show = function(j_imgctn){
@@ -34,14 +114,25 @@
         
         j_img = j_imgctn.find('img');
         
-        j_dbimg.attr('src', j_img.attr('uri_m'));
-        j_dbimg.attr('alt', j_img.attr('alt'));
-        j_dbimg.attr('width', j_img.attr('width_m'));
-        j_dbimg.attr('height', j_img.attr('height_m'));
+        j_db_img.attr('src', j_imgctn.attr('uri_m'));
+        j_db_img.attr('alt', j_img.attr('alt'));
+        j_db_img.attr('width', j_imgctn.attr('width_m'));
+        j_db_img.attr('height', j_imgctn.attr('height_m'));
         
-        j_darkbox.fadeIn();
-        j_darkbox.css('display', 'table');
+        j_db_thumbs.find('.on').removeClass('on');
+        j_db_thumbs.find('[imgid='+j_imgctn.attr('imgid')+']').addClass('on');
+        
+        if(!is_shown){
+            j_darkbox.fadeIn();
+            j_darkbox.css('display', 'table');
+            is_shown = true;
+        }
     };
+    
+    ikr.darkbox.hide = function(){
+        j_darkbox.fadeOut();
+        is_shown = false;
+    }
 })(jQuery);
 
 /**
@@ -211,17 +302,16 @@
                 
                 rcp.l(resp);
                 
+                j_imgctn.attr('uri_m', resp.result.uri_m).
+                         attr('uri_l', resp.result.uri_l).
+                         attr('width_m', resp.result.width_m).
+                         attr('height_m', resp.result.height_m).
+                         attr('width_l', resp.result.width_l).
+                         attr('height_l', resp.result.height_l);
+                
                 var j_img = j_imgctn.find('img');
                 j_img.attr('src', resp.result.uri_s).
-                      attr('alt', resp.result.title).
-                      attr('uri_m', resp.result.uri_m).
-                      attr('uri_l', resp.result.uri_l).
-                      attr('width', resp.result.width_s).
-                      attr('height', resp.result.height_s).
-                      attr('width_m', resp.result.width_m).
-                      attr('height_m', resp.result.height_m).
-                      attr('width_l', resp.result.width_l).
-                      attr('height_l', resp.result.height_l);
+                      attr('alt', resp.result.title);
                       
                 j_imgctn.find('.title').text(resp.result.title);
                 j_imgctn.find('.desc').text(resp.result.desc);
