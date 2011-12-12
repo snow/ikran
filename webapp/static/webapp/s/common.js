@@ -231,7 +231,7 @@
             },
             error: function(jqXHR, textStatus, errorThrown){
                 j_imgctn.removeClass('ing').addClass('err');
-                j_imgctn.find('.status').text('error');
+                j_imgctn.find('.status').empty();
                 j_imgctn.find('.mask').append(j_retrytpl.clone());
             },
             complete: function(){
