@@ -6,16 +6,11 @@
     <h2>{{ username }}'s stream</h2>
     <div class="imgls">
     {% for img in object_list %}
-    <figure class="imgctn" imgid="{{ img.id }}" 
-            uri_l = "{{ img.uri_l }}" uri_m = "{{ img.uri_m }}"  
-            uri_tm = "{{ img.uri_tm }}" uri_ts = "{{ img.uri_ts }}"
-            width="{{ img.width_s }}" height="{{ img.height_s }}"
-            width_l="{{ img.width_l }}" height_l="{{ img.height_l }}"
-            width_m="{{ img.width_m }}" height_m="{{ img.height_m }}"
-            width_tm="{{ img.width_tm }}" height_tm="{{ img.height_tm }}"
-            width_ts="{{ img.width_ts }}" height_ts="{{ img.height_ts }}">
+    <figure class="imgctn" imgid="{{ img.id }}"
+            uri_m = "{{ img.uri_m }}" uri_ts = "{{ img.uri_ts }}">
         <div class="wrap">
-            <img src="{{ img.uri_s }}" alt="{{ img.get_title }}" />
+            <img src="{{ img.uri_s }}" alt="{{ img.get_title }}" 
+                 width="{{ img.width_s }}" height="{{ img.height_s }}"/>
             <a class="view" href="#"></a>
         </div>        
         <figcaption>

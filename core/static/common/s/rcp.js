@@ -3,12 +3,11 @@
  * --------------------
  */
 (function($){
-    var IS_DOC_READY = false;
-    
     window.rcp = {
         j_doc: $(document)
     }
     
+    /*var IS_DOC_READY = false;
     rcp.is_ready = function(){
         return IS_DOC_READY;
     }
@@ -16,6 +15,15 @@
     rcp.j_doc.one('ready', function(evt){
         IS_DOC_READY = true;
     });
+    
+    var DEBUG = false;
+    rcp.debug = function(){
+        return DEBUG;
+    };
+    
+    rcp.set_debug = function(debug_){
+        DEBUG = debug_;
+    };*/
 })(jQuery);
 
 /**
@@ -24,8 +32,12 @@
  */
 (function($){
     rcp.l = function(){
-        if(console){
-            for(var i=0; i < arguments.length; i++){
+        if(!(console && console.log)){return;}
+        
+        for(var i=0; i < arguments.length; i++){
+            if('function' === typeof arguments[i]){
+                console.log(arguments[i]());
+            } else {
                 console.log(arguments[i]);
             }
         }

@@ -4,6 +4,10 @@
  */
 (function($){
     window.ikr = {};
+    
+    rcp.j_doc.one('ready', function(evt){
+        ikr.j_imgls = $('.imgls');
+    });
 })(jQuery);
 
 /**
@@ -13,8 +17,7 @@
 (function($){
     ikr.darkbox = {};
     
-    var initialized = false,
-        is_shown = false,
+    var is_shown = false,
         
         E_NEXT = 'evt-ikr-darkbox-next',
         E_PREV = 'evt-ikr-darkbox-prev',
@@ -32,8 +35,8 @@
     rcp.preimg('/s/common/i/view-40.png');
     rcp.preimg('/s/common/i/arrow-l-45_93.png');
     rcp.preimg('/s/common/i/arrow-r-45_93.png');
-        
-    function init(){
+    
+    function init_dom(){
         j_darkbox = $('.darkbox');
         j_db_hd = j_darkbox.find('header');
         j_db_img = j_darkbox.find('img');
@@ -41,18 +44,22 @@
         j_db_thumbs = j_db_ft.find('.thumbs');
         j_db_thumb_tpl = j_db_thumbs.find('.thumb.tpl').remove().
                             removeClass('tpl');
-        
-        var j_imgs = $('.imgctn');
+                            
+        /*rcp.l(function(){
+            var count = 0;
             
-        $.each(j_imgs, function(idx, el){
-            var j_origin = $(el),
-                j_thumb = j_db_thumb_tpl.clone();
+            j_darkbox.length && (count++);
+            j_db_hd.length && (count++);
+            j_db_img.length && (count++);
+            j_db_ft.length && (count++);
+            j_db_thumbs.length && (count++);
+            j_db_thumb_tpl.length && (count++);
             
-            j_thumb.attr('imgid', j_origin.attr('imgid'));
-            j_thumb.find('img').attr('src', j_origin.attr('uri_ts'));            
-            j_db_thumbs.append(j_thumb);
-        });
-        
+            return '[darkbox] init dom {}/6'.replace('{}', count);
+        });*/
+    }
+    
+    function init_evt(){
         j_darkbox.on('click', '.thumb', function(evt){
             ikr.darkbox.show(get_origin($(this)));
             return false;
@@ -75,6 +82,16 @@
         on(E_NEXT, on_next).
         on(E_PREV, on_prev);
         
+        ikr.j_imgls.on('click', '.view', function(evt)
+        {
+            ikr.darkbox.show($(evt.target).closest('.imgctn'));
+            return false;
+        });
+        
+        //rcp.debug() && rcp.l('[darkbox] init event');
+    }
+    
+    function init_keyboard(){
         rcp.j_doc.on('keydown', function(evt){
             if(is_shown){
                 switch(evt.which){
@@ -97,13 +114,48 @@
             }
         });
         
-        initialized = true;
-    }    
-        
-    function get_origin(j_thumb){
-        return $('.imgctn').filter('[imgid='+j_thumb.attr('imgid')+']');
+        //rcp.debug() && rcp.l('[darkbox] init keyboard');
     }
         
+    function init(){
+        init_dom();
+        init_evt();
+        init_keyboard();
+        
+        var j_imgs = ikr.j_imgls.find('[imgid]');
+            
+        $.each(j_imgs, function(idx, el){
+            var j_origin = $(el);
+            add_thumb(j_origin);
+        });
+        //rcp.debug() && rcp.l('[darkbox] init done');
+        
+        ikr.j_imgls.on(ikr.upload.E_UPLOAD_DONE, function(evt, j_imgctn){
+            add_thumb(j_imgctn, true);
+        });
+    }
+    
+    rcp.j_doc.one('ready', init);
+    
+    function add_thumb(j_origin, prepend){
+        var imgid = j_origin.attr('imgid');
+        
+        if(j_db_thumbs.find('[imgid='+imgid+']').length){
+            return;
+        }
+        
+        var j_thumb = j_db_thumb_tpl.clone();
+        
+        j_thumb.attr('imgid', imgid);
+        j_thumb.find('img').attr('src', j_origin.attr('uri_ts'));   
+        
+        if(true === prepend){
+            j_db_thumbs.prepend(j_thumb);
+        } else {
+            j_db_thumbs.append(j_thumb);
+        }
+    }
+    
     function on_next(evt){
         var j_t = get_origin(j_db_thumbs.find('.on').next('[imgid]'));
         j_t.length && ikr.darkbox.show(j_t);
@@ -114,34 +166,44 @@
         j_t.length && ikr.darkbox.show(j_t);
     }
     
-    function preload_siblings(j_thumb){
-        var j_next = j_thumb.next('[imgid]'),
-            j_prev = j_thumb.prev('[imgid]');
-            
-        if(j_next.length){
-            var origin = get_origin(j_next);
-            rcp.preimg(origin.attr('uri_m'));
-        }
         
-        if(j_prev.length){
-            // take a breathe
-            setTimeout(function(){
-                var origin = get_origin(j_prev);
-                rcp.preimg(origin.attr('uri_m'));
-            }, 1000);
-        }
-        
-        // take a breathe
+    function get_origin(j_thumb){
+        return $('.imgctn').filter('[imgid='+j_thumb.attr('imgid')+']');
+    }
+    
+    var PRELOAD_NEXT_LIMIT = 10;        
+    function preload_next(j_thumb, depth){
         setTimeout(function(){
-            preload_siblings(j_next);
+            var j_next = j_thumb.next('[imgid]');
+            if(j_next.length){
+                var origin = get_origin(j_next);
+                rcp.preimg(origin.attr('uri_m'));
+                
+                depth += 1;
+                if(depth < PRELOAD_NEXT_LIMIT){
+                    preload_next(j_next, depth);
+                }
+            }
         }, 500);
     }
     
+    var PRELOAD_PREV_LIMIT = 3;
+    function preload_prev(j_thumb, depth){
+        setTimeout(function(){
+            var j_prev = j_thumb.prev('[imgid]');
+            if(j_prev.length){
+                var origin = get_origin(j_prev);
+                rcp.preimg(origin.attr('uri_m'));
+                
+                depth += 1;
+                if(depth < PRELOAD_NEXT_LIMIT){
+                    preload_prev(j_prev, depth);
+                }
+            }
+        }, 1000);
+    }
+    
     ikr.darkbox.show = function(j_imgctn){
-        if(!initialized){
-            init();
-        }
-        
         j_img = j_imgctn.find('img');
         
         j_db_img.one('load', function(evt){
@@ -152,10 +214,8 @@
             var j_thumb = j_db_thumbs.find('[imgid='+j_imgctn.attr('imgid')+']')
             j_thumb.addClass('on');
             
-            // take a breathe
-            setTimeout(function(){
-                preload_siblings(j_thumb);
-            }, 500);
+            preload_next(j_thumb, 0);
+            preload_prev(j_thumb, 0);
         });
         
         j_db_img.attr('src', PLACEHOLDER_URI);
@@ -174,26 +234,37 @@
 })(jQuery);
 
 /**
- * stream
+ * image list
  * --------------------
  */
 (function($){
-    ikr.stream = {};
+    ikr.imgls = {};
     
-    var j_imgls, j_imgctn_tpl, j_meta_tpl;
-    function init(){
-        j_imgls = $('.imgls');
-        j_imgctn_tpl = j_imgls.find('.imgctn.tpl').remove().removeClass('tpl');
-        j_meta_tpl = j_imgctn_tpl.find('.meta.tpl').remove().removeClass('tpl');
+    var j_imgctn_tpl, j_meta_tpl,
+        initialized = false;
         
-        j_imgls.on('click', '.view', function(evt)
-        {
-            ikr.darkbox.show($(evt.target).closest('.imgctn'));
-            return false;
-        });
+    function init(){
+        if(initialized){return;}
+        
+        j_imgctn_tpl = ikr.j_imgls.find('.imgctn.tpl').remove().removeClass('tpl');
+        j_meta_tpl = j_imgctn_tpl.find('.meta.tpl').remove().removeClass('tpl');
+        //rcp.l(ikr.j_imgls);
+        //rcp.l(ikr.j_imgls.find('.imgctn.tpl'));
+        
+        initialized = true;
+        /*rcp.l(function(){
+            var count = 0;
+            
+            j_imgctn_tpl.length && (count++);
+            j_meta_tpl.length && (count++);
+            
+            return '[imgls] init done {}/2'.replace('{}', count);
+        });*/
     }
     
-    ikr.stream.add_img = function(src, status, meta, append){
+    ikr.imgls.add_img = function(src, status, meta, append){
+        init();
+        
         var j_imgctn = j_imgctn_tpl.clone().addClass(status);
             
         j_imgctn.find('img').attr('src', src);
@@ -219,13 +290,11 @@
         }
         
         if(true === append){
-            j_imgctn.appendTo(j_imgls);
+            j_imgctn.appendTo(ikr.j_imgls);
         } else {
-            j_imgctn.prependTo(j_imgls);
+            j_imgctn.prependTo(ikr.j_imgls);
         }
     }
-    
-    rcp.j_doc.one('ready', init);
 })(jQuery);
 
 /**
@@ -293,95 +362,39 @@
     
         j_mask,
         j_inr,
-        j_imgls,     
         j_retrytpl = $('<a class="retry" href=#>retry</a>'),
         
         API_UPLOAD_URI = '/api/img/uploadraw/?filename={filename}',
         MAX_UPLOAD_CONN = 2,
-        E_UPLOAD_START = 'upload_start',
-        E_UPLOAD_DONE = 'upload_done',
+        
         cur_upload_conn = 0,
         files_to_upload = {};
         
-    function on_upload_start(evt){
-        while(cur_upload_conn < MAX_UPLOAD_CONN){
-            var j_imgctn = j_imgls.find('.imgctn.queue:first');
-            
-            if(j_imgctn.length){
-                upload_file(j_imgctn);
-            } else {
-                break;
-            }
-        }
-    }
-    
-    function on_upload_done(evt){
-        j_imgls.trigger(E_UPLOAD_START);
-    }
-    
-    function upload_file(j_imgctn){
-        var id = j_imgctn.find('.file_id').text(),
-            filename = j_imgctn.find('.title').text(),
-            file = files_to_upload[id];
-            
-        cur_upload_conn += 1;
-        j_imgctn.removeClass('queue').addClass('ing').find('.status').empty();
+    ikr.upload.E_UPLOAD_START = 'evt-ikr-upload_start';
+    ikr.upload.E_UPLOAD_DONE = 'evt-ikr-upload_done';  
         
-        $.ajax(API_UPLOAD_URI.replace('{filename}', filename), {
-            type: 'POST',
-            data: file,
-            processData: false,
-            dataType: 'json',
-            contentType: 'application/octet-stream',
-            success: function(resp, textStatus, jqXHR){
-                j_imgctn.removeClass('ing').addClass('done');
-                j_imgctn.find('.size').remove();
-                j_imgctn.find('.status').empty();
-                
-                rcp.l(resp);
-                
-                j_imgctn.attr('uri_m', resp.result.uri_m).
-                         attr('uri_l', resp.result.uri_l).
-                         attr('width_m', resp.result.width_m).
-                         attr('height_m', resp.result.height_m).
-                         attr('width_l', resp.result.width_l).
-                         attr('height_l', resp.result.height_l);
-                
-                var j_img = j_imgctn.find('img');
-                j_img.attr('src', resp.result.uri_s).
-                      attr('alt', resp.result.title);
-                      
-                j_imgctn.find('.title').text(resp.result.title);
-                j_imgctn.find('.desc').text(resp.result.desc);
-                
-                delete files_to_upload[id];
-                j_imgls.trigger(E_UPLOAD_DONE);
-            },
-            error: function(jqXHR, textStatus, errorThrown){
-                j_imgctn.removeClass('ing').addClass('err');
-                j_imgctn.find('.status').empty();
-                j_imgctn.find('.mask').append(j_retrytpl.clone());
-            },
-            complete: function(){
-                cur_upload_conn -= 1;
+    rcp.preimg('/s/common/i/loading-16.gif');
+    rcp.preimg('/s/common/i/alert-16.png');
+    
+    function init_dnd(){
+        j_mask = $(settings.MASK_TPL);
+        j_inr = j_mask.find('.inr');
+        
+        rcp.j_doc.on({
+            'dragover': on_drag_over,
+            'drop': on_drop,
+            'keydown': function(evt){
+                (27 === evt.which) && after_drop();
             }
         });
+        
+        rcp.j_doc.on('click', 'body>.dropzone', after_drop);
+        ikr.j_imgls.on(ikr.upload.E_UPLOAD_START, on_upload_start);
+        ikr.j_imgls.on(ikr.upload.E_UPLOAD_DONE, on_upload_start);
+        ikr.j_imgls.on('click', '.retry', on_retry);
     }
     
-    function on_retry(evt){
-        evt.preventDefault();
-        
-        var j_link = $(evt.target),
-            j_imgctn = j_link.closest('.imgctn');
-            
-        j_imgctn.removeClass('err').addClass('queue');
-        j_imgctn.find('.status').text('queue');
-        j_link.remove();
-        
-        j_imgls.trigger(E_UPLOAD_START);
-        
-        return false;
-    }
+    rcp.j_doc.one('ready', init_dnd);
     
     function on_drag_over(evt){
         if(!is_drag_evt_handled){
@@ -421,42 +434,101 @@
                 files_to_upload[id] = file;
                     
                 reader.onload = function(evt){
-                    ikr.stream.add_img(evt.target.result, 'queue', {
+                    ikr.imgls.add_img(evt.target.result, 'queue', {
                         'title': filename,
                         'size': file.size,
                         'file_id': id
                     });
                     
-                    j_imgls.trigger(E_UPLOAD_START);
+                    ikr.j_imgls.trigger(ikr.upload.E_UPLOAD_START);
                 }
                 
                 reader.readAsDataURL(file);
             }
         });
     }
-    
-    function init_dnd(){
-        j_mask = $(settings.MASK_TPL);
-        j_inr = j_mask.find('.inr');
-        j_imgls = $('.imgls');
-        j_imgctn_tpl = j_imgls.find('.imgctn.tpl').remove().removeClass('tpl');
         
-        rcp.j_doc.on({
-            'dragover': on_drag_over,
-            'drop': on_drop,
-            'keydown': function(evt){
-                (27 === evt.which) && after_drop();
+    function on_upload_start(evt){
+        while(cur_upload_conn < MAX_UPLOAD_CONN){
+            var j_imgctn = ikr.j_imgls.find('.imgctn.queue:first');
+            
+            if(j_imgctn.length){
+                upload_file(j_imgctn);
+            } else {
+                break;
             }
-        });
-        
-        rcp.j_doc.on('click', 'body>.dropzone', after_drop);
-        j_imgls.on(E_UPLOAD_START, on_upload_start);
-        j_imgls.on(E_UPLOAD_DONE, on_upload_start);
-        j_imgls.on('click', '.retry', on_retry);
+        }
     }
     
-    rcp.preimg('/s/common/i/loading-16.gif');
-    rcp.preimg('/s/common/i/alert-16.png');
+    function upload_file(j_imgctn){
+        var id = j_imgctn.find('.file_id').text(),
+            filename = j_imgctn.find('.title').text(),
+            file = files_to_upload[id];
+            
+        cur_upload_conn += 1;
+        j_imgctn.removeClass('queue').addClass('ing').find('.status').empty();
+        
+        $.ajax(API_UPLOAD_URI.replace('{filename}', filename), {
+            type: 'POST',
+            data: file,
+            processData: false,
+            dataType: 'json',
+            contentType: 'application/octet-stream',
+            success: function(resp, textStatus, jqXHR){
+                //rcp.l(resp);
+                on_ajax_success(resp, j_imgctn);
+                delete files_to_upload[id];
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                on_ajax_error();
+            },
+            complete: function(){
+                cur_upload_conn -= 1;
+            }
+        });
+    }
     
-    rcp.j_doc.one('ready', init_dnd);
+    function on_ajax_success(resp, j_imgctn){
+        j_imgctn.removeClass('ing').addClass('done');
+        j_imgctn.find('.size').remove();
+        j_imgctn.find('.status').empty();        
+        
+        j_imgctn.attr('imgid', resp.result.id).
+                 attr('uri_m', resp.result.uri_m).
+                 attr('uri_ts', resp.result.uri_ts);
+        
+        var j_img = j_imgctn.find('img');
+        j_img.attr('src', resp.result.uri_s).
+              attr('alt', resp.result.title);
+              
+        j_imgctn.find('.title').text(resp.result.title);
+        j_imgctn.find('.desc').text(resp.result.desc);
+        
+        ikr.j_imgls.trigger(ikr.upload.E_UPLOAD_DONE, [j_imgctn]);
+    }
+    
+    function on_ajax_error(j_imgctn){
+        j_imgctn.removeClass('ing').addClass('err');
+        j_imgctn.find('.status').empty();
+        j_imgctn.find('.mask').append(j_retrytpl.clone());
+    }
+    
+    function on_upload_done(evt){
+        ikr.j_imgls.trigger(ikr.upload.E_UPLOAD_START);
+    }
+    
+    function on_retry(evt){
+        evt.preventDefault();
+        
+        var j_link = $(evt.target),
+            j_imgctn = j_link.closest('.imgctn');
+            
+        j_imgctn.removeClass('err').addClass('queue');
+        j_imgctn.find('.status').text('queue');
+        j_link.remove();
+        
+        ikr.j_imgls.trigger(ikr.upload.E_UPLOAD_START);
+        
+        return false;
+    }
 })(jQuery);
