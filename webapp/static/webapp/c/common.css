@@ -47,21 +47,27 @@ body>header {padding:0 10px; margin-bottom:10px; border-bottom:1px dashed #666;
 /*
  * footer
  */
-body>footer {padding:5px 10px; margin-top:50px; border-top:1px dashed #666; 
-             text-align:right; color:#666}
+body>footer {position:relative; padding:5px 10px; margin-top:50px; 
+             border-top:1px dashed #666; text-align:right; color:#666; 
+             background:#fff; z-index:1}
      body>footer a {margin:0 5px}
 /*
  * body
  */
 /* layout */
-body>.sec-main {float:left; padding:0 350px 20px 20px}
-body>.sec-right {position:fixed; right:0; width:310px; overflow-x:hidden}
+body>.sec-main {float:left; padding:0 330px 20px 20px}
+body>.sec-right {position:fixed; right:0; padding-right:10px; width:300px; 
+                 overflow-x:hidden}
 
 /*
  * right sidebar
  */
 .sec-right h3 {margin:0.5em 0; color:#666; font-size:1.8em}
 .sec-right h3:before {content:'> '; color:#999}
+
+.sec-right h4 {margin-bottom:0.5em}
+
+.sec-right>section {margin-bottom:30px}
 /*
  * signin
  */
@@ -102,20 +108,18 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
                background:#000}
 .pg-index>.bg img {float:left; margin:2px 0 0 2px}
 
-.pg-index>.wrap {position:relative; margin:0 auto; width:800px; height:100%; 
+.pg-index>.wrap {position:relative; margin:0 auto; width:830px; height:100%; 
                  z-index:1}
     .pg-index>.wrap .bg {position:absolute; top:0; left:0; width:100%; 
                          height:100%; background:#fff; opacity:0.85}
     .pg-index>.wrap .content {position:relative; padding:10px 20px 50px; z-index:2}
     
-    .pg-index .sec-main {position:relative; float:left; width:450px; font-size:1.5em}
-    .pg-index .right {position:fixed; margin-left:490px; width:310px}
+    .pg-index .sec-main {position:relative; float:left; width:500px; font-size:1.5em}
+    .pg-index .right {position:fixed; margin-left:530px; width:300px}
     
     .introikr {margin-top:20px}
     .introikr h1 {font-size:3em}
     .introikr .slogun {margin-bottom:1em; font-size:1.5em}
-    
-.pg-index>footer {position:relative; z-index:1; background:#fff}
 /*
  * image list
  */

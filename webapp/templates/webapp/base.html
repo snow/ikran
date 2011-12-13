@@ -42,9 +42,9 @@
         
         {% if user.is_authenticated %}
         <section class="curuser">
-            <span class="username">{{ user.username }}</span> &gt;
-            <a class="settings" href="/accounts/settings/">settings</a>
             <a class="signout" href="/accounts/signout/">signout</a>
+            <a class="settings" href="/accounts/settings/">settings</a>            
+            &lt; <span class="username">{{ user.username }}</span>            
         </section>
         {% endif %}
         
@@ -55,6 +55,7 @@
     {% block layout_bd %}{% endblock %}
     
     {% block layout_ft %}
+    <div class="c"></div>
     <footer>
         <a href="/under_construction/">why ikran</a> |
         <a href="https://plus.google.com/101080974312491458888" target="_blank">about snow</a> |
