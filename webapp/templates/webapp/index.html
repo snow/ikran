@@ -12,96 +12,28 @@
         <div class="content">
             <article class="introikr">
                 <h1>Ikran</h1>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
-                <p>Image collection</p>
+                <p class="slogun">See a fav img, save it to ikran, whenever, wherever.</p>
+                Features
+                <ul class="features">
+                <li>NOT YET READY FOR USE!!</li>
+                <li>only tested under chrome15 and firefox8</li>
+                <li>upload massive images in queue</li>
+                <li>drag and drop images to page to upload</li>
+                <li>grub <a href="https://github.com/snow/ikran" target="_blank">source</a> and deploy your own</li>
+                </ul>
+            </article>
+            
+            <article class="todo">
+                To do
+                <ul>
+                <li>chrome extennsion: context menu "rehost to ikran"</li>
+                <li>grub douban album</li>
+                <li>albums</li>
+                <li>tags</li>
+                <li>privacy settings</li>
+                <li>share to twitter/douban/g+/fb ...</li>
+                </ul>
+                Feel free to <a href="/under_construction/" target="_blank">vote for your idea</a>
             </article>
         </div>
     </section>
@@ -110,24 +42,26 @@
         <div class="bg"></div>
         <div class="content">    
             <section class="sec-right">
-                <h3>Signup</h3>
-                <strong>No! I have enough accounts! No more!</strong>
-                <ul class="singinwith">
-                    <li><a class="google" href="/thirdparty/google/authenticate/">with Google</a></li>
-                    <li><a class="twitter" href="/thirdparty/twitter/authenticate/">with Twitter</a></li>
-                    <li><a class="douban" href="/thirdparty/douban/authenticate/">with Douban</a></li>
-                </ul>
+                <section class="signin">
+                    <h3>Signin</h3>
+                    <div>Use your account on...
+                        <ul class="singinwith">
+                        <li><a class="google" href="/thirdparty/google/authenticate/">Google</a></li>
+                        <li><a class="twitter" href="/thirdparty/twitter/authenticate/">Twitter</a></li>
+                        <li><a class="douban" href="/thirdparty/douban/authenticate/">Douban</a></li>
+                        </ul>
+                    </div>
+                    <div class="noopenid">
+                        If you want ikran has it's own signup/signin<br />
+                        <a href="/under_construction/" target="_blank">Vote for your opinion!</a>
+                    </div>
+                </section>
             </section>
         </div>
     </div>
     
     <div class="c"></div>
 </div>
-
-
-
-
-
 
 <div class="bg">    
     {% for img in object_list %}

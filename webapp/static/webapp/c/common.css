@@ -44,7 +44,12 @@ body>header {padding:0 10px; margin-bottom:10px; border-bottom:1px dashed #666;
         body>header a:hover {background:#eee}
     
     body>header nav {border-left:1px solid #eee}
-    
+/*
+ * footer
+ */
+body>footer {padding:5px 10px; margin-top:50px; border-top:1px dashed #666; 
+             text-align:right; color:#666}
+     body>footer a {margin:0 5px}
 /*
  * body
  */
@@ -58,15 +63,22 @@ body>.sec-right {position:fixed; right:0; width:310px; overflow-x:hidden}
 .sec-right h3 {margin:0.5em 0; color:#666; font-size:1.8em}
 .sec-right h3:before {content:'> '; color:#999}
 /*
+ * signin
+ */
+.sec-right .signin {font-size:1.5em}
+    .sec-right .signin h3 {font-size:1.5em}
+    .sec-right .noopenid, 
+    .sec-right .noopenid a {color:#999}
+/*
  * upload
  */
-.sec-main>.upload .selectfile,
-.sec-main>.upload p {font-size:1.8em; margin-bottom:5px}
-.sec-main>.upload p {color:#666}
+.sec-right>.upload .selectfile,
+.sec-right>.upload p {font-size:1.8em; margin-bottom:5px}
+.sec-right>.upload p {color:#666}
 
-.sec-main>.upload .selectfile {text-decoration:none}
-.sec-main>.upload .wrap [name=img] {position:absolute; opacity:0}
-.sec-main>.upload .wrap:hover .selectfile {text-decoration:underline}
+.sec-right>.upload .selectfile {text-decoration:none}
+.sec-right>.upload .wrap [name=img] {position:absolute; opacity:0}
+.sec-right>.upload .wrap:hover .selectfile {text-decoration:underline}
 
 body>.dropzone {position:fixed; top:0; left:0; width:100%; height:100%; 
                 cursor:pointer}
@@ -78,6 +90,11 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
  * page specifics
  * ----------------
  */
+/*
+ * under construction
+ */
+.pg-under_construction .sec-main {float:none; padding:50px 0; text-align:center}
+.pg-under_construction .sec-main a {font-size:2em}
 /*
  * index
  */
@@ -91,8 +108,14 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
                          height:100%; background:#fff; opacity:0.85}
     .pg-index>.wrap .content {position:relative; padding:10px 20px 50px; z-index:2}
     
-    .pg-index .sec-main {position:relative; float:left; width:450px}
+    .pg-index .sec-main {position:relative; float:left; width:450px; font-size:1.5em}
     .pg-index .right {position:fixed; margin-left:490px; width:310px}
+    
+    .introikr {margin-top:20px}
+    .introikr h1 {font-size:3em}
+    .introikr .slogun {margin-bottom:1em; font-size:1.5em}
+    
+.pg-index>footer {position:relative; z-index:1; background:#fff}
 /*
  * image list
  */

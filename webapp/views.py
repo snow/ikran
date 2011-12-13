@@ -5,6 +5,14 @@ from django.contrib.auth.models import User
 
 import core.models as ikr
 
+class UnderConstructionV(gv.TemplateView):
+    template_name = 'webapp/under_construction.html'
+    
+    def get(self, request, *args, **kwargs):
+        kwargs['back_to'] = request.META.get('HTTP_REFERER', '/')
+        
+        return super(UnderConstructionV, self).get(request, *args, **kwargs)
+
 #class IndexV(gv.TemplateView):
 #    template_name = 'webapp/index.html'
 #    
