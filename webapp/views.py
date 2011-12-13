@@ -5,13 +5,23 @@ from django.contrib.auth.models import User
 
 import core.models as ikr
 
-class IndexV(gv.TemplateView):
+#class IndexV(gv.TemplateView):
+#    template_name = 'webapp/index.html'
+#    
+#    def get(self, request, *args, **kwargs):
+#        if request.user.is_authenticated():
+#            return HttpResponseRedirect('/dashboard/')
+#        else:
+#            return super(IndexV, self).get(request, *args, **kwargs)
+
+class IndexV(gv.ListView):
     template_name = 'webapp/index.html'
     
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             return HttpResponseRedirect('/dashboard/')
         else:
+            self.queryset = ikr.ImageCopy.objects.order_by('-created')
             return super(IndexV, self).get(request, *args, **kwargs)
 
 class DashboardV(gv.ListView):
@@ -26,7 +36,7 @@ class DashboardV(gv.ListView):
     def get(self, request, *args, **kwargs):
         user = User.objects.filter(username=request.user.username).get()
         self.queryset = ikr.ImageCopy.objects.filter(owner=user).\
-                            order_by('-created').all()
+                            order_by('-created')
             
         return super(DashboardV, self).get(request, *args, **kwargs) 
     

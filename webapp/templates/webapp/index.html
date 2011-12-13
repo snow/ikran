@@ -1,25 +1,138 @@
 {% extends 'webapp/base.html' %}
 
-{% block logo %}<h1>Ikran</h1>{% endblock %}
-{% block page_class %}index{% endblock %}
+{% block page_class %}pg-index{% endblock %}
 
+{# no header in this page #}
 {% block layout_hd %}{% endblock %}
 
 {% block layout_bd %}
-<section class="main">
-    <article class="introikr">
-        <h1>Ikran</h1>
-        <p>Your image collection</p>
-    </article>
-</section>
+<div class="wrap">
+    <section class="sec-main">
+        <div class="bg"></div>
+        <div class="content">
+            <article class="introikr">
+                <h1>Ikran</h1>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+                <p>Image collection</p>
+            </article>
+        </div>
+    </section>
+    
+    <div class="right">
+        <div class="bg"></div>
+        <div class="content">    
+            <section class="sec-right">
+                <h3>Signup</h3>
+                <strong>No! I have enough accounts! No more!</strong>
+                <ul class="singinwith">
+                    <li><a class="google" href="/thirdparty/google/authenticate/">with Google</a></li>
+                    <li><a class="twitter" href="/thirdparty/twitter/authenticate/">with Twitter</a></li>
+                    <li><a class="douban" href="/thirdparty/douban/authenticate/">with Douban</a></li>
+                </ul>
+            </section>
+        </div>
+    </div>
+    
+    <div class="c"></div>
+</div>
 
-<section class="right">
-    <h3>Signup</h3>
-    <strong>No! I have enough accounts! No more!</strong>
-    <ul class="singinwith">
-        <li><a class="google" href="/thirdparty/google/authenticate/">with Google</a></li>
-        <li><a class="twitter" href="/thirdparty/twitter/authenticate/">with Twitter</a></li>
-        <li><a class="douban" href="/thirdparty/douban/authenticate/">with Douban</a></li>
-    </ul>
-</section>
+
+
+
+
+
+<div class="bg">    
+    {% for img in object_list %}
+    <img src="{{ img.uri_tm }}" alt="{{ img.get_title }}" 
+         width="120px" height="120px"/>
+    {% endfor %}
+</div>
 {% endblock %}

@@ -49,24 +49,24 @@ body>header {padding:0 10px; margin-bottom:10px; border-bottom:1px dashed #666;
  * body
  */
 /* layout */
-body>.main {float:left; padding:0 350px 20px 20px}
-body>.right {position:fixed; right:0; width:310px; overflow-x:hidden}
+body>.sec-main {float:left; padding:0 350px 20px 20px}
+body>.sec-right {position:fixed; right:0; width:310px; overflow-x:hidden}
 
 /*
  * right sidebar
  */
-body>.right h3 {margin:0.5em 0; color:#666; font-size:1.8em}
-body>.right h3:before {content:'> '; color:#999}
+.sec-right h3 {margin:0.5em 0; color:#666; font-size:1.8em}
+.sec-right h3:before {content:'> '; color:#999}
 /*
  * upload
  */
-body>.right>.upload .selectfile,
-body>.right>.upload p {font-size:1.8em; margin-bottom:5px}
-body>.right>.upload p {color:#666}
+.sec-main>.upload .selectfile,
+.sec-main>.upload p {font-size:1.8em; margin-bottom:5px}
+.sec-main>.upload p {color:#666}
 
-body>.right>.upload .selectfile {text-decoration:none}
-body>.right>.upload .wrap [name=img] {position:absolute; opacity:0}
-body>.right>.upload .wrap:hover .selectfile {text-decoration:underline}
+.sec-main>.upload .selectfile {text-decoration:none}
+.sec-main>.upload .wrap [name=img] {position:absolute; opacity:0}
+.sec-main>.upload .wrap:hover .selectfile {text-decoration:underline}
 
 body>.dropzone {position:fixed; top:0; left:0; width:100%; height:100%; 
                 cursor:pointer}
@@ -81,6 +81,18 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
 /*
  * index
  */
+.pg-index>.bg {position:fixed; top:0; left:0; width:100%; height:100%; 
+               background:#000}
+.pg-index>.bg img {float:left; margin:2px 0 0 2px}
+
+.pg-index>.wrap {position:relative; margin:0 auto; width:800px; height:100%; 
+                 z-index:1}
+    .pg-index>.wrap .bg {position:absolute; top:0; left:0; width:100%; 
+                         height:100%; background:#fff; opacity:0.85}
+    .pg-index>.wrap .content {position:relative; padding:10px 20px 50px; z-index:2}
+    
+    .pg-index .sec-main {position:relative; float:left; width:450px}
+    .pg-index .right {position:fixed; margin-left:490px; width:310px}
 /*
  * image list
  */
@@ -103,11 +115,12 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
             .imgctn .retry {display:block; width:100%; height:100%; 
                                      font-size:2em; text-align:center}
 
-    .imgctn figcaption {color:#999}
-        .imgctn .title {height:1.5em; line-height:1.5em; margin:0}
+    .imgctn figcaption {color:#999}        
+        .imgctn .title,
         .imgctn .desc,
         .imgctn .size,
         .imgctn .status {overflow:hidden}
+        .imgctn .title {height:1.5em; line-height:1.5em; margin:0}
         .imgctn .file_id {display:none}
         .imgctn p {margin:0}
         .imgctn.ing .status {padding-left:18px; 

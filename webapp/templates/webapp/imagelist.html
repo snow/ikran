@@ -2,7 +2,7 @@
 {% block page_class %}image list{% endblock %}
 
 {% block layout_bd %}
-<section class="main">
+<section class="sec-main">
     <h2>{{ username }}'s stream</h2>
     <div class="imgls">
     {% for img in object_list %}
@@ -36,7 +36,7 @@
     <div class="c"></div>
 </section>
 
-<section class="right">
+<section class="sec-right">
     {% include 'webapp/com/upload_form.html' %}
 </section>
 
