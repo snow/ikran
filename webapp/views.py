@@ -25,10 +25,15 @@ class UnderConstructionV(gv.TemplateView):
 class IndexV(gv.ListView):
     template_name = 'webapp/index.html'
     
+    def get_context_data(self, *args, **kwargs):
+        context = super(IndexV, self).get_context_data(*args, **kwargs)
+        context['querystring'] = self.request.GET.urlencode()
+        return context
+    
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             return HttpResponseRedirect('/dashboard/')
-        else:
+        else:                
             self.queryset = ikr.ImageCopy.objects.order_by('-created')
             return super(IndexV, self).get(request, *args, **kwargs)
 

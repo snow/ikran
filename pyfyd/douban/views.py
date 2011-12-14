@@ -9,6 +9,7 @@ from client import OAuthClient
 from oauth import OAuthToken 
 from utils import DoubanBackend
 from pyfyd.models import DuplicatedUsername
+from pyfyd.common.views import AuthStartMixin, AuthenticateReturnMixin
 
 class BaseV(View):
     '''Base class for all views that will use douban oauth client'''
@@ -18,7 +19,7 @@ class BaseV(View):
         self.client = OAuthClient(key=settings.DOUBAN_CONSUMER_KEY,
                                   secret=settings.DOUBAN_CONSUMER_SECRET)    
         
-class AuthStartV(BaseV):        
+class AuthStartV(AuthStartMixin, BaseV):        
     '''
     start from here.
     
@@ -29,12 +30,9 @@ class AuthStartV(BaseV):
     callback = False
     
     def get(self, request):
-        if not self.callback:
-            raise NotImplementedError('Subclass of AuthStartV must provide oauth_callback')
-        
+        callback = request.build_absolute_uri(self.get_callback())
         req_token = OAuthToken(*self.client.get_request_token())
-        request.session['req_token'] = req_token        
-        callback = request.build_absolute_uri(self.callback)
+        request.session['req_token'] = req_token
         
         go_to = self.client.get_authorization_url(req_token.key, req_token.secret, 
                                                 callback)        
@@ -64,7 +62,7 @@ class AuthReturnV(BaseV):
             raise Exception('where did u come from?')
             
     
-class AuthenticateReturnV(AuthReturnV):
+class AuthenticateReturnV(AuthenticateReturnMixin, AuthReturnV):
     '''
     Return from douban authenticate
     '''
@@ -76,8 +74,9 @@ class AuthenticateReturnV(AuthReturnV):
         
         Subclass should override this method to provide actual business
         '''
-        if self.success_uri:
-            return HttpResponseRedirect(self.success_uri)
+        success_uri = self.get_success_uri()
+        if success_uri:
+            return HttpResponseRedirect(success_uri)
         else:
             # should be override
             return HttpResponse('linked with {}'.format(user.username))

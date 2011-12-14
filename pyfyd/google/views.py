@@ -9,6 +9,7 @@ from openid.consumer import consumer
 from pyfyd.google.utils import get_openid_start_url, parse_hybrid_response,\
                                     GoogleBackend                                    
 from pyfyd.models import DuplicatedUsername
+from pyfyd.common.views import AuthStartMixin, AuthenticateReturnMixin
 
 class BaseV(View):
     '''Base class for all views that will use openid consumer'''
@@ -28,7 +29,7 @@ class BaseV(View):
         return self._consumer
 
         
-class AuthStartV(BaseV):        
+class AuthStartV(AuthStartMixin, BaseV):        
     '''
     start from here.
     
@@ -39,12 +40,9 @@ class AuthStartV(BaseV):
     callback = False
     
     def get(self, request):
-        if not self.callback:
-            raise NotImplementedError('Subclass of AuthStartV must provide oauth_callback')
-        
+        callback = request.build_absolute_uri(self.get_callback())
         c = self.get_consumer(request.session)
-        trust_root = request.build_absolute_uri('/')
-        callback = request.build_absolute_uri(self.callback)
+        trust_root = request.build_absolute_uri('/')        
         
         return HttpResponseRedirect(get_openid_start_url(c, trust_root,
                                                          callback))
@@ -70,7 +68,7 @@ class AuthReturnV(BaseV):
             raise Exception('openid auth failed')
             
     
-class AuthenticateReturnV(AuthReturnV):
+class AuthenticateReturnV(AuthenticateReturnMixin, AuthReturnV):
     '''
     Return from Google authenticate
     '''
@@ -82,8 +80,9 @@ class AuthenticateReturnV(AuthReturnV):
         
         Subclass should override this method to provide actual business
         '''
-        if self.success_uri:
-            return HttpResponseRedirect(self.success_uri)
+        success_uri = self.get_success_uri()
+        if success_uri:
+            return HttpResponseRedirect(success_uri)
         else:
             # should be override
             return HttpResponse('linked with {}'.format(user.username))

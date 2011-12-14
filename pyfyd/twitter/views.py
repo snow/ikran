@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login
 from tweepy import OAuthHandler, API
 
 from pyfyd.models import *
+from pyfyd.common.views import AuthStartMixin, AuthenticateReturnMixin
 
 class BaseOAuthV(View):
     '''Base class for all views that will use OAuth handler'''
@@ -16,7 +17,7 @@ class BaseOAuthV(View):
         super(BaseOAuthV, self).__init__(*args, **kwargs)
 
         
-class AuthStartV(BaseOAuthV):        
+class AuthStartV(AuthStartMixin, BaseOAuthV):        
     '''
     OAuth start from here.
     
@@ -27,11 +28,8 @@ class AuthStartV(BaseOAuthV):
     callback = False
     signin = False
     
-    def get(self, request, signin=True):
-        if not self.callback:
-            raise Exception('Subclass of AuthStartV must provide callback')
-        
-        self.oauth.callback = request.build_absolute_uri(self.callback)
+    def get(self, request, signin=True):        
+        self.oauth.callback = request.build_absolute_uri(self.get_callback())
         #redirect_to = self.oauth.get_authorization_url()
         redirect_to = self.oauth.get_authorization_url(self.signin)
         # request token could only being get after get_authorization_url()
@@ -61,7 +59,7 @@ class AuthReturnV(BaseOAuthV):
         # self.twitter_user = API(auth_handler=self.oauth).verify_credentials()
         
         
-class AuthenticateReturnV(AuthReturnV):
+class AuthenticateReturnV(AuthenticateReturnMixin, AuthReturnV):
     '''
     Return from twitter authenticate
     '''
@@ -73,8 +71,9 @@ class AuthenticateReturnV(AuthReturnV):
         
         Subclass should override this method to provide actual business
         '''
-        if self.success_uri:
-            return HttpResponseRedirect(self.success_uri)
+        success_uri = self.get_success_uri()
+        if success_uri:
+            return HttpResponseRedirect(success_uri)
         else:
             # should be override
             return HttpResponse('linked with {}'.format(user.username))
