@@ -13,5 +13,8 @@ data
 webroot
 # logs
 logs
+# local settings
 settings.py
+# external project syn link
 django_pyrcp
+nemo
