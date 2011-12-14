@@ -29,7 +29,11 @@
         j_db_img,
         j_db_ft,
         j_db_thumbs,
-        j_db_thumb_tpl;
+        j_db_thumb_tpl,
+        j_surveymeter = $('<div id="darkbox-pgcenter-surveymeter" '+
+            'style="position:fixed; top:50%; left:50%; width:0; height:0;" />'),
+            
+        thumb_width;
         
     rcp.preimg(PLACEHOLDER_URI);
     rcp.preimg('/s/common/i/view-40.png');
@@ -132,7 +136,15 @@
         
         ikr.j_imgls.on(ikr.upload.E_UPLOAD_DONE, function(evt, j_imgctn){
             add_thumb(j_imgctn, true);
+            j_db_thumbs.width(thumb_width + j_db_thumbs.width());
         });
+        
+        var thumbs = j_db_thumbs.find('.thumb');
+        thumb_width = thumbs.outerWidth() + 
+                      /\d+/.exec(thumbs.find('img').attr('width'))[0];
+        var thumb_count = thumbs.length;
+        
+        j_db_thumbs.width(thumb_width * thumb_count);
     }
     
     rcp.j_doc.one('ready', init);
@@ -216,6 +228,16 @@
             
             preload_next(j_thumb, 0);
             preload_prev(j_thumb, 0);
+            
+            j_surveymeter.appendTo($('body'));
+            var offset = j_surveymeter.offset();
+            j_surveymeter.detach();
+            
+            thumb_target_left = offset.left - j_thumb.outerWidth() / 2;
+            thumb_cur_left = j_thumb.offset().left;
+            list_cur_left = j_db_thumbs.offset().left;
+            j_db_thumbs.css(
+                'left', list_cur_left + (thumb_target_left - thumb_cur_left));
         });
         
         j_db_img.attr('src', PLACEHOLDER_URI);

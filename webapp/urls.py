@@ -16,5 +16,8 @@ urlpatterns = patterns('',
     #url(r'^img/(?P<slug>.+)/from/(?P<from>people)/(?P<username>.+)/', 'notimplemented'),
     #url(r'^img/(?P<slug>.+)/from/(?P<from>album)/(?P<album>\d+)/', 'notimplemented'),
     
+    url(r'accounts/login/', UnderConstructionV.as_view()),
+    url(r'accounts/signin', UnderConstructionV.as_view()),
+    
     url(r'under_construction/', UnderConstructionV.as_view()),
 )

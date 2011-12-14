@@ -17,8 +17,12 @@ urlpatterns = patterns('',
     
     url(r'^', include('webapp.urls')),
     
+    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', 
+        {'next_page': '/'}),
     url(r'^accounts/signout/$', 'django.contrib.auth.views.logout', 
         {'next_page': '/'}),
+                       
+    url(settings.NEMO_URI_ROOT[1:], include('nemo.urls')),
     
     #(r'^openid/(.*)', RegistrationConsumer()),
     #(r'^openid/(.*)', SessionConsumer()),

@@ -7,10 +7,12 @@ TEMPLATE_DEBUG = DEBUG
 PROJECT_ROOT = dirname(abspath(__file__))
 PROJECT_NAME = PROJECT_ROOT.split('/')[-1]
 AUTH_PROFILE_MODULE = 'core.UserProfile'
-LOGIN_URL = '/accounts/signin/'
+LOGIN_URL = '/'
 
 #PYRCP_THIRDPARTYSERVICE_URI_ROOT = '/thirdparty'
 #PYRCP_THIRDPARTYSERVICE_BASETPL = 'webapp'
+
+NEMO_URI_ROOT = '/nemo/'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
@@ -161,6 +163,7 @@ INSTALLED_APPS = (
     'core',
     'api',
     'webapp',
+    'nemo',
 )
 
 # A sample logging configuration. The only tangible logging

@@ -52,7 +52,10 @@
     </header>
     {% endblock %}
     
-    {% block layout_bd %}{% endblock %}
+    <section class="bd">
+        {% block layout_bd %}{% endblock %}
+        <div class="c"></div>
+    </section>
     
     {% block layout_ft %}
     <div class="c"></div>
@@ -61,6 +64,9 @@
         <a href="https://plus.google.com/101080974312491458888" target="_blank">about snow</a> |
         <a href="https://github.com/snow/ikran" target="_blank">source</a>
     </footer>
+    {% endblock %}
+    
+    {% block layout_extra %}
     {% endblock %}
 {% endblock %}
 </body>

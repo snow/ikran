@@ -5,6 +5,7 @@
  */
 .c {clear:both}
 .tpl {display:none}
+html, body {height:100%}
 body {overflow-y:scroll}
 #rcp-preimg {display:none}
 /*
@@ -13,8 +14,8 @@ body {overflow-y:scroll}
 /*
  * header
  */
-body>header {padding:0 10px; margin-bottom:10px; border-bottom:1px dashed #666; 
-               color:#666}
+body>header {position:relative; padding:0 10px; 
+             border-bottom:1px dashed #666; color:#666}
     /* position & size */
     body>header .logo,
     body>header nav,
@@ -47,7 +48,7 @@ body>header {padding:0 10px; margin-bottom:10px; border-bottom:1px dashed #666;
 /*
  * footer
  */
-body>footer {position:relative; padding:5px 10px; margin-top:50px; 
+body>footer {position:relative; padding:5px 10px; margin-top:-29px;
              border-top:1px dashed #666; text-align:right; color:#666; 
              background:#fff; z-index:1}
      body>footer a {margin:0 5px}
@@ -55,9 +56,14 @@ body>footer {position:relative; padding:5px 10px; margin-top:50px;
  * body
  */
 /* layout */
-body>.sec-main {float:left; padding:0 330px 20px 20px}
-body>.sec-right {position:fixed; right:0; padding-right:10px; width:300px; 
+body>.bd {min-height:100%}
+header+.bd {margin-top:-37px}
+
+.bd>.sec-main {float:left; padding:10px 330px 0 20px; }
+.bd>.sec-right {position:fixed; top:37px; right:0; padding-right:10px; width:300px; 
                  overflow-x:hidden}
+                 
+.bd>.c:last-child {height:80px; width:100%}                 
 
 /*
  * right sidebar
@@ -99,20 +105,20 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
 /*
  * under construction
  */
-.pg-under_construction .sec-main {float:none; padding:50px 0; text-align:center}
+.pg-under_construction .sec-main {float:none; padding:100px 0 50px; text-align:center}
 .pg-under_construction .sec-main a {font-size:2em}
 /*
  * index
  */
-.pg-index>.bg {position:fixed; top:0; left:0; width:100%; height:100%; 
+.pg-index .bd>.bg {position:fixed; top:0; left:0; width:100%; height:100%; 
                background:#000}
-.pg-index>.bg img {float:left; margin:2px 0 0 2px}
+.pg-index .bd>.bg img {float:left; margin:2px 0 0 2px}
 
-.pg-index>.wrap {position:relative; margin:0 auto; width:830px; height:100%; 
+.pg-index .bd>.wrap {position:relative; margin:0 auto; width:830px; height:100%; 
                  z-index:1}
-    .pg-index>.wrap .bg {position:absolute; top:0; left:0; width:100%; 
+    .pg-index .bd>.wrap .bg {position:absolute; top:0; left:0; width:100%; 
                          height:100%; background:#fff; opacity:0.85}
-    .pg-index>.wrap .content {position:relative; padding:10px 20px 50px; z-index:2}
+    .pg-index .bd>.wrap .content {position:relative; padding:10px 20px 100px; z-index:2}
     
     .pg-index .sec-main {position:relative; float:left; width:500px; font-size:1.5em}
     .pg-index .right {position:fixed; margin-left:530px; width:300px}
@@ -173,6 +179,7 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
     
     .darkbox footer {position:fixed; left:0; bottom:0; width:100%; height:78px; 
                      overflow:hidden}
+        .darkbox .thumbs {position:relative}
         .darkbox .thumb {position:relative; display:inline-block; padding:2px; 
                          margin-right:-2px;z-index;2; cursor:pointer}
             .darkbox .thumb img {border:1px solid transparent}
