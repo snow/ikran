@@ -168,7 +168,7 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
     .imgls .empty {font-size:xx-large; color:#999}
 
 .darkbox {display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-          background:#000; text-align:center}
+          background:#000; text-align:center; z-index:3}
           
     .darkbox header {position:fixed; width:100%; height:20px; 
                      border-bottom:2px dashed #666}
