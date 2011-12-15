@@ -510,18 +510,40 @@
             processData: false,
             dataType: 'json',
             contentType: 'application/octet-stream',
+            xhr: function(){
+                var xhr = new XMLHttpRequest(),
+                    j_mask = j_imgctn.find('.mask'),
+                    ORIGIN_MASK_OPACITY = j_mask.css('opacity');
+                    
+                xhr.upload.onprogress = function(evt){
+                    if (evt.lengthComputable){
+                        on_ajax_progress(j_mask, ORIGIN_MASK_OPACITY, 
+                                         evt.loaded, evt.total);
+                    }
+                };
+                return xhr;
+            },
             success: function(resp, textStatus, jqXHR){
                 //rcp.l(resp);
                 on_ajax_success(resp, j_imgctn);
                 delete files_to_upload[id];
             },
-            error: function(jqXHR, textStatus, errorThrown){
-                on_ajax_error();
+            error: function(xhr, textStatus, errorThrown){
+                on_ajax_error(xhr, j_imgctn);
             },
             complete: function(){
                 cur_upload_conn -= 1;
             }
         });
+    }
+    
+    function on_ajax_progress(j_mask, ORIGIN_MASK_OPACITY, loaded, total){
+        var opacity = Math.round(
+                          ORIGIN_MASK_OPACITY * (total - loaded) / total * 10
+                      ) / 10;
+        if(opacity){
+            j_mask.css('opacity', opacity);
+        }
     }
     
     function on_ajax_success(resp, j_imgctn){
@@ -543,7 +565,7 @@
         ikr.j_imgls.trigger(ikr.upload.E_UPLOAD_DONE, [j_imgctn]);
     }
     
-    function on_ajax_error(j_imgctn){
+    function on_ajax_error(xhr, j_imgctn){
         j_imgctn.removeClass('ing').addClass('err');
         j_imgctn.find('.status').empty();
         j_imgctn.find('.mask').append(j_retrytpl.clone());
