@@ -142,7 +142,9 @@ class ImageFile(models.Model):
                 curimg = img_f.resize((new_width, new_height), Image.ANTIALIAS)
                 
             curpath = '{}_{}.jpg'.format(imgpath_noext, size)    
-            curimg.save(curpath)
+            #curimg.save(curpath, quality=95, optimize=True)
+            curimg.save(curpath, quality=95)
+            #curimg.save(curpath)
             setattr(self, 'width_'+size, curimg.size[0])
             setattr(self, 'height_'+size, curimg.size[1])
             
@@ -195,7 +197,9 @@ class ImageFile(models.Model):
                 else: # TemporaryUploadedFile or File
                     img = Image.open(file.file.name)
                 
-                img.save(imgf.file.path)
+                #img.save(imgf.file.path, quality=95, optimize=True)
+                img.save(imgf.file.path, quality=95)
+                #img.save(imgf.file.path)
                 imgf.width_f = img.size[0]
                 imgf.height_f = img.size[1]
                 del img

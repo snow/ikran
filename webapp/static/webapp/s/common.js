@@ -245,7 +245,7 @@
     ikr.darkbox.show = function(j_imgctn){
         j_img = j_imgctn.find('img');
         
-        j_db_img.one('load', function(evt){
+        /*j_db_img.one('load', function(evt){
             j_db_img.attr('src', j_imgctn.attr('uri_f'));
             j_db_img.attr('alt', j_img.attr('alt'));
             
@@ -265,9 +265,29 @@
             list_cur_left = j_db_thumbs.offset().left;
             j_db_thumbs.css(
                 'left', list_cur_left + (thumb_target_left - thumb_cur_left));
-        });
+        });*/
         
         j_db_img.attr('src', PLACEHOLDER_URI);
+        
+        j_db_img.attr('src', j_imgctn.attr('uri_f'));
+        j_db_img.attr('alt', j_img.attr('alt'));
+        
+        j_db_thumbs.find('.on').removeClass('on');
+        var j_thumb = j_db_thumbs.find('[imgid='+j_imgctn.attr('imgid')+']')
+        j_thumb.addClass('on');
+        
+        preload_next(j_thumb, 0);
+        preload_prev(j_thumb, 0);
+        
+        j_surveymeter.appendTo($('body'));
+        var offset = j_surveymeter.offset();
+        j_surveymeter.detach();
+        
+        thumb_target_left = offset.left - j_thumb.outerWidth() / 2;
+        thumb_cur_left = j_thumb.offset().left;
+        list_cur_left = j_db_thumbs.offset().left;
+        j_db_thumbs.css(
+            'left', list_cur_left + (thumb_target_left - thumb_cur_left));
         
         if(!is_shown){
             j_darkbox.fadeIn();
