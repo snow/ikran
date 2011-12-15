@@ -5,8 +5,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 from tweepy import OAuthHandler, API
 
-from pyfyd.models import *
+from pyfyd.models import DuplicatedUsername
 from pyfyd.common.views import AuthStartMixin, AuthenticateReturnMixin
+from utils import TwitterBackend
 
 class BaseOAuthV(View):
     '''Base class for all views that will use OAuth handler'''
