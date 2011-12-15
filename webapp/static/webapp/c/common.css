@@ -11,6 +11,8 @@ body {overflow-y:scroll}
 /*
  * components
  * ----------------
+ */
+h3 {margin-bottom:0.5em}
 /*
  * header
  */
@@ -126,6 +128,8 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
     .introikr {margin-top:20px}
     .introikr h1 {font-size:3em}
     .introikr .slogun {margin-bottom:1em; font-size:1.5em}
+    
+    .pg-index .sec-main h3 {font-size:1.2em}
 /*
  * image list
  */
