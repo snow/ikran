@@ -195,3 +195,9 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
             .darkbox .thumb.on {padding:1px; border:1px solid #000; background:#fff}
             .darkbox .thumb.on img {border:1px solid #000}
             .darkbox .thumb.on .mask {display:none}
+
+/*
+ * 404 and 500
+ */
+.pg-404 .errmsg,
+.pg-500 .errmsg {text-align:center}
