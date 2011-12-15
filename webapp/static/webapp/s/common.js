@@ -8,6 +8,10 @@
     rcp.j_doc.one('ready', function(evt){
         ikr.j_imgls = $('.imgls');
     });
+    
+    ikr.byte2mb = function(value){
+        return Math.round(value / 1024 / 1024 * 100) / 100; 
+    }
 })(jQuery);
 
 /**
@@ -315,8 +319,7 @@
                 
                 if('size' === key){
                     j_meta.attr('extract', value);
-                    j_meta.text(Math.round(value / 1024 / 1024 * 100) / 100 
-                                + 'mb')
+                    j_meta.text(ikr.byte2mb(value) + 'mb');
                 } else {
                     j_meta.text(value);
                 }
@@ -400,6 +403,7 @@
         
         API_UPLOAD_URI = '/api/img/uploadraw/?filename={filename}',
         MAX_UPLOAD_CONN = 2,
+        ORIGIN_MASK_OPACITY = false,
         
         cur_upload_conn = 0,
         files_to_upload = {};
@@ -513,12 +517,11 @@
             xhr: function(){
                 var xhr = new XMLHttpRequest(),
                     j_mask = j_imgctn.find('.mask'),
-                    ORIGIN_MASK_OPACITY = j_mask.css('opacity');
+                    j_size = j_imgctn.find('.size');
                     
                 xhr.upload.onprogress = function(evt){
                     if (evt.lengthComputable){
-                        on_ajax_progress(j_mask, ORIGIN_MASK_OPACITY, 
-                                         evt.loaded, evt.total);
+                        on_ajax_progress(j_mask, j_size, evt.loaded, evt.total);
                     }
                 };
                 return xhr;
@@ -537,13 +540,19 @@
         });
     }
     
-    function on_ajax_progress(j_mask, ORIGIN_MASK_OPACITY, loaded, total){
+    function on_ajax_progress(j_mask, j_size, loaded, total){
+        if(!ORIGIN_MASK_OPACITY){
+            ORIGIN_MASK_OPACITY = j_mask.css('opacity');
+        }
+        
         var opacity = Math.round(
                           ORIGIN_MASK_OPACITY * (total - loaded) / total * 10
                       ) / 10;
         if(opacity){
             j_mask.css('opacity', opacity);
         }
+        
+        j_size.text(ikr.byte2mb(loaded) + ' / ' + ikr.byte2mb(total) + ' mb');
     }
     
     function on_ajax_success(resp, j_imgctn){
