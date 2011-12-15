@@ -7,7 +7,7 @@
     <div class="imgls">
         {% for img in object_list %}
         <figure class="imgctn" imgid="{{ img.id }}"
-                uri_m = "{{ img.uri_m }}" uri_ts = "{{ img.uri_ts }}">
+                uri_f = "{{ img.uri_f }}" uri_ts = "{{ img.uri_ts }}">
             <div class="wrap">
                 <img src="{{ img.uri_s }}" alt="{{ img.get_title }}" 
                      width="{{ img.width_s }}" height="{{ img.height_s }}"/>

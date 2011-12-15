@@ -66,6 +66,10 @@
             
             return '[darkbox] init dom {}/6'.replace('{}', count);
         });*/
+       //rcp.l(rcp.j_doc.width(), rcp.j_doc.height());
+       set_darkbox_size();
+       
+       $(window).on('resize', set_darkbox_size);
     }
     
     function init_evt(){
@@ -157,6 +161,13 @@
     
     rcp.j_doc.one('ready', init);
     
+    function set_darkbox_size(){
+        j_db_img.css({
+            'max-width': rcp.j_doc.width(),
+            'max-height': rcp.j_doc.height()
+        });
+    }
+    
     function on_upload_done(evt, j_imgctn){
         add_thumb(j_imgctn, true);
     }
@@ -205,7 +216,7 @@
             var j_next = j_thumb.next('[imgid]');
             if(j_next.length){
                 var origin = get_origin(j_next);
-                rcp.preimg(origin.attr('uri_m'));
+                rcp.preimg(origin.attr('uri_f'));
                 
                 depth += 1;
                 if(depth < PRELOAD_NEXT_LIMIT){
@@ -221,7 +232,7 @@
             var j_prev = j_thumb.prev('[imgid]');
             if(j_prev.length){
                 var origin = get_origin(j_prev);
-                rcp.preimg(origin.attr('uri_m'));
+                rcp.preimg(origin.attr('uri_f'));
                 
                 depth += 1;
                 if(depth < PRELOAD_NEXT_LIMIT){
@@ -235,7 +246,7 @@
         j_img = j_imgctn.find('img');
         
         j_db_img.one('load', function(evt){
-            j_db_img.attr('src', j_imgctn.attr('uri_m'));
+            j_db_img.attr('src', j_imgctn.attr('uri_f'));
             j_db_img.attr('alt', j_img.attr('alt'));
             
             j_db_thumbs.find('.on').removeClass('on');
@@ -561,7 +572,7 @@
         j_imgctn.find('.status').empty();        
         
         j_imgctn.attr('imgid', resp.result.id).
-                 attr('uri_m', resp.result.uri_m).
+                 attr('uri_f', resp.result.uri_f).
                  attr('uri_ts', resp.result.uri_ts);
         
         var j_img = j_imgctn.find('img');
