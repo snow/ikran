@@ -15,6 +15,7 @@ class DoubanAuthStartV(pdv.AuthStartV):
     
 class DoubanAuthenticateReturnV(pdv.AuthenticateReturnV):
     '''Mixin handles every thing'''
+    success_uri = '/dashboard/'
     
 class GoogleAuthStartV(pgv.AuthStartV):
     '''Mixin handles every thing'''
@@ -22,6 +23,7 @@ class GoogleAuthStartV(pgv.AuthStartV):
     
 class GoogleAuthenticateReturnV(pgv.AuthenticateReturnV):
     '''Mixin handles every thing'''
+    success_uri = '/dashboard/'
     
 class TwitterAuthStartV(ptv.AuthStartV):
     '''Mixin handles every thing'''    
@@ -29,3 +31,4 @@ class TwitterAuthStartV(ptv.AuthStartV):
     
 class TwitterAuthenticateReturnV(ptv.AuthenticateReturnV):
     '''Mixin handles every thing'''
+    success_uri = '/dashboard/'
