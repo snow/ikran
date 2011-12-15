@@ -200,4 +200,4 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
  * 404 and 500
  */
 .pg-404 .errmsg,
-.pg-500 .errmsg {text-align:center}
+.pg-500 .errmsg {margin:20px auto -50px; text-align:center}
