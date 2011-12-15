@@ -160,6 +160,8 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
             background:url('/s/common/i/loading-16.gif') no-repeat center left}        
         .imgctn.err .status {padding-left:18px; 
             background:url('/s/common/i/alert-16.png') no-repeat center left}
+            
+    .imgls .empty {font-size:xx-large; color:#999}
 
 .darkbox {display:none; position:fixed; top:0; left:0; width:100%; height:100%;
           background:#000; text-align:center}

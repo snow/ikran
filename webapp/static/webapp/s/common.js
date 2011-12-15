@@ -18,6 +18,7 @@
     ikr.darkbox = {};
     
     var is_shown = false,
+        thumbls_initialized  = false,
         
         E_NEXT = 'evt-ikr-darkbox-next',
         E_PREV = 'evt-ikr-darkbox-prev',
@@ -120,6 +121,17 @@
         
         //rcp.debug() && rcp.l('[darkbox] init keyboard');
     }
+    
+    function init_thumbs(){
+        var thumbs = j_db_thumbs.find('[imgid]');
+        thumb_width = thumbs.outerWidth() + 
+                      /\d+/.exec(j_db_thumbs.find('img').attr('width'))[0];
+        var thumb_count = thumbs.length;
+        
+        j_db_thumbs.width(thumb_width * thumb_count);
+        
+        thumbls_initialized = true;
+    }
         
     function init(){
         init_dom();
@@ -134,20 +146,16 @@
         });
         //rcp.debug() && rcp.l('[darkbox] init done');
         
-        ikr.j_imgls.on(ikr.upload.E_UPLOAD_DONE, function(evt, j_imgctn){
-            add_thumb(j_imgctn, true);
-            j_db_thumbs.width(thumb_width + j_db_thumbs.width());
-        });
+        ikr.j_imgls.on(ikr.upload.E_UPLOAD_DONE, on_upload_done);
         
-        var thumbs = j_db_thumbs.find('.thumb');
-        thumb_width = thumbs.outerWidth() + 
-                      /\d+/.exec(thumbs.find('img').attr('width'))[0];
-        var thumb_count = thumbs.length;
-        
-        j_db_thumbs.width(thumb_width * thumb_count);
+        j_db_thumbs.find('[imgid]').length && init_thumbs();
     }
     
     rcp.j_doc.one('ready', init);
+    
+    function on_upload_done(evt, j_imgctn){
+        add_thumb(j_imgctn, true);
+    }
     
     function add_thumb(j_origin, prepend){
         var imgid = j_origin.attr('imgid');
@@ -166,6 +174,10 @@
         } else {
             j_db_thumbs.append(j_thumb);
         }
+        
+        thumbls_initialized || init_thumbs();
+        
+        j_db_thumbs.width(thumb_width + j_db_thumbs.width());
     }
     
     function on_next(evt){
@@ -437,13 +449,13 @@
         evt.preventDefault();
         queue_images(evt.originalEvent.dataTransfer.files, evt.timeStamp);
         
-        return after_drop();
+        after_drop();
+        return false;
     }
     
     function after_drop(){
         j_mask.detach();
         is_drag_evt_handled = false;
-        return false;
     }
     
     function queue_images(filelist, timestamp){
@@ -468,6 +480,8 @@
                 reader.readAsDataURL(file);
             }
         });
+        
+        ikr.j_imgls.find('.empty').remove();
     }
         
     function on_upload_start(evt){
