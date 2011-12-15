@@ -32,7 +32,7 @@ ADMINS = (
     ('snowhs', 'snow@firebloom.cc'),
 )
 
-EMAIL_SUBJECT_PREFIX = '[SGZ] '
+EMAIL_SUBJECT_PREFIX = '[IKR] '
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
