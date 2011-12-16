@@ -94,7 +94,7 @@
         
     $.ajax('https://api.github.com/repos/snow/ikran/commits', {
         dataType: 'json',
-        async: false,
+        async: true,
         success: function(data){
             var limit = 10;
             for(i=0; i<limit; i++){
