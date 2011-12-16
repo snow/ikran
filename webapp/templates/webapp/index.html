@@ -43,6 +43,13 @@
                 </ul>
                 Feel free to <a href="/nemo/" target="_blank">vote for your idea</a>
             </article>
+            
+            <article class="news">
+                <h3>News</h3>
+                <ul>
+                <li class="tpl"><span class="message"></span><span class="data"></span></li>
+                </ul>
+            </article>
         </div>
     </section>
     
@@ -77,4 +84,34 @@
          width="120px" height="120px"/>
     {% endfor %}
 </div>
+{% endblock %}
+
+{% block layout_extra %}
+<script>
+(function($){
+    var j_news = $('.news ul'),
+        j_li_tpl = j_news.find('.tpl').remove().removeClass('tpl');
+        
+    $.ajax('https://api.github.com/repos/snow/ikran/commits', {
+        dataType: 'json',
+        success: function(data){
+            var limit = 10;
+            for(i=0; i<limit; i++){
+                try{
+                    var commit = data[i].commit,
+                        msg = commit.message;
+                    if('mf' === msg){
+                        limit++;
+                    } else {
+                        var j_li = j_li_tpl.clone();
+                        j_li.find('.message').text(msg);
+                        j_li.find('.date').text(commit.author.date);
+                        j_li.appendTo(j_news);
+                    }
+                } catch (e) {}
+            }
+        }
+    });
+})(jQuery);
+</script>
 {% endblock %}

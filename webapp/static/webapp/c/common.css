@@ -125,11 +125,13 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
     .pg-index .sec-main {position:relative; float:left; width:500px; font-size:1.5em}
     .pg-index .right {position:fixed; margin-left:530px; width:300px}
     
+    .pg-index .sec-main h3 {font-size:1.2em}
+    
     .introikr {margin-top:20px}
     .introikr h1 {font-size:3em}
     .introikr .slogun {margin-bottom:1em; font-size:1.5em}
     
-    .pg-index .sec-main h3 {font-size:1.2em}
+    .news {margin-top:1.5em}
 /*
  * image list
  */
