@@ -14,7 +14,7 @@ class AuthStartMixin(object):
                         
         return self.callback
     
-class AuthenticateReturnMixin(AuthReturnV):
+class AuthenticateReturnMixin(object):
     '''Provide common business logic in auth return'''
     success_uri = None
     
