@@ -93,13 +93,12 @@
         j_li_tpl = j_news.find('.tpl').remove().removeClass('tpl');
         
     $.ajax('https://api.github.com/repos/snow/ikran/commits', {
-        dataType: 'json',
-        async: true,
-        success: function(data){
+        dataType: 'jsonp json',
+        success: function(resp){
             var limit = 10;
             for(i=0; i<limit; i++){
                 try{
-                    var commit = data[i].commit,
+                    var commit = resp.data[i].commit,
                         msg = commit.message;
                     if('mf' === msg){
                         limit++;
