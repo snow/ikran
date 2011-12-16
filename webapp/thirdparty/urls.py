@@ -16,8 +16,8 @@ urlpatterns = patterns('',
     url(r'^google/authorize/$', GoogleAuthorizeStartV.as_view()),
     url(r'^google/authorize_return/$', GoogleAuthorizeReturnV.as_view()),
                        
-#    url(r'^twitter/authenticate/$', TwitterAuthenticateStartV.as_view()),
-#    url(r'^twitter/authenticate_return/$', TwitterAuthenticateReturnV.as_view()),
-#    url(r'^twitter/authorize/$', TwitterAuthorizeStartV.as_view()),
-#    url(r'^twitter/authorize_return/$', TwitterAuthorizeReturnV.as_view()),
+    url(r'^twitter/authenticate/$', TwitterAuthenticateStartV.as_view()),
+    url(r'^twitter/authenticate_return/$', TwitterAuthenticateReturnV.as_view()),
+    url(r'^twitter/authorize/$', TwitterAuthorizeStartV.as_view()),
+    url(r'^twitter/authorize_return/$', TwitterAuthorizeReturnV.as_view()),
 )

@@ -1,9 +1,7 @@
-#from django.contrib.auth.models import User
-#from django.contrib.auth.backends import ModelBackend
 from django.conf import settings
 from tweepy import OAuthHandler, API
 
-from pyfyd.models import TwitterAccount#, DuplicatedUsername
+from pyfyd.models import TwitterAccount
 from pyfyd.common.utils import BaseBackend
 
 class TwitterBackend(BaseBackend):

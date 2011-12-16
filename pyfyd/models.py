@@ -24,7 +24,7 @@ class TwitterAccount(models.Model):
     '''A twitter account that linked with a django user'''
     # override default AutoField pk to force id to be assigned
     id = models.IntegerField(primary_key=True)
-    username = models.CharField(max_length=255)
+    username = models.CharField(max_length=255, unique=True)
     fullname = models.CharField(max_length=255)
     
     key = models.CharField(max_length=255)
@@ -35,7 +35,7 @@ class TwitterAccount(models.Model):
             
 class GoogleAccount(models.Model):
     '''A google account that linked with a django user'''
-    username = models.CharField(max_length=255)
+    username = models.CharField(max_length=255, unique=True)
     fullname = models.CharField(max_length=255, blank=True)
     
     language = models.CharField(max_length=255, blank=True)
@@ -51,7 +51,7 @@ class DoubanAccount(models.Model):
     '''A douban account that linked with a django user'''
     # override default AutoField pk to force id to be assigned
     id = models.IntegerField(primary_key=True)
-    username = models.CharField(max_length=255)
+    username = models.CharField(max_length=255, unique=True)
     fullname = models.CharField(max_length=255)
     
     key = models.CharField(max_length=255)

@@ -1,9 +1,4 @@
 # Create your views here.
-#from django.views.generic import View, TemplateView, DetailView, RedirectView
-#from django.contrib.auth.models import User
-#import thirdparty.twitter.views as ttv
-#from thirdparty.models import TwitterAccount
-
 from django.http import HttpResponse, HttpResponseRedirect
 import django.views.generic as gv
 
@@ -63,7 +58,7 @@ class DoubanAuthorizeReturnV(pdv.AuthorizeReturnV):
     
 class GoogleAuthenticateStartV(pgv.AuthStartV):
     '''super handles every thing'''
-    callback = '/thirdparty/google/authenticate_return/'    
+    callback = '/thirdparty/google/authenticate_return/'
     
 class GoogleAuthenticateReturnV(pgv.AuthenticateReturnV):
     '''super handles every thing'''
@@ -71,25 +66,37 @@ class GoogleAuthenticateReturnV(pgv.AuthenticateReturnV):
     
 class GoogleAuthorizeStartV(pgv.AuthStartV):
     '''super handles every thing'''
-    callback = '/thirdparty/google/authorize_return/'    
+    callback = '/thirdparty/google/authorize_return/'
     
 class GoogleAuthorizeReturnV(pgv.AuthorizeReturnV):
     '''super handles every thing'''
     success_uri = '/thirdparty/'    
     
+    def get(self, request, *args, **kwargs):
+        super(GoogleAuthorizeReturnV, self).get(request, *args, **kwargs)
+        
+        return HttpResponseRedirect(self.success_uri)    
     
-#class TwitterAuthenticateStartV(ptv.AuthStartV):
-#    '''super handles every thing'''    
-#    callback = '/thirdparty/twitter/authenticate_return/'
-#    
-#class TwitterAuthenticateReturnV(ptv.AuthenticateReturnV):
-#    '''super handles every thing'''
-#    success_uri = '/dashboard/'
-#    
-#class TwitterAuthorizeStartV(ptv.AuthStartV):
-#    '''super handles every thing'''    
-#    callback = '/thirdparty/twitter/authorize_return/'
-#    
-#class TwitterAuthorizeReturnV(ptv.AuthorizeReturnV):
-#    '''super handles every thing'''
-#    success_uri = '/thirdparty/'    
+    
+class TwitterAuthenticateStartV(ptv.AuthStartV):
+    '''super handles every thing'''    
+    callback = '/thirdparty/twitter/authenticate_return/'
+    signin = True
+    
+class TwitterAuthenticateReturnV(ptv.AuthenticateReturnV):
+    '''super handles every thing'''
+    success_uri = '/dashboard/'
+    
+class TwitterAuthorizeStartV(ptv.AuthStartV):
+    '''super handles every thing'''    
+    callback = '/thirdparty/twitter/authorize_return/'
+    signin = False
+    
+class TwitterAuthorizeReturnV(ptv.AuthorizeReturnV):
+    '''super handles every thing'''
+    success_uri = '/thirdparty/'    
+    
+    def get(self, request, *args, **kwargs):
+        super(TwitterAuthorizeReturnV, self).get(request, *args, **kwargs)
+        
+        return HttpResponseRedirect(self.success_uri)    

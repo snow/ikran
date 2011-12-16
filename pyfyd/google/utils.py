@@ -7,10 +7,9 @@ from tweepy import oauth
 from openid import extension
 from openid.extensions import ax
 from django.conf import settings
-#from django.contrib.auth.models import User
 from pyfyd.common.utils import BaseBackend
 
-from pyfyd.models import GoogleAccount#, DuplicatedUsername
+from pyfyd.models import GoogleAccount
 
 AX_NS_EMAIL = 'http://axschema.org/contact/email'
 AX_NS_FIRSTNAME = 'http://axschema.org/namePerson/first'
@@ -105,6 +104,15 @@ class GoogleBackend(BaseBackend):
     CID = 'pyfyd.google.utils.GoogleBackend'
     account_cls = GoogleAccount
     attribute_keys = ['key', 'secret', 'fullname', 'language', 'country']
+    
+    @classmethod
+    def find_linked(cls, account):
+        '''
+        Find exists linked account
+        Override cause google don't provide uid in response,
+        username is used as id
+        '''
+        return cls.account_cls.objects.filter(username=account.username)
     
     @classmethod
     def get_account_from_token(cls, key, secret, user_attrs):

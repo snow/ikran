@@ -34,16 +34,21 @@ class BaseBackend(ModelBackend):
         return old
     
     @classmethod
+    def find_linked(cls, account):
+        '''Find exists linked account'''
+        return cls.account_cls.objects.filter(id=account.id)
+    
+    @classmethod
     def link_external(cls, key, secret, user, **kwargs):
         '''
         fetch douban account info by given access token, 
         then link it with given user
         '''
         account = cls.get_account_from_token(key, secret, **kwargs)        
-        qs = cls.account_cls.objects.filter(id=account.id)
+        linked = cls.find_linked(account)
         
-        if qs.exists():
-            account = cls.update_account(qs.get(), account)
+        if linked.exists():
+            account = cls.update_account(linked.get(), account)
             
         account.user = user
         account.save()
@@ -56,10 +61,10 @@ class BaseBackend(ModelBackend):
             return None
             
         account = self.get_account_from_token(key, secret, **kwargs)        
-        qs = self.account_cls.objects.filter(id=account.id)
+        linked = self.find_linked(account)
         
-        if qs.exists():
-            account = self.update_account(qs.get(), account)
+        if linked.exists():
+            account = self.update_account(linked.get(), account)
         elif User.objects.filter(username=account.username).exists():
             raise DuplicatedUsername(account.username)
         else:
@@ -73,22 +78,3 @@ class BaseBackend(ModelBackend):
             
         return account.user
         
-#        try:
-#            exist = DoubanAccount.objects.filter(id=account.id).get()            
-#        except DoubanAccount.DoesNotExist:
-#            if User.objects.filter(username=account.username).exists():
-#                raise DuplicatedUsername(account.username)
-#            else:
-#                user = User.objects.create_user(username, 
-#                                                '{}@douban.com'.\
-#                                                    format(account.username))
-#                account.user = user
-#                account.save()
-#        else:
-#            self.update_account(exist, account)
-#                
-#            user = exist.user
-#        
-#        return user
-#    
-#    

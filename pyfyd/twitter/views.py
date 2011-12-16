@@ -1,4 +1,3 @@
-#from django.views.generic import View
 from django.views.generic import View
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
@@ -31,7 +30,6 @@ class AuthStartV(AuthStartMixin, BaseOAuthV):
     
     def get(self, request, signin=True):        
         self.oauth.callback = request.build_absolute_uri(self.get_callback())
-        #redirect_to = self.oauth.get_authorization_url()
         redirect_to = self.oauth.get_authorization_url(self.signin)
         # request token could only being get after get_authorization_url()
         request.session['unauthed_token'] = self.oauth.request_token
@@ -55,9 +53,6 @@ class AuthReturnV(BaseOAuthV):
                                     request.GET['oauth_verifier'])
         else:
             raise Exception('token not match, something went wrong')
-        
-        # give a tweepy.models.User object to override
-        # self.twitter_user = API(auth_handler=self.oauth).verify_credentials()
         
         
 class AuthenticateReturnV(AuthenticateReturnMixin, AuthReturnV):
