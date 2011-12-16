@@ -7,10 +7,10 @@ from tweepy import oauth
 from openid import extension
 from openid.extensions import ax
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.contrib.auth.backends import ModelBackend
+#from django.contrib.auth.models import User
+from pyfyd.common.utils import BaseBackend
 
-from pyfyd.models import GoogleAccount, DuplicatedUsername
+from pyfyd.models import GoogleAccount#, DuplicatedUsername
 
 AX_NS_EMAIL = 'http://axschema.org/contact/email'
 AX_NS_FIRSTNAME = 'http://axschema.org/namePerson/first'
@@ -100,14 +100,14 @@ def parse_hybrid_response(resp):
         
         return user_attrs, access_token
 
-class GoogleBackend(ModelBackend):
-    '''Google auth backend'''
+class GoogleBackend(BaseBackend):
+    '''Douban auth backend'''
     CID = 'pyfyd.google.utils.GoogleBackend'
+    account_cls = GoogleAccount
+    attribute_keys = ['key', 'secret', 'fullname', 'language', 'country']
     
-    def authenticate(self, cid, key, secret, user_attrs):
-        if self.CID != cid:
-            return None
-              
+    @classmethod
+    def get_account_from_token(cls, key, secret, user_attrs):
         email=user_attrs.getSingle(AX_NS_EMAIL)
         language=user_attrs.getSingle(AX_NS_LANGUAGE, '')
         country=user_attrs.getSingle(AX_NS_COUNTRY, '')
@@ -115,43 +115,12 @@ class GoogleBackend(ModelBackend):
         username = email.split('@')[0]
         fullname = '{} {}'.format(user_attrs.getSingle(AX_NS_FIRSTNAME, ''), 
                                   user_attrs.getSingle(AX_NS_LASTNAME, '')).\
-                            strip()
-        try:
-            account = GoogleAccount.objects.filter(username=username).get()
-        except GoogleAccount.DoesNotExist:
-            account = GoogleAccount(username=username,
-                                    key=key,
-                                    secret=secret,
-                                    fullname=fullname,
-                                    language=language,
-                                    country=country)
-            if User.objects.filter(username=username).exists():
-                raise DuplicatedUsername(username)
-            else:
-                user = User.objects.create_user(username, email)
-                account.user = user
-                account.save()
-        else:
-            updated = False
-            # update key and secret if changed                            
-            if account.key != key:
-                account.key = key
-                account.secret = secret
-                updated = True
-                
-            if account.fullname != fullname:
-                account.fullname = fullname
-                updated = True
-                
-            if account.language != language:
-                account.language = language
-                updated = True
-                
-            if account.country != country:
-                account.country = country
-                updated = True
-            
-            if updated:
-                account.save()
-        
-        return account.user
+                           strip()
+                           
+        return GoogleAccount(key=key,
+                             secret=secret,
+                             username=username,
+                             fullname=fullname,
+                             language=language,
+                             country=country)
+

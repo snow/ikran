@@ -1,0 +1,30 @@
+{% extends 'webapp/base.html' %}
+{% block page_class %}pg-settings{% endblock %}
+
+{% block layout_bd %}
+{% include 'webapp/com/left/settings_nav.html' with cur='main' %}
+
+<section class="sec-main">
+    <h2>Settings</h2>
+    <p>Currently nothing here</p>    
+    <div class="c"></div>
+</section>
+
+<section class="sec-right">
+    <section class="help">
+        <h3>help</h3>
+        <h4>viewing image <em>(aka. darkbox)</em></h4>            
+        <ul>
+        <li><strong>esc</strong>: exit darkbox</li>
+        <li><strong>a</strong> / <strong>h</strong> / <strong>left</strong>: prev image</li>
+        <li><strong>d</strong> / <strong>l</strong> / <strong>right</strong>: next image</li>
+        <li><strong>click on blank</strong>: toggle header and footer</li>
+        </ul>
+    </section>
+    
+    {% include 'webapp/com/right/feedback.html' %}
+</section>
+{% endblock %}
+
+{% block layout_extra %}
+{% endblock %}

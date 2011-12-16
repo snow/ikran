@@ -65,35 +65,12 @@ class AuthReturnV(BaseV):
 class AuthenticateReturnV(AuthenticateReturnMixin, AuthReturnV):
     '''
     Return from douban authenticate
-    '''
-    success_uri = None
-    
-    def success(self, user):
-        '''
-        Called after authenticate success and logged user in.
-        
-        Subclass should override this method to provide actual business
-        '''
-        success_uri = self.get_success_uri()
-        if success_uri:
-            return HttpResponseRedirect(success_uri)
-        else:
-            # should be override
-            return HttpResponse('linked with {}'.format(user.username))
-        
-    def failed(self):
-        '''
-        Called after authenticate failed.
-        
-        Subclass should override this method to provide actual business
-        '''
-        return HttpResponse('authenticate failed')
-    
+    '''    
     def get(self, request):
         '''
         Try to authenticate user with the douban info
         '''
-        # get self.access_token available
+        # get self.access_token and self.uid available
         super(AuthenticateReturnV, self).get(request)
         
         try:
@@ -110,3 +87,16 @@ class AuthenticateReturnV(AuthenticateReturnMixin, AuthReturnV):
                 return self.success(user)
             else:
                 return self.failed()
+            
+class AuthorizeReturnV(AuthReturnV):
+    def get(self, request):
+        '''
+        Update access key and other info to user account
+        '''
+        # get self.access_token and self.uid available
+        super(AuthorizeReturnV, self).get(request)
+        
+        DoubanBackend.link_external(self.access_token.key, 
+                                    self.access_token.secret,
+                                    request.user,  
+                                    uid=self.uid)

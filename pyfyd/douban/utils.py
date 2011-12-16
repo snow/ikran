@@ -1,72 +1,72 @@
 import json
 
-from django.contrib.auth.models import User
-from django.contrib.auth.backends import ModelBackend
 from django.conf import settings
 
-from pyfyd.models import DoubanAccount, DuplicatedUsername
-from client import OAuthClient
-from oauth import escape
+from pyfyd.models import DoubanAccount
+from pyfyd.common.utils import BaseBackend
+from client import OAuthClient 
 
 _PROFILE_URI_BASE = 'http://api.douban.com/people/{}?alt=json'
-
-class DoubanBackend(ModelBackend):
+class DoubanBackend(BaseBackend):
     '''Douban auth backend'''
     CID = 'pyfyd.douban.utils.DoubanBackend'
+    account_cls = DoubanAccount
+    attribute_keys = ['key', 'secret', 'username', 'fullname']
     
-    def authenticate(self, cid, key, secret, uid):
-        if self.CID != cid:
-            return None
-        import logging
-        l = logging.getLogger('c')
-        
+    @classmethod
+    def get_account_from_token(cls, key, secret, uid):
         client = OAuthClient(key=settings.DOUBAN_CONSUMER_KEY,
                              secret=settings.DOUBAN_CONSUMER_SECRET)
         client.login(key, secret)
         
         resp = client.access_resource('GET', _PROFILE_URI_BASE.format(uid))
-        try:
-            douban_user = json.loads(resp.read())
-        except:
-            return None
+        resp = json.loads(resp.read())
+        
+        id = resp['uri']['$t'].split('/')[-1]
+        username = resp['db:uid']['$t']
+        fullname = resp['title']['$t']
+        
+        return DoubanAccount(id=id, 
+                             username=username,
+                             key=key,
+                             secret=secret,
+                             fullname=fullname)    
     
-        id = douban_user['uri']['$t'].split('/')[-1]
-        username = douban_user['db:uid']['$t']
-        fullname = douban_user['title']['$t']
+#    def authenticate(self, cid, key, secret, uid):
+#        if self.CID != cid:
+#            return None
+#
+#        account = get_account_from_token(key, secret, uid)
+#        qs = DoubanAccount.objects.filter(id=account.id)
+#        
+#        if qs.exists():
+#            account = update_account(qs.get(), account)
+#        else:
+#            if User.objects.filter(username=account.username).exists():
+#                raise DuplicatedUsername(account.username)
+#            else:
+#                user = User.objects.create_user(account.username)
+#                account.user = user
+#                account.save()
+#                
+#        return account.user
         
-        try:
-            account = DoubanAccount.objects.filter(id=id).get()            
-        except DoubanAccount.DoesNotExist:
-            account = DoubanAccount(id=id, 
-                                    username=username,
-                                    fullname=fullname,
-                                    key=key,
-                                    secret=secret)
-            
-            if User.objects.filter(username=username).exists():
-                raise DuplicatedUsername(username)
-            else:
-                user = User.objects.create_user(username, 
-                                                '{}@n.cc'.format(username))
-                account.user = user
-                account.save()
-        else:
-            updated = False      
-            # update key and secret if changed                            
-            if account.key != key:
-                account.key = key
-                account.secret = secret
-                updated = True
-            
-            if account.username != username:
-                account.username = username
-                updated = True
-                
-            if account.fullname != fullname:
-                account.fullname = fullname
-                updated = True
-            
-            if updated:
-                account.save()
-        
-        return account.user
+#        try:
+#            exist = DoubanAccount.objects.filter(id=account.id).get()            
+#        except DoubanAccount.DoesNotExist:
+#            if User.objects.filter(username=account.username).exists():
+#                raise DuplicatedUsername(account.username)
+#            else:
+#                user = User.objects.create_user(username, 
+#                                                '{}@douban.com'.\
+#                                                    format(account.username))
+#                account.user = user
+#                account.save()
+#        else:
+#            self.update_account(exist, account)
+#                
+#            user = exist.user
+#        
+#        return user
+#    
+#    

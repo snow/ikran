@@ -6,8 +6,19 @@ from tweepy import OAuthHandler, API
 
 class DuplicatedUsername(Exception):
     '''Username got from openid/oauth provider was taken here'''
+    MSG = 'username "{}" was taken'
+    
     def __init__(self, username):
-        self.message = 'username "{}" was taken'.format(username)
+        self.message = self.MSG.format(username)
+        
+        
+#class LinkedWithAnotherUser(Exception):
+#    '''Username got from openid/oauth provider was taken here'''
+#    MSG = 'this account has liked with another user: {}'
+#    
+#    def __init__(self, username):
+#        self.message = self.MSG.format(username)
+
 
 class TwitterAccount(models.Model):
     '''A twitter account that linked with a django user'''

@@ -12,7 +12,8 @@ body {overflow-y:scroll}
  * components
  * ----------------
  */
-h3 {margin-bottom:0.5em}
+h3,
+h4 {margin-bottom:0.5em}
 /*
  * header
  */
@@ -64,8 +65,12 @@ header+.bd {margin-top:-37px}
 .bd>.sec-main {float:left; padding:10px 330px 0 20px; }
 .bd>.sec-right {position:fixed; top:37px; right:0; padding-right:10px; width:300px; 
                  overflow-x:hidden}
-                 
-.bd>.c:last-child {height:80px; width:100%}                 
+.bd>.sec-left {float:left; margin-top:5px; padding:20px 10px 50px 10px; border-right:1px dashed #999; text-align:right}
+
+
+.bd>.c:last-child {height:80px; width:100%}          
+
+.sec-main section {margin-bottom:20px}       
 
 /*
  * right sidebar
@@ -76,6 +81,14 @@ header+.bd {margin-top:-37px}
 .sec-right h4 {margin-bottom:0.5em}
 
 .sec-right>section {margin-bottom:30px}
+
+/*
+ * left nav
+ */
+.sec-left a,
+.sec-left span {display:block}
+.sec-left a {text-decoration:none}
+
 /*
  * signin
  */

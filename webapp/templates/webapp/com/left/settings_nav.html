@@ -1,0 +1,13 @@
+<nav class="sec-left settings">
+    {% if 'main' == cur %}
+    <span class="cur">main</span>
+    {% else %}
+    <a href="/accounts/settings/">main</a>
+    {% endif %}
+    
+    {% if 'thirdparty' == cur %}
+    <span class="cur">thirdparty</span>
+    {% else %}
+    <a href="/thirdparty/">thirdparty</a>
+    {% endif %}
+</nav>

@@ -39,7 +39,7 @@
 </section>
 
 <section class="sec-right">
-    {% include 'webapp/com/upload_form.html' %}
+    {% include 'webapp/com/right/upload_form.html' %}
     <section class="help">
         <h3>help</h3>
         <h4>viewing image <em>(aka. darkbox)</em></h4>            
@@ -51,11 +51,7 @@
         </ul>
     </section>
     
-    <section class="feedback">
-        <h3><a href="/nemo/" target="_blank">Feedback</a></h3>         
-        Welcome to tell how do you about Ikran, ideas, bugs, etc. <br />
-        or vote for others' opinions.
-    </section>
+    {% include 'webapp/com/right/feedback.html' %}
 </section>
 {% endblock %}
 

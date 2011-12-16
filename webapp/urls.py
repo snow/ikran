@@ -2,7 +2,6 @@ from django.conf.urls.defaults import patterns, include, url
 from django.contrib.auth.decorators import login_required
 
 from webapp.views import *
-from webapp.thirdparty.views import *
 
 urlpatterns = patterns('',
     url(r'^$', IndexV.as_view()),
@@ -19,18 +18,9 @@ urlpatterns = patterns('',
     
     url(r'accounts/login/$', IndexV.as_view()),
     url(r'accounts/signin/$', IndexV.as_view()),
-
-    url(r'thirdparty/douban/authenticate/$', DoubanAuthStartV.as_view()),
-    url(r'thirdparty/douban/authenticate_return/$', 
-        DoubanAuthenticateReturnV.as_view()),
-                       
-    url(r'thirdparty/google/authenticate/$', GoogleAuthStartV.as_view()),
-    url(r'thirdparty/google/authenticate_return/$', 
-        GoogleAuthenticateReturnV.as_view()),
-                       
-    url(r'thirdparty/twitter/authenticate/$', TwitterAuthStartV.as_view()),
-    url(r'thirdparty/twitter/authenticate_return/$', 
-        TwitterAuthenticateReturnV.as_view()),
+    url(r'accounts/settings/$', SettingsV.as_view()),
+    
+    url(r'thirdparty/', include('webapp.thirdparty.urls')),
     
     url(r'under_construction/$', UnderConstructionV.as_view()),
 )

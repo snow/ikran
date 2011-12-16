@@ -1,4 +1,6 @@
 # Create your views here.
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import login
 
 class AuthStartMixin(object):
     '''Provide common business logic in auth start'''
@@ -12,8 +14,13 @@ class AuthStartMixin(object):
                         
         return self.callback
     
-class AuthenticateReturnMixin(object):
-    '''Provide common business logic in auth start'''
+class AuthenticateReturnMixin(AuthReturnV):
+    '''Provide common business logic in auth return'''
+    success_uri = None
+    
+    def authenticate(self):
+        raise NotImplemented('Subclass provide actual authenticate logic')
+    
     def get_success_uri(self):
         '''handle django convernon 'next' and 'redirect_field_name' param'''
         get = self.request.GET
@@ -26,3 +33,24 @@ class AuthenticateReturnMixin(object):
             return self.success_uri
         else:
             return False
+        
+    def success(self, user):
+        '''
+        Called after authenticate success and logged user in.
+        
+        Subclass should override this method to provide actual business
+        '''
+        success_uri = self.get_success_uri()
+        if success_uri:
+            return HttpResponseRedirect(success_uri)
+        else:
+            # should be override
+            return HttpResponse('linked with {}'.format(user.username))
+        
+    def failed(self):
+        '''
+        Called after authenticate failed.
+        
+        Subclass should override this method to provide actual business
+        '''
+        return HttpResponse('authenticate failed')

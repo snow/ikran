@@ -1,0 +1,57 @@
+{% extends 'webapp/base.html' %}
+{% block page_class %}pg-settings{% endblock %}
+
+{% block layout_bd %}
+{% include 'webapp/com/left/settings_nav.html' with cur='thirdparty' %}
+
+<section class="sec-main">
+    <h2>Thirdparty service settings</h2>
+    
+    <section>
+        <h4>Douban</h4>
+        {% if douban_account %}
+        <span>connected with {{ douban_account.username }}</span>
+        {% else %}
+        <a href="/thirdparty/douban/authorize/">Connect with douban</a>
+        {% endif %}
+    </section>
+    
+    <section>
+        <h4>Google</h4>
+        {% if google_account %}
+        <span>connected with {{ google_account.username }}</span>
+        {% else %}
+        <a href="/thirdparty/google/authorize/">Connect with google</a>
+        {% endif %}
+    </section>
+    
+    <section>
+        <h4>Twitter</h4>
+        {% if twitter_account %}
+        <span>connected with {{ twitter_account.username }}</span>
+        {% else %}
+        <a href="/thirdparty/twitter/authorize/">Connect with twitter</a>
+        {% endif %}
+    </section>
+    
+    <div class="c"></div>
+</section>
+
+<section class="sec-right">
+    <section class="help">
+        <h3>help</h3>
+        <h4>viewing image <em>(aka. darkbox)</em></h4>            
+        <ul>
+        <li><strong>esc</strong>: exit darkbox</li>
+        <li><strong>a</strong> / <strong>h</strong> / <strong>left</strong>: prev image</li>
+        <li><strong>d</strong> / <strong>l</strong> / <strong>right</strong>: next image</li>
+        <li><strong>click on blank</strong>: toggle header and footer</li>
+        </ul>
+    </section>
+    
+    {% include 'webapp/com/right/feedback.html' %}
+</section>
+{% endblock %}
+
+{% block layout_extra %}
+{% endblock %}
