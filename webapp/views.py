@@ -75,7 +75,12 @@ class PeopleStreamV(gv.ListView):
 class AlbumV(gv.DetailView):
     '''Show images in an album'''
     model = ikr.Album
-    template_name = 'webapp/album.html'    
+    template_name = 'webapp/album.html'  
+    
+    def get_context_data(self, **kwargs):
+        context = super(AlbumV, self).get_context_data(**kwargs)
+        context['object_list'] = self.object.imagecopy_set.all()
+        return context  
     
 class SettingsV(gv.TemplateView):
     template_name = 'webapp/settings.html'

@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^douban/authenticate_return/$', DoubanAuthenticateReturnV.as_view()),
     url(r'^douban/authorize/$', DoubanAuthorizeStartV.as_view()),
     url(r'^douban/authorize_return/$', DoubanAuthorizeReturnV.as_view()),
+    url(r'^douban/', include('webapp.thirdparty.douban.urls')),
                        
     url(r'^google/authenticate/$', GoogleAuthenticateStartV.as_view()),
     url(r'^google/authenticate_return/$', GoogleAuthenticateReturnV.as_view()),

@@ -15,7 +15,7 @@
 })(jQuery);
 
 /**
- * create album
+ * some simple links
  * --------------------
  */
 rcp.j_doc.one('ready', function(){
@@ -31,6 +31,23 @@ rcp.j_doc.one('ready', function(){
         title && $.ajax('/api/album/create/', {
             type: 'POST',
             data: {'title': title},
+            dataType: 'json',
+            success: function(data){
+                if(data.done){
+                    location = data.go_to;
+                }
+            }
+        });
+    });
+    
+    $('.sec-right .grub_douban_album').click(function(evt){
+        evt.preventDefault();
+        
+        var uri = prompt('Please input album url');
+        
+        uri && $.ajax('/thirdparty/douban/grub_album/', {
+            type: 'POST',
+            data: {'uri': uri},
             dataType: 'json',
             success: function(data){
                 if(data.done){

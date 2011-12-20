@@ -101,9 +101,10 @@ header+.bd {margin-top:-37px}
 /*
  * upload
  */
-.sec-right>.upload .selectfile,
-.sec-right>.upload p {font-size:1.8em; margin-bottom:5px}
-.sec-right>.upload p {color:#666}
+.sec-right>.upload .selectfile {font-size:1.8em; margin-bottom:5px}
+
+.sec-right>.upload .or {display:block; color:#666; text-align:center}
+.sec-right>.upload ul {color:#666; font-size:1.5em}
 
 .sec-right>.upload .selectfile {text-decoration:none}
 .sec-right>.upload .wrap [name=img] {position:absolute; opacity:0}

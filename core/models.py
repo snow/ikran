@@ -237,7 +237,7 @@ class Album(models.Model):
     '''
     Album
     '''
-    title = models.CharField(max_length=255, unique=True)
+    title = models.CharField(max_length=255)
     owner = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
     
@@ -356,13 +356,20 @@ class ImageCopy(models.Model):
                     height_tm=self.height_tm,
                     width_ts=self.width_ts,
                     height_ts=self.height_ts)
+        
+    @classmethod
+    def from_string(cls, data, user, desc=''):
+        tmp = tempfile.NamedTemporaryFile()
+        tmp.write(data)
+        tmp.flush()
+        return cls.from_filename(tmp.name, user, desc)
     
     @classmethod
     def from_filename(cls, filename, user, desc=''):
         '''
         Construct an ImageCopy from an filepath
         '''
-        return cls.from_filen(File(open(filename)), user, desc)
+        return cls.from_file(File(open(filename)), user, desc)
     
     @classmethod
     def from_file(cls, file, user, desc=''):
