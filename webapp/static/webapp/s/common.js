@@ -45,7 +45,13 @@ rcp.j_doc.one('ready', function(){
         
         var uri = prompt('Please input album url');
         
-        uri && $.ajax('/thirdparty/douban/grub_album/', {
+        if(!uri){return;}
+        
+        alert('Grub will start in seconds.\n'+
+              'You will be redirect to the album soon, '+
+              'but the grubbing will take much longer');
+        
+        $.ajax('/thirdparty/douban/grub_album/', {
             type: 'POST',
             data: {'uri': uri},
             dataType: 'json',
