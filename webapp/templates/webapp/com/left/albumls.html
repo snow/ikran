@@ -1,0 +1,10 @@
+<nav class="sec-left albumls">
+    <a class="create_album" href="#">+ Create Album</a>
+{% for e in object_list %}
+    {% if current and e.id == current.id %}
+    <span class="cur">{{ e.title }}</span>
+    {% else %}
+    <a href="/album/{{ e.id }}/{{ e.title }}/">{{ e.title }}</a>
+    {% endif %}
+{% endfor %}
+</nav>

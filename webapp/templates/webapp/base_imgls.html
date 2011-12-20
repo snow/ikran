@@ -1,11 +1,11 @@
 {% extends 'webapp/base.html' %}
 {% block page_class %}image list{% endblock %}
 
+{% load ikr_tags %}
+
 {% block layout_bd %}
     {% block left %}
-<section class="sec-left">
-    <a class="create_album" href="#">+ Create Album</a>
-</section>    
+    {% album_list request.user %}
     {% endblock %}
     {% block main %}
 <section class="sec-main">

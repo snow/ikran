@@ -3,3 +3,8 @@
 {% block page_class %}pg-album{% endblock %}
 
 {% block list_title %}{{ object.title }}{% endblock %}
+
+{% load ikr_tags %}
+{% block left %}
+{% album_list request.user object %}
+{% endblock %}
