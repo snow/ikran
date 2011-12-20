@@ -41,7 +41,7 @@ class IndexV(gv.ListView):
 
 class DashboardV(gv.ListView):
     #template_name = 'webapp/dashboard.html'
-    template_name = 'webapp/imagelist.html'
+    template_name = 'webapp/stream.html'
     
     def get_context_data(self, **kwargs):
         context = super(DashboardV, self).get_context_data(**kwargs)
@@ -58,7 +58,7 @@ class DashboardV(gv.ListView):
     
 class PeopleStreamV(gv.ListView):
     '''List recent images by username'''
-    template_name = 'webapp/imagelist.html'
+    template_name = 'webapp/stream.html'
     
     def get_context_data(self, **kwargs):
         context = super(PeopleStreamV, self).get_context_data(**kwargs)
@@ -71,7 +71,11 @@ class PeopleStreamV(gv.ListView):
                             order_by('-created').all()
             
         return super(PeopleStreamV, self).get(request, *args, **kwargs)
-    
+
+class AlbumV(gv.DetailView):
+    '''Show images in an album'''
+    model = ikr.Album
+    template_name = 'webapp/album.html'    
     
 class SettingsV(gv.TemplateView):
     template_name = 'webapp/settings.html'

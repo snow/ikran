@@ -15,6 +15,33 @@
 })(jQuery);
 
 /**
+ * create album
+ * --------------------
+ */
+rcp.j_doc.one('ready', function(){
+    $('.sec-left .create_album').click(function(evt){
+        evt.preventDefault();
+        
+        var d = new Date(),
+            title = prompt('Please input album title', d.getFullYear()+'-'+
+                                                       d.getMonth()+'-'+
+                                                       d.getDate()+' '+
+                                                       d.getHours()+':'+
+                                                       d.getMinutes());
+        title && $.ajax('/api/album/create/', {
+            type: 'POST',
+            data: {'title': title},
+            dataType: 'json',
+            success: function(data){
+                if(data.done){
+                    location = data.go_to;
+                }
+            }
+        });
+    });
+});
+
+/**
  * darkbox
  * --------------------
  */
@@ -332,8 +359,6 @@
     }
     
     ikr.imgls.add_img = function(src, status, meta, append){
-        init();
-        
         var j_imgctn = j_imgctn_tpl.clone().addClass(status);
             
         j_imgctn.find('img').attr('src', src);
@@ -362,7 +387,9 @@
         } else {
             j_imgctn.prependTo(ikr.j_imgls);
         }
-    }
+    };
+    
+    rcp.j_doc.one('ready', init);
 })(jQuery);
 
 /**

@@ -14,4 +14,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^img/', include('api.img.urls')),
+    url(r'^album/', include('api.album.urls')),
 )

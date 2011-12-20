@@ -62,11 +62,13 @@ body>footer {position:relative; padding:5px 10px; margin-top:-29px;
 body>.bd {min-height:100%}
 header+.bd {margin-top:-37px}
 
-.bd>.sec-main {float:left; padding:10px 330px 0 20px; }
+.bd>.sec-main {padding:10px 330px 0 20px; }
 .bd>.sec-right {position:fixed; top:37px; right:0; padding-right:10px; width:300px; 
                  overflow-x:hidden}
-.bd>.sec-left {float:left; margin-top:5px; padding:20px 10px 50px 10px; border-right:1px dashed #999; text-align:right}
+.bd>.sec-left {position:absolute; margin-top:5px; padding:20px 10px 50px 10px; 
+               border-right:1px dashed #999; width:100px; text-align:right}
 
+.sec-left+.sec-main {padding-left:140px}
 
 .bd>.c:last-child {height:80px; width:100%}          
 

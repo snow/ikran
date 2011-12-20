@@ -2,8 +2,14 @@
 {% block page_class %}image list{% endblock %}
 
 {% block layout_bd %}
+    {% block left %}
+<section class="sec-left">
+    <a class="create_album" href="#">+ Create Album</a>
+</section>    
+    {% endblock %}
+    {% block main %}
 <section class="sec-main">
-    <h2>{{ username }}'s stream</h2>
+    <h2>{% block list_title %}{% endblock %}</h2>
     <div class="imgls">
         {% for img in object_list %}
         <figure class="imgctn" imgid="{{ img.id }}"
@@ -37,7 +43,9 @@
     </div>
     <div class="c"></div>
 </section>
+    {% endblock %}
 
+    {% block right %}
 <section class="sec-right">
     {% include 'webapp/com/right/upload_form.html' %}
     <section class="help">
@@ -52,7 +60,8 @@
     </section>
     
     {% include 'webapp/com/right/feedback.html' %}
-</section>
+</section>    
+    {% endblock %}
 {% endblock %}
 
 {% block layout_extra %}
