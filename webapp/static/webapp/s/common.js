@@ -62,6 +62,24 @@ rcp.j_doc.one('ready', function(){
             }
         });
     });
+    
+    $('.curuser').find('.messages').on('click', 'a', function(evt){
+        evt.preventDefault();
+        
+        var j_t = $(evt.target),
+            href = j_t.attr('href'),
+            j_messages = j_t.closest('.messages');
+        
+        j_t.hide('fast', function(evt){
+            j_t.remove();
+            
+            if(0 == j_messages.find('a').length){
+                j_messages.remove();
+            }
+        });
+        
+        ('#' !== href) && $.ajax(href);
+    });
 });
 
 /**

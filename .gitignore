@@ -18,3 +18,4 @@ settings.py
 # external project syn link
 django_pyrcp
 nemo
+persistent_messages

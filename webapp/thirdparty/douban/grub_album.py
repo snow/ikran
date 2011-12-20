@@ -14,8 +14,6 @@ settings = setup_env(__file__)
 
 from django.contrib.auth.models import User
 import core.models as ikr
-from pyfyd.models import DoubanAccount
-from pyfyd.douban.client import OAuthClient
 
 _DEFAULT_REF = 'http://shuo.douban.com/'
 _DEFAULT_UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.7 ' + \

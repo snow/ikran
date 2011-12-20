@@ -6,8 +6,12 @@ TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = dirname(abspath(__file__))
 PROJECT_NAME = PROJECT_ROOT.split('/')[-1]
+
 AUTH_PROFILE_MODULE = 'core.UserProfile'
+
 LOGIN_URL = '/'
+
+MESSAGE_STORAGE = 'persistent_messages.storage.PersistentMessageStorage'
 
 #PYRCP_THIRDPARTYSERVICE_URI_ROOT = '/thirdparty'
 #PYRCP_THIRDPARTYSERVICE_BASETPL = 'webapp'
@@ -135,7 +139,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django_openid.consumer.SessionConsumer',
+    #'django_openid.consumer.SessionConsumer',
 )
 
 ROOT_URLCONF = PROJECT_NAME + '.urls'
@@ -159,11 +163,11 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     #'south',
     #'django_openid',
+    'persistent_messages',
     'pyfyd',
     'core',
     'api',
     'webapp',
-    'nemo',
 )
 
 # A sample logging configuration. The only tangible logging

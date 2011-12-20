@@ -34,14 +34,24 @@ body>header {position:relative; padding:0 10px;
     body>header nav {margin-left:10px; padding-left:10px}
         body>header nav a {padding:0 10px}
         
-    body>header .curuser span,
-    body>header .curuser a {display:inline-block; height:2.5em; 
+    body>header .curuser>* {display:inline-block; height:2.5em; 
                               line-height:2.5em; font-size:1.2em}   
                                
-    body>header .curuser span {margin-right:5px}
+    body>header .curuser>span {margin-right:5px}
     
-    body>header .curuser a {display:none; padding:0 5px}
-        body>header .curuser:hover a {display:inline-block}
+    body>header .curuser>a {display:none; padding:0 5px}
+        body>header .curuser:hover>a {display:inline-block}
+    
+    .curuser .messages {position:relative; height:100%; overflow:visible}
+        .curuser .messages .count {display:inline-block; padding:0 12px; 
+                                   color:#fff; background:#666}
+        .curuser .messages .ls {position:absolute; top:100%; right:-50px; 
+                                padding:5px; width:300px; border:2px solid #666; 
+                                background:#fff; z-index:3}
+            .curuser .messages .ls>* {display:block; padding:0 10px; 
+                                      margin-bottom:5px; border-style:dashed;
+                                      border-top:none; border-left:none; 
+                                      border-right:none; background:none}
     
     /* style */
     body>header a {text-decoration:none}    
@@ -90,6 +100,12 @@ header+.bd {margin-top:-37px}
 .sec-left a,
 .sec-left span {display:block}
 .sec-left a {text-decoration:none}
+
+/*
+ * messages
+ */
+body>.messages {position:absolute; width:100%; top:10px; text-align:center; z-index:3}
+    body>.messages .message  {display:block; margin:0 20px 20px; font-size:1.2em; text-decoration:none}
 
 /*
  * signin
@@ -186,7 +202,7 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
     .imgls .empty {font-size:xx-large; color:#999}
 
 .darkbox {display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-          background:#000; text-align:center; z-index:3}
+          background:#000; text-align:center; z-index:4}
           
     .darkbox header {position:fixed; width:100%; height:20px; 
                      border-bottom:2px dashed #666}

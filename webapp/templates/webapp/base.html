@@ -29,8 +29,6 @@
 
 <body class="{% block page_class %}{% endblock %}">
 {% block body %}
-    {% csrf_token %}
-    
     {% block layout_hd %}
     <header>
         <a class="logo" href="/{% if user.is_authenticated %}dashboard/{% endif %}">Ikran</a>
@@ -43,8 +41,25 @@
         {% if user.is_authenticated %}
         <section class="curuser">
             <a class="signout" href="/accounts/signout/">signout</a>
-            <a class="settings" href="/accounts/settings/">settings</a>            
-            &lt; <span class="username">{{ user.username }}</span>            
+            <a class="settings" href="/accounts/settings/">settings</a>
+            &lt; 
+            {% if messages %}
+            <div class="messages">
+                <span class="count">{{ messages|length }}</span>
+                <div class="ls">
+                {% for message in messages %}      
+                    <a class="message {% if message.tags %}{{ message.tags }}{% endif %}"
+                       {% if message.is_persistent %} 
+                       href="{% url message_mark_read message.pk %}"
+                       {% else %}
+                       href="#"
+                       {% endif %}
+                       title="click to dismiss">{{ message }}</a>
+                {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            <span class="username">{{ user.username }}</span>            
         </section>
         {% endif %}
         

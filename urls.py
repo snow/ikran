@@ -22,6 +22,8 @@ urlpatterns = patterns('',
     url(r'^accounts/signout/$', 'django.contrib.auth.views.logout', 
         {'next_page': '/'}),
                        
+    url(r'^messages/', include('persistent_messages.urls')),                   
+                       
     url(settings.NEMO_URI_ROOT[1:], include('nemo.urls')),
     
     #(r'^openid/(.*)', RegistrationConsumer()),
