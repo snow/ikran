@@ -6,19 +6,25 @@ import argparse
 import subprocess
 from HTMLParser import HTMLParser
 from os.path import abspath
+from datetime import datetime
 import logging
 
 from pyrcp.django.cli import setup_env
-
 settings = setup_env(__file__)
 
 from django.contrib.auth.models import User
+
+import persistent_messages
+from persistent_messages.storage import PersistentMessageStorage 
+
 import core.models as ikr
 
 _DEFAULT_REF = 'http://shuo.douban.com/'
 _DEFAULT_UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.7 ' + \
                 '(KHTML, like Gecko) Chrome/16.0.912.63 Safari/535.7'
 _BREATH_TIMEOUT = 1
+
+_DONE_MSG = u'Done for album {title}, {sucess} of {total} img grubbed | {time}'
                 
 class Request(urllib2.Request):
     '''TODO'''
@@ -163,6 +169,9 @@ class AlbumGrubber(object):
     def get_album(self):
         return self._album    
 
+class FakeRequest(object):
+    '''For PersistentMessageStorage to work'''
+    session = None
 
 #
 # let's jean!
@@ -188,24 +197,42 @@ if '__main__' == __name__:
         
         if args.UA:
             Request.ua = args.UA
+            
+        count_sucess = 0
+        count_total = 0
         
         for uri in args.IMG_LS:            
-            src, desc = PhotoHTMLParser.parse_uri(uri)
+            try:
+                src, desc = PhotoHTMLParser.parse_uri(uri)
             
-            request = urllib2.Request(src)
-            request.add_header('Referer', uri)
-            if args.UA:
-                request.add_header('User-Agent', args.UA)
-                
-            resp = urllib2.urlopen(request).read()
-            #l.debug(resp)
-            img = ikr.ImageCopy.from_string(resp, user, desc)
-            img.album = album
-            img.save()
+                request = urllib2.Request(src)
+                request.add_header('Referer', uri)
+                if args.UA:
+                    request.add_header('User-Agent', args.UA)
+                    
+                resp = urllib2.urlopen(request).read()
+                #l.debug(resp)
+                img = ikr.ImageCopy.from_string(resp, user, desc)
+                img.album = album
+                img.save()
+            except:
+                raise
+            else:
+                count_sucess += 1
+            finally:
+                time.sleep(2*_BREATH_TIMEOUT)
+                count_total += 1
             
-            time.sleep(2*_BREATH_TIMEOUT)
+        msg_storage = PersistentMessageStorage(FakeRequest())
+        d = datetime.now()
+        msg_storage.add(persistent_messages.SUCCESS, 
+                        _DONE_MSG.format(title=album.title,
+                                         sucess=count_sucess,
+                                         total=count_total,
+                                         time=d.strftime('%Y-%m-%d %H:%M:%S')), 
+                        user=user)
             
     except Exception as err:
         l = logging.getLogger('d')
-        l.debug(err.message)
+        l.debug(err)
         raise
