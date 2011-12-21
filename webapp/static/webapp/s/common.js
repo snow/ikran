@@ -95,6 +95,8 @@ rcp.j_doc.one('ready', function(){
         E_NEXT = 'evt-ikr-darkbox-next',
         E_PREV = 'evt-ikr-darkbox-prev',
         
+        BREATH_TIMEOUT = 1500,
+        
         PLACEHOLDER_URI = '/s/common/i/loading-31.gif',
         
         j_darkbox,
@@ -291,7 +293,7 @@ rcp.j_doc.one('ready', function(){
                     preload_next(j_next, depth);
                 }
             }
-        }, 500);
+        }, BREATH_TIMEOUT);
     }
     
     var PRELOAD_PREV_LIMIT = 3;
@@ -307,7 +309,7 @@ rcp.j_doc.one('ready', function(){
                     preload_prev(j_prev, depth);
                 }
             }
-        }, 1000);
+        }, 2*BREATH_TIMEOUT);
     }
     
     ikr.darkbox.show = function(j_imgctn){
@@ -448,6 +450,8 @@ rcp.j_doc.one('ready', function(){
                 '<div class="bg"></div>'+
                 '<div class="inr">drop files here</div>'+
             '</div>',
+            
+        ALBUM_ID: 0
     };
     
     ikr.upload.config = function(options){
@@ -500,7 +504,8 @@ rcp.j_doc.one('ready', function(){
         j_inr,
         j_retrytpl = $('<a class="retry" href=#>retry</a>'),
         
-        API_UPLOAD_URI = '/api/img/uploadraw/?filename={filename}',
+        API_UPLOAD_URI = '/api/img/uploadraw/'+
+                         '?filename={filename}&album_id={album_id}',
         MAX_UPLOAD_CONN = 2,
         ORIGIN_MASK_OPACITY = false,
         
@@ -607,7 +612,8 @@ rcp.j_doc.one('ready', function(){
         cur_upload_conn += 1;
         j_imgctn.removeClass('queue').addClass('ing').find('.status').empty();
         
-        $.ajax(API_UPLOAD_URI.replace('{filename}', filename), {
+        $.ajax(API_UPLOAD_URI.replace('{filename}', filename).
+                              replace('{album_id}', settings.ALBUM_ID), {
             type: 'POST',
             data: file,
             processData: false,

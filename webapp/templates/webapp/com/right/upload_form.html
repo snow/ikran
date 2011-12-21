@@ -10,6 +10,9 @@
         <li><a class="grub_douban_album" href="#">grub douban album</a></li>
         </ul>
         <input name="success_uri" type="hidden" value="{{ request.path }}" /> 
+        {% if album %}
+        <input name="album_id" type="hidden" value="{{ album.id }}" />
+        {% endif %}
         <button type="submit">upload</button>
         {% csrf_token %}
     </form>

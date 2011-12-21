@@ -22,6 +22,12 @@ class UploadRawV(View):
                                       request.GET.get('filename', ''))
         tmp.close()
         
+        album_id = int(request.GET.get('album_id', 0))
+        if album_id:
+            album = ikr.Album.objects.filter(id=album_id).get()
+            img.album = album
+            img.save()
+        
         return HttpResponse(json.dumps(dict(done=True, 
                                             result=img.get_dict())),
                             content_type='application/json')
@@ -38,9 +44,18 @@ class UploadFormV(View):
     
     def post(self, request, format=None):
         results = []
+        
+        album_id = int(request.POST.get('album_id', 0))
+        if album_id:
+            album = ikr.Album.objects.filter(id=album_id).get()
          
         for img in request.FILES.getlist('img'):
             img = ikr.ImageCopy.from_file(img, request.user, img.name)
+            
+            if album:
+                img.album = album
+                img.save()
+            
             results.append(img.get_dict())
             
         if 'json' == format:

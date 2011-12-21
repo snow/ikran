@@ -5,6 +5,17 @@
 {% block list_title %}{{ object.title }}{% endblock %}
 
 {% load ikr_tags %}
+
 {% block left %}
-{% album_list request.user object %}
+    {% album_list request.user object %}
+{% endblock %}
+
+{% block bodyend %}
+<script>
+(function($){
+    ikr.upload.config({
+        ALBUM_ID: '{{ object.id }}'
+    });
+})(jQuery);
+</script>
 {% endblock %}
