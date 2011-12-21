@@ -68,7 +68,7 @@ class PeopleStreamV(gv.ListView):
     def get(self, request, username, *args, **kwargs):
         user = User.objects.filter(username=username).get()
         self.queryset = ikr.ImageCopy.objects.filter(owner=user).\
-                            order_by('-created').all()
+                                              order_by('-created')
             
         return super(PeopleStreamV, self).get(request, *args, **kwargs)
 
@@ -79,7 +79,7 @@ class AlbumV(gv.DetailView):
     
     def get_context_data(self, **kwargs):
         context = super(AlbumV, self).get_context_data(**kwargs)
-        context['object_list'] = self.object.imagecopy_set.all()
+        context['object_list'] = self.object.imagecopy_set.order_by('-created')
         return context  
     
 class SettingsV(gv.TemplateView):
