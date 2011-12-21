@@ -155,7 +155,7 @@ class AlbumGrubber(object):
             #cmd.append('--ref='+referer)
             
         self._title, self._imgls = AlbumHTMLParser.parse_uri(uri)
-        self._album = ikr.Album(title=self._title, owner=user)
+        self._album = ikr.Album(title=self._title, owner=user, source=uri)
         self._album.save()
         
         cmd.append('--album_id='+str(self._album.id))
@@ -214,6 +214,7 @@ if '__main__' == __name__:
                 #l.debug(resp)
                 img = ikr.ImageCopy.from_string(resp, user, desc)
                 img.album = album
+                img.source = uri
                 img.save()
             except:
                 raise

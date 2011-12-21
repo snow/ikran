@@ -241,6 +241,8 @@ class Album(models.Model):
     owner = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
     
+    source = models.CharField(max_length=255, null=True, blank=True)
+    
 class Tag(models.Model):
     '''
     Tag
@@ -280,18 +282,19 @@ class ImageCopy(models.Model):
     width_ts = property(lambda self: self.file.width_ts)
     height_ts = property(lambda self: self.file.height_ts)
     
-    T_LOCAL = 0
-    T_TWITTER = 1
-    T_FLICKER = 2
-    SOURCE_TYPES = {
-        T_LOCAL: 'local',
-        T_FLICKER: 'flickr',        
-        T_TWITTER: 'twitter',
-    }
-    source = models.PositiveSmallIntegerField(choices=SOURCE_TYPES.items(), 
-                                              default=T_LOCAL)
-    external_id = models.CharField(max_length=255, blank=True)
-    external_data = models.TextField(blank=True)
+#    T_LOCAL = 0
+#    T_TWITTER = 1
+#    T_FLICKER = 2
+#    SOURCE_TYPES = {
+#        T_LOCAL: 'local',
+#        T_FLICKER: 'flickr',        
+#        T_TWITTER: 'twitter',
+#    }
+#    source = models.PositiveSmallIntegerField(choices=SOURCE_TYPES.items(), 
+#                                              default=T_LOCAL)
+#    external_id = models.CharField(max_length=255, blank=True)
+#    external_data = models.TextField(blank=True)
+    source = models.CharField(max_length=255, null=True, blank=True)
     
     def uri(self, size=ImageFile.SIZE_SMALL):
         return self.file.get_uri(size)
