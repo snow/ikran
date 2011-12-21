@@ -15,6 +15,10 @@ class UploadRawV(View):
     response in json
     '''
     def post(self, request):
+        album_id = int(request.GET.get('album_id', 0))
+        if album_id:
+            album = ikr.Album.objects.filter(id=album_id).get()
+        
         tmp = tempfile.NamedTemporaryFile()
         tmp.write(request.raw_post_data)
         tmp.flush()
@@ -22,9 +26,7 @@ class UploadRawV(View):
                                       request.GET.get('filename', ''))
         tmp.close()
         
-        album_id = int(request.GET.get('album_id', 0))
-        if album_id:
-            album = ikr.Album.objects.filter(id=album_id).get()
+        if album:
             img.album = album
             img.save()
         
