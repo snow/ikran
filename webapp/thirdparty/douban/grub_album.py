@@ -95,7 +95,7 @@ class AlbumGrubber(object):
             uri = 'http://' + uri
         
         try:
-            self._album = ikr.Album.filter(source=uri, owner=user).get()
+            self._album = ikr.Album.objects.filter(source=uri, owner=user).get()
         except ikr.Album.DoesNotExist:
             pass # so grub it later
         else:

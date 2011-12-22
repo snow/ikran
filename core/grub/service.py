@@ -29,7 +29,7 @@ class GrubService(BaseBackgroundService):
         job = ikr.GrubJob.objects.order_by('id')[0]      
         #print 'got job:', job.source
         
-        exist = ikr.ImageCopy.filter(source=job.source, owner=job.user)
+        exist = ikr.ImageCopy.objects.filter(source=job.source, owner=job.user)
         for e in exist:
             # if image with same owner and album exist, skip
             if e.album == job.album:
