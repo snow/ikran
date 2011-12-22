@@ -402,3 +402,9 @@ class ImageCopy(models.Model):
         img.save()
         
         return img
+    
+class GrubJob(models.Model):
+    '''Item in image grub queue'''
+    source = models.CharField(max_length=255)
+    album = models.ForeignKey(Album)
+    user = models.ForeignKey(User, null=True, blank=True)

@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 import sys
 import time
 import urllib2
@@ -84,54 +83,6 @@ class AlbumHTMLParser(HTMLParser):
         parser._imgls = imgls or []
         parser.feed(Request.get_content(uri))
         return parser._title, parser._imgls
-        
-        
-class PhotoHTMLParser(HTMLParser):
-    '''Parse photo view page in douban'''
-    _in_mainphoto_wrapper = False
-    _in_photo_desc = False
-    _depth_in_photo_desc = 0
-    
-    _uri = None 
-    _desc = ''    
-    
-    def handle_starttag(self, tag, attrs):
-        if 'a' == tag:
-            d = {key: value for(key, value) in attrs}
-            if 'class' in d and 'mainphoto' == d['class']:
-                self._in_mainphoto_wrapper = True
-                
-        elif 'div' == tag:
-            if self._in_photo_desc:
-                self._depth_in_photo_desc += 1
-            else:
-                d = {key: value for(key, value) in attrs}
-                if 'class' in d and 'photo_descri' == d['class']:
-                    self._in_photo_desc = True
-            
-        elif self._in_mainphoto_wrapper and 'img' == tag:
-            d = {key: value for(key, value) in attrs}
-            self._uri = d['src']
-                
-    def handle_data(self, data):
-        if self._in_photo_desc:
-            self._desc = data
-            
-    def handle_endtag(self, tag):
-        if self._in_mainphoto_wrapper and 'a' == tag:
-            self._in_mainphoto_wrapper = False
-                
-        if self._in_photo_desc and 'div' == tag:
-            if 0 == self._depth_in_photo_desc:
-                self._depth_in_photo_desc -= 1
-            else:
-                self._in_photo_desc = False
-    
-    @classmethod            
-    def parse_uri(cls, uri):
-        parser = cls()
-        parser.feed(Request.get_content(uri))
-        return parser._uri, parser._desc        
 
 class AlbumGrubber(object):
     '''TODO'''
@@ -143,12 +94,19 @@ class AlbumGrubber(object):
         if '://' not in uri:
             uri = 'http://' + uri
         
+        try:
+            self._album = ikr.Album.filter(source=uri, owner=user).get()
+        except ikr.Album.DoesNotExist:
+            pass # so grub it later
+        else:
+            return # already got it
+        
         # build command for later call
-        cmd = [sys.executable, abspath(__file__)]    
+        #cmd = [sys.executable, abspath(__file__)]    
         
         if ua:
             Request.ua = ua     
-            cmd.append('--ua='+ua)   
+            #cmd.append('--ua='+ua)   
         if referer:
             Request.referer = referer
             # no need to pass referer
@@ -158,82 +116,86 @@ class AlbumGrubber(object):
         self._album = ikr.Album(title=self._title, owner=user, source=uri)
         self._album.save()
         
-        cmd.append('--album_id='+str(self._album.id))
-        cmd.extend(self._imgls)
+        for img_src in self._imgls:
+            job = ikr.GrubJob(source=img_src, user=user, album=self._album)
+            job.save()
+        
+        #cmd.append('--album_id='+str(self._album.id))
+        #cmd.extend(self._imgls)
         
         # call this module as background script
         #l = logging.getLogger('d')
         #    l.debug(cmd)
-        subprocess.Popen(cmd)
+        #subprocess.Popen(cmd)
         
     def get_album(self):
         return self._album    
 
-class FakeRequest(object):
-    '''For PersistentMessageStorage to work'''
-    session = None
-
+#class FakeRequest(object):
+#    '''For PersistentMessageStorage to work'''
+#    session = None
 #
-# let's jean!
-# -------------
-#
-if '__main__' == __name__:
-    parser = argparse.ArgumentParser(
-                          description='grub images from douban')
-    parser.add_argument('IMG_LS', nargs='+')
-#    parser.add_argument('-u', '--uid', dest='UID', nargs='?')
-    parser.add_argument('-a', '--album_id', dest='ALBUM_ID')
-#    parser.add_argument('-r', '--ref', dest='REF', nargs='?')
-    parser.add_argument('-ua', '--ua', dest='UA', nargs='?')
-    parser.add_argument('-d', action='store_true', dest='DEBUG', 
-                        help='enable debug mode')
-    parser.add_argument('-t', action='store_true', dest='TEST', 
-                        help='enable test mode')
-    args = parser.parse_args()
-    
-    try:
-        album = ikr.Album.objects.filter(id=args.ALBUM_ID).get()    
-        user = album.owner
-        
-        if args.UA:
-            Request.ua = args.UA
-            
-        count_sucess = 0
-        count_total = 0
-        
-        for uri in args.IMG_LS:            
-            try:
-                src, desc = PhotoHTMLParser.parse_uri(uri)
-            
-                request = urllib2.Request(src)
-                request.add_header('Referer', uri)
-                if args.UA:
-                    request.add_header('User-Agent', args.UA)
-                    
-                resp = urllib2.urlopen(request).read()
-                #l.debug(resp)
-                img = ikr.ImageCopy.from_string(resp, user, desc)
-                img.album = album
-                img.source = uri
-                img.save()
-            except:
-                raise
-            else:
-                count_sucess += 1
-            finally:
-                time.sleep(2*_BREATH_TIMEOUT)
-                count_total += 1
-            
-        msg_storage = PersistentMessageStorage(FakeRequest())
-        d = datetime.now()
-        msg_storage.add(persistent_messages.SUCCESS, 
-                        _DONE_MSG.format(title=album.title,
-                                         sucess=count_sucess,
-                                         total=count_total,
-                                         time=d.strftime('%Y-%m-%d %H:%M:%S')), 
-                        user=user)
-            
-    except Exception as err:
-        l = logging.getLogger('d')
-        l.debug(err)
-        raise
+##
+## let's jean!
+## -------------
+##
+#if '__main__' == __name__:
+#    parser = argparse.ArgumentParser(
+#                          description='grub images from douban')
+#    parser.add_argument('IMG_LS', nargs='+')
+##    parser.add_argument('-u', '--uid', dest='UID', nargs='?')
+#    parser.add_argument('-a', '--album_id', dest='ALBUM_ID')
+##    parser.add_argument('-r', '--ref', dest='REF', nargs='?')
+#    parser.add_argument('-ua', '--ua', dest='UA', nargs='?')
+#    parser.add_argument('-d', action='store_true', dest='DEBUG', 
+#                        help='enable debug mode')
+#    parser.add_argument('-t', action='store_true', dest='TEST', 
+#                        help='enable test mode')
+#    args = parser.parse_args()
+#    
+#    try:
+#        album = ikr.Album.objects.filter(id=args.ALBUM_ID).get()    
+#        user = album.owner
+#        
+#        if args.UA:
+#            Request.ua = args.UA
+#            
+#        count_sucess = 0
+#        count_total = 0
+#        
+#        for uri in args.IMG_LS:            
+#            try:
+#                src, desc = PhotoHTMLParser.parse_uri(uri)
+#            
+#                request = urllib2.Request(src)
+#                request.add_header('Referer', uri)
+#                if args.UA:
+#                    request.add_header('User-Agent', args.UA)
+#                    
+#                resp = urllib2.urlopen(request).read()
+#                #l.debug(resp)
+#                img = ikr.ImageCopy.from_string(resp, user, desc)
+#                img.album = album
+#                img.source = uri
+#                img.save()
+#            except:
+#                raise
+#            else:
+#                count_sucess += 1
+#            finally:
+#                time.sleep(2*_BREATH_TIMEOUT)
+#                count_total += 1
+#            
+#        msg_storage = PersistentMessageStorage(FakeRequest())
+#        d = datetime.now()
+#        msg_storage.add(persistent_messages.SUCCESS, 
+#                        _DONE_MSG.format(title=album.title,
+#                                         sucess=count_sucess,
+#                                         total=count_total,
+#                                         time=d.strftime('%Y-%m-%d %H:%M:%S')), 
+#                        user=user)
+#            
+#    except Exception as err:
+#        l = logging.getLogger('d')
+#        l.debug(err)
+#        raise

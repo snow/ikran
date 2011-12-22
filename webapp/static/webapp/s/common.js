@@ -47,20 +47,15 @@ rcp.j_doc.one('ready', function(){
         
         if(!uri){return;}
         
-        alert('Grub will start in seconds.\n'+
-              'You will be redirect to the album soon, '+
-              'but the grubbing will take much longer');
-        
         $.ajax('/thirdparty/douban/grub_album/', {
             type: 'POST',
             data: {'uri': uri},
-            dataType: 'json',
-            success: function(data){
-                if(data.done){
-                    location = data.go_to;
-                }
-            }
+            dataType: 'json'
         });
+        
+        alert('Grub will start in seconds.\n'+
+              'You will be redirect to the album soon, '+
+              'but the grubbing will take much longer');
     });
     
     $('.curuser').find('.messages').on('click', 'a', function(evt){
