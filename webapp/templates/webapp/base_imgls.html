@@ -84,4 +84,34 @@
         </div>
     </footer>
 </div>
+
+<div class="actionbar batch">
+    <div class="stat">
+        <span><strong class="count">0</strong> / {{ object_list|length }}</span>
+    </div>
+    <div class="sp"><span>|</span></div>
+    <div class="select">
+        <a class="clear" href="#">clear</a>
+        <div class="ext">
+            <a class="all" href="#">all</a>
+            <a class="inverse" href="#">inverse</a>
+        </div>
+        <!---->
+    </div>
+    <div class="share">
+        <span>Share</span>
+        <div class="ext">
+            <a class="twitter" href="#">Twitter</a>
+        </div>
+    </div>
+    <div class="move2album">
+        <span>Album</span>
+        <div class="ext">
+            {% album_list request.user %}
+        </div>
+    </div>
+    <div class="right">
+        <a class="del" href="#">delete</a>
+    </div>
+</div>
 {% endblock %}

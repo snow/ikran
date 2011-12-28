@@ -171,16 +171,18 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
  * image list
  */
 .imgctn {float:left; display:inline; margin:0 10px; max-width:180px; 
-            min-height:230px; text-align:center}
+            min-height:240px; text-align:center}
     .imgctn .wrap {position:relative; display:inline-block}
-        .imgctn img {max-width:180px; max-height:180px}
+        .imgctn img {max-width:180px; max-height:180px; 
+                     border:5px solid transparent; cursor:pointer}
+        .imgctn.on img {border-color:#999}
         .imgctn .mask {position:absolute; display:none; top:0; left:0; width:100%; 
                           height:100%; background:#000; opacity:0.8}
             .imgctn.ing .mask,
             .imgctn.queue .mask,
             .imgctn.err .mask {display:block}
             
-            .imgctn .view {position:absolute; display:none; right:5px; top:5px; 
+            .imgctn .view {position:absolute; display:none; right:10px; top:10px; 
                            width:40px; height:40px; opacity:0.6;
                            background:#fff url('/s/common/i/view-40.png')}
                 .imgctn:hover .view {display:block}
@@ -189,7 +191,7 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
             .imgctn .retry {display:block; width:100%; height:100%; 
                                      font-size:2em; text-align:center}
 
-    .imgctn figcaption {color:#999}        
+    .imgctn figcaption {color:#999}
         .imgctn .title,
         .imgctn .desc,
         .imgctn .size,
@@ -252,6 +254,22 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
             .darkbox .thumb.on img {border:1px solid #000}
             .darkbox .thumb.on .mask {display:none}
 
+/*
+ * actionbar
+ */
+.actionbar {position:fixed; display:none; top:0; width:100%; 
+            border-bottom:2px solid #666; font-size:1.2em; background:#fff; 
+            z-index:3}
+        
+        .actionbar>div:not(.right) {float:left}
+        
+        .actionbar a,
+        .actionbar span {display:block; padding:4px 8px}
+            
+        .actionbar .ext {position:absolute; display:none; margin-left:-4px;
+                         border:2px solid #666; border-top:none; 
+                         padding:0 2px 4px; background:#fff}
+        .actionbar :hover>.ext {display:block}
 /*
  * 404 and 500
  */
