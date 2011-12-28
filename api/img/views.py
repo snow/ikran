@@ -18,6 +18,8 @@ class UploadRawV(View):
         album_id = int(request.GET.get('album_id', 0))
         if album_id:
             album = ikr.Album.objects.filter(id=album_id).get()
+        else:
+            album = False
         
         tmp = tempfile.NamedTemporaryFile()
         tmp.write(request.raw_post_data)

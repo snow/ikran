@@ -97,6 +97,7 @@ rcp.j_doc.one('ready', function(){
         j_darkbox,
         j_db_hd,
         j_db_img,
+        j_db_hd,
         j_db_ft,
         j_db_thumbs,
         j_db_thumb_tpl,
@@ -114,6 +115,7 @@ rcp.j_doc.one('ready', function(){
         j_darkbox = $('.darkbox');
         j_db_hd = j_darkbox.find('header');
         j_db_img = j_darkbox.find('img');
+        j_db_hd = j_darkbox.find('header');
         j_db_ft = j_darkbox.find('footer');
         j_db_thumbs = j_db_ft.find('.thumbs');
         j_db_thumb_tpl = j_db_thumbs.find('.thumb.tpl').remove().
@@ -151,9 +153,11 @@ rcp.j_doc.one('ready', function(){
             return false;
         }).
         on('click', function(evt){
-            if(j_db_ft.is(':visible')){                
+            if(j_db_ft.is(':visible')){
+                j_db_hd.hide();
                 j_db_ft.hide();
             } else {
+                j_db_hd.show();
                 j_db_ft.show();
             }
         }).
@@ -348,14 +352,15 @@ rcp.j_doc.one('ready', function(){
         var offset = j_surveymeter.offset();
         j_surveymeter.detach();
         
-        thumb_target_left = offset.left - j_thumb.outerWidth() / 2;
-        thumb_cur_left = j_thumb.offset().left;
-        list_cur_left = j_db_thumbs.offset().left;
-        j_db_thumbs.css(
-            'left', list_cur_left + (thumb_target_left - thumb_cur_left));
-        
         if(!is_shown){
-            j_darkbox.fadeIn();
+            j_darkbox.fadeIn(function(){
+                thumb_target_left = offset.left - j_thumb.outerWidth() / 2;
+                thumb_cur_left = j_thumb.offset().left;
+                list_cur_left = j_db_thumbs.offset().left;
+                j_db_thumbs.css(
+                    'left', list_cur_left + (thumb_target_left - thumb_cur_left)
+                );
+            });
             j_darkbox.css('display', 'table');
             is_shown = true;
         }

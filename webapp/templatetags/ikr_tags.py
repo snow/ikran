@@ -11,7 +11,7 @@ register = template.Library()
 def album_list(user, current=None):
     #album_list = ikr.Album.objects.filter(owner=user)
     
-    tpl = template.loader.get_template('webapp/com/left/albumls.html')
+    tpl = template.loader.get_template('webapp/com/albumls.html')
     
     
     return tpl.render(template.Context({

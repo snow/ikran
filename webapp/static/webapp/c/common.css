@@ -203,12 +203,31 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
             background:url('/s/common/i/alert-16.png') no-repeat center left}
             
     .imgls .empty {font-size:xx-large; color:#999}
-
+    
+/*
+ * darkbox
+ */
 .darkbox {display:none; position:fixed; top:0; left:0; width:100%; height:100%;
           background:#000; text-align:center; z-index:4}
           
-    .darkbox header {position:fixed; width:100%; height:20px; 
-                     border-bottom:2px dashed #666}
+    .darkbox header {position:fixed; width:100%; color:#ccc; z-index:5;
+                     border-bottom:2px dashed #666; text-align:left}
+        .darkbox header .bg {position:absolute; width:100%; height:100%; 
+                             background:#000; opacity:0.9; z-index:-1}             
+                     
+        .darkbox header .share,
+        .darkbox header .move2album {float:left}
+        
+        .darkbox header a,
+        .darkbox header span {display:block; font-size:1.2em; padding:4px 8px}
+        .darkbox header span {}
+        
+        .darkbox header .ext {position:absolute; display:none; 
+                              border:2px solid #666; border-top:none; 
+                              padding:0 2px 4px; background:#000}
+        .darkbox header .share:hover .ext,
+        .darkbox header .move2album:hover .ext {display:block}
+        
     
     .darkbox .bd {display:table-cell; vertical-align:middle}
     .darkbox .prev,
