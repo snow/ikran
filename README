@@ -1,0 +1,11 @@
+requirments
+===============
+* python-tweepy
+* python-pyexiv2
+* python-oauth
+* python-openid
+
+notes 4 myself
+--------------
+* python-psycopg2
+* python-django-south

@@ -3,7 +3,7 @@ import urlparse
 import time
 from urllib2 import Request, urlopen, HTTPError
 
-from tweepy import oauth
+from oauth import oauth
 from openid import extension
 from openid.extensions import ax
 from django.conf import settings
