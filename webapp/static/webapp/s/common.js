@@ -152,6 +152,10 @@ rcp.j_doc.one('ready', function(){
             j_darkbox.trigger(E_PREV);
             return false;
         }).
+        on('click', '.x', function(evt){
+            ikr.darkbox.hide();
+            return false;
+        }).
         on('click', function(evt){
             if(j_db_ft.is(':visible')){
                 j_db_hd.hide();
@@ -224,6 +228,7 @@ rcp.j_doc.one('ready', function(){
         //rcp.debug() && rcp.l('[darkbox] init done');
         
         ikr.j_imgls.on(ikr.upload.E_UPLOAD_DONE, on_upload_done);
+        ikr.j_imgls.on(ikr.imgls.E_IMG_REMOVED, on_img_removed);
         
         j_db_thumbs.find('[imgid]').length && init_thumbs();
     }
@@ -239,6 +244,12 @@ rcp.j_doc.one('ready', function(){
     
     function on_upload_done(evt, j_imgctn){
         add_thumb(j_imgctn, true);
+    }
+    
+    function on_img_removed(evt, j_2del){
+        $.each(j_2del, function(idx, el){
+            j_db_thumbs.find('[imgid='+$(el).attr('imgid')+']').remove();
+        });
     }
     
     function add_thumb(j_origin, prepend){
@@ -361,7 +372,9 @@ rcp.j_doc.one('ready', function(){
  * --------------------
  */
 (function($){
-    ikr.imgls = {};
+    ikr.imgls = {
+        E_IMG_REMOVED: 'evt-ikr-img_removed'
+    };
     
     var j_imgctn_tpl, 
         j_meta_tpl,
@@ -452,6 +465,8 @@ rcp.j_doc.one('ready', function(){
                     j_2del.fadeOut(function(){
                         j_2del.remove();
                     });
+                    
+                    ikr.j_imgls.trigger(ikr.imgls.E_IMG_REMOVED, [j_2del]);
                 },
                 error: function(xhr, textStatus, errorThrown){
                     j_2del.removeClass('ing').addClass('err');
