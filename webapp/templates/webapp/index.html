@@ -80,7 +80,7 @@
 
 <div class="bg">    
     {% for img in object_list %}
-    <img src="{{ img.uri_tm }}" alt="{{ img.get_title }}" 
+    <img imgid="{{ img.id }}" src="{{ img.uri_tm }}" alt="{{ img.get_title }}" 
          width="120px" height="120px"/>
     {% endfor %}
 </div>
@@ -101,6 +101,7 @@
                     var commit = resp.data[i].commit,
                         msg = commit.message;
                     if('mf' === msg){
+                        // skip those "mf" commit
                         limit++;
                     } else {
                         var j_li = j_li_tpl.clone();
@@ -112,6 +113,39 @@
             }
         }
     });
+    
+    var window_bottom = screen.height,    
+        j_imgls = $('.bd>.bg'),
+        j_lastimg = j_imgls.find('img:last'),
+        
+        API_LSPUB_URI = '/api/img/list/public.json/till{till}/10/';
+        
+    function loadmore(){ 
+        $.ajax(API_LSPUB_URI.replace('{till}', j_lastimg.attr('imgid')), {
+            success: function(data){
+                $.each(data.results, function(idx, el){
+                    var j_n = j_lastimg.clone();
+                    
+                    j_n.attr('imgid', el.id);
+                    j_n.attr('src', el.uri_tm);
+                    j_n.attr('alt', el.desc);
+                    j_n.appendTo(j_imgls);
+                });
+                
+                j_lastimg = j_imgls.find('img:last');
+                
+                // window may scroll during loading, so calc every moment
+                if((j_lastimg.offset().top - j_imgls.offset().top) < 
+                            window_bottom){
+                    loadmore();
+                }
+            }
+        });
+    }
+    
+    if((j_lastimg.offset().top - j_imgls.offset().top) < window_bottom){
+        loadmore();
+    }
 })(jQuery);
 </script>
 {% endblock %}

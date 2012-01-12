@@ -35,7 +35,7 @@ class IndexV(gv.ListView):
         if request.user.is_authenticated():
             return HttpResponseRedirect('/dashboard/')
         else:                
-            self.queryset = ikr.ImageCopy.objects.order_by('-created')
+            self.queryset = ikr.ImageCopy.objects.order_by('-id')[0:50]
             return super(IndexV, self).get(request, *args, **kwargs)
 
 
@@ -51,9 +51,9 @@ class DashboardV(gv.ListView):
     def get(self, request, *args, **kwargs):
         user = User.objects.filter(username=request.user.username).get()
         self.queryset = ikr.ImageCopy.objects.filter(owner=user).\
-                            order_by('-created')
+                            order_by('-created')[0:20]
             
-        return super(DashboardV, self).get(request, *args, **kwargs) 
+        return super(DashboardV, self).get(request, *args, **kwargs)
     
     
 class PeopleStreamV(gv.ListView):
