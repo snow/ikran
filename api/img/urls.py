@@ -9,4 +9,6 @@ urlpatterns = patterns('api.views',
     
     url(r'^uploadraw/$', login_required(UploadRawV.as_view())),
     #url(r'^gruburi.(?P<format>json|html)', ''),
+    
+    url(r'^delete/$', login_required(BatchDeleteV.as_view())),
 )

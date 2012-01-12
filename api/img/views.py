@@ -72,3 +72,37 @@ class UploadFormV(View):
             return HttpResponseRedirect(request.POST['success_uri'])
         else:
             raise Exception('where did u come from?')
+        
+class BatchDeleteV(View):
+    '''accept comma separated ImageCopy ids and delete them'''
+    
+    def post(self, request, format='json'):
+        imgs = []
+        
+        for id in request.POST['ids'].split(','):
+            img = ikr.ImageCopy.objects.get(pk=id)
+            
+            # TODO: use perm instead
+            if img.owner != request.user:
+                raise Exception('u dont have perm to del this pic')
+            else:
+                imgs.append(img)
+                
+        for img in imgs:
+            img.delete()
+                
+        if 'json' == format:
+            return HttpResponse(json.dumps(dict(done=True)),
+                                content_type='application/json')
+            
+        elif 'html' == format:
+            raise NotImplemented()
+        
+        elif request.POST['success_uri']:
+            # TODO: valid success uri
+            return HttpResponseRedirect(request.POST['success_uri'])
+        else:
+            raise Exception('where did u come from?')
+            
+            
+        

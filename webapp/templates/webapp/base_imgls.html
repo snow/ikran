@@ -18,10 +18,12 @@
                 <img src="{{ img.uri_s }}" alt="{{ img.get_title }}" 
                      width="{{ img.width_s }}" height="{{ img.height_s }}"/>
                 <a class="view" href="#"></a>
+                <div class="mask"></div>
             </div>        
             <figcaption>
                 <h5 class="title">{{ img.get_title }}</h5>
-                <p class="desc">{{ img.get_desc_body }}</p>
+                <p class="desc">{{ img.get_desc_body }}</p>                
+                <span class="status"></span>
             </figcaption>
         </figure>
         {% empty %}
@@ -86,32 +88,23 @@
 </div>
 
 <div class="actionbar batch">
-    <div class="stat">
-        <span><strong class="count">0</strong> / {{ object_list|length }}</span>
-    </div>
-    <div class="sp"><span>|</span></div>
+    <div class="stat blk">Selection:&nbsp;<strong class="count">0</strong> / {{ object_list|length }}</div>
+    <div class="sp">-</div>
     <div class="select">
-        <a class="clear" href="#">clear</a>
+        <a class="clear blk" href="#">clear</a>
         <div class="ext">
-            <a class="all" href="#">all</a>
-            <a class="inverse" href="#">inverse</a>
+            <a class="all blk" href="#">all</a>
+            <a class="inverse blk" href="#">inverse</a>
         </div>
-        <!---->
     </div>
+    <div class="sp">|</div>
     <div class="share">
-        <span>Share</span>
+        <span class="blk">Share to</span>
         <div class="ext">
-            <a class="twitter" href="#">Twitter</a>
+            <span class="blk">coming soon</span>
+            <!--<a class="twitter blk" href="#">Twitter</a>-->
         </div>
     </div>
-    <div class="move2album">
-        <span>Album</span>
-        <div class="ext">
-            {% album_list request.user %}
-        </div>
-    </div>
-    <div class="right">
-        <a class="del" href="#">delete</a>
-    </div>
+    <a class="del blk" href="#">delete</a>
 </div>
 {% endblock %}

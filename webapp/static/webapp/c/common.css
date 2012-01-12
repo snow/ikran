@@ -230,6 +230,8 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
         .darkbox header .share:hover .ext,
         .darkbox header .move2album:hover .ext {display:block}
         
+        .darkbox header .right a {float:left}
+        
     
     .darkbox .bd {display:table-cell; vertical-align:middle}
     .darkbox .prev,
@@ -261,15 +263,19 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
             border-bottom:2px solid #666; font-size:1.2em; background:#fff; 
             z-index:3}
         
-        .actionbar>div:not(.right) {float:left}
+    .actionbar>div {float:left}
+    
+    .actionbar .blk {display:block; padding:4px 8px}
+    
+    .actionbar .sp {padding:4px}
         
-        .actionbar a,
-        .actionbar span {display:block; padding:4px 8px}
-            
-        .actionbar .ext {position:absolute; display:none; margin-left:-4px;
-                         border:2px solid #666; border-top:none; 
-                         padding:0 2px 4px; background:#fff}
-        .actionbar :hover>.ext {display:block}
+    .actionbar .ext {position:absolute; display:none; margin-left:-4px;
+                     border:2px solid #666; border-top:none; 
+                     padding:0 2px 4px; background:#fff}
+    .actionbar :hover>.ext {display:block}
+    
+    .actionbar .del {float:left; margin-left:50px; color:#999}
+        
 /*
  * 404 and 500
  */
