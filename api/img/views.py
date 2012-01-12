@@ -9,7 +9,7 @@ from django.core.files import File
 import core.models as ikr
 
 class PublicListV(ListView):
-    template_name = 'webapp/plain_imgls.html'
+    template_name = 'webapp/com/plain_imgls.html'
     
     def get(self, request, since=0, till=0, count=20, format='html',
             *args, **kwargs):
@@ -37,8 +37,34 @@ class PublicListV(ListView):
             self.queryset = qs       
             return super(PublicListV, self).get(request, *args, **kwargs)
     
-class MineListV(View):
-    ''''''    
+class MineListV(ListView):
+    template_name = 'webapp/com/plain_imgls.html'
+    
+    def get(self, request, since=0, till=0, count=20, format='html',
+            *args, **kwargs):
+        ''''''
+        qs = ikr.ImageCopy.objects.filter(owner=request.user).order_by('-id')
+        
+        if since:
+            qs = qs.filter(pk__gt=since)
+            
+        if till:
+            qs = qs.filter(pk__lt=till)
+        
+        qs = qs[0:count]
+        
+        if 'json' == format:
+            results = []
+            for el in qs:
+                results.append(el.get_dict())
+                
+            return HttpResponse(json.dumps(dict(done=True, 
+                                                results=results)),
+                                content_type='application/json')
+            
+        else:     
+            self.queryset = qs       
+            return super(MineListV, self).get(request, *args, **kwargs)
 
 class UploadRawV(View):
     '''

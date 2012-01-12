@@ -11,24 +11,11 @@
 <section class="sec-main">
     <h2>{% block list_title %}{% endblock %}</h2>
     <div class="imgls">
-        {% for img in object_list %}
-        <figure class="imgctn" imgid="{{ img.id }}"
-                uri_f = "{{ img.uri_f }}" uri_ts = "{{ img.uri_ts }}">
-            <div class="wrap">
-                <img src="{{ img.uri_s }}" alt="{{ img.get_title }}" 
-                     width="{{ img.width_s }}" height="{{ img.height_s }}"/>
-                <a class="view" href="#"></a>
-                <div class="mask"></div>
-            </div>        
-            <figcaption>
-                <h5 class="title">{{ img.get_title }}</h5>
-                <p class="desc">{{ img.get_desc_body }}</p>                
-                <span class="status"></span>
-            </figcaption>
-        </figure>
-        {% empty %}
+        {% if object_list|length %}
+        {% include 'webapp/com/plain_imgls.html' %}
+        {% else %}
         <p class="empty">Drag images onto this page</p>
-        {% endfor %}
+        {% endif %}
         <figure class="imgctn tpl">
             <div class="wrap">
                 <img />
