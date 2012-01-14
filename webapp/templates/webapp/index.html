@@ -81,8 +81,9 @@
 
 <div class="bg">    
     {% for img in object_list %}
-    <img imgid="{{ img.id }}" src="{{ img.uri_tm }}" alt="{{ img.get_title }}" 
-         width="120px" height="120px"/>
+    <a href="/i/{{ img.id_str }}/">
+        <img imgid="{{ img.id }}" src="{{ img.uri_tm }}" 
+             alt="{{ img.get_title }}" width="120px" height="120px"/></a>
     {% endfor %}
 </div>
 {% endblock %}

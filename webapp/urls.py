@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from webapp.views import *
 
 urlpatterns = patterns('',
+    url(r'^i/(?P<slug>.+)/(?P<format>.*)/?$', ImageV.as_view()),                    
+                       
     url(r'^$', IndexV.as_view()),
     url(r'^dashboard/$', login_required(DashboardV.as_view())),
     

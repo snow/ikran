@@ -1,0 +1,17 @@
+{% extends 'webapp/base.html' %}
+{% block page_class %}pg-image{% endblock %}
+
+{% block layout_hd %}{% endblock %}
+{% block layout_bd %}{% endblock %}
+{% block layout_ft %}{% endblock %}
+
+{% block layout_extra %}
+<div class="darkbox">
+    {% block darkbox_hd %}{% endblock %}
+    
+    <div class="bd">
+        <img src="{{ object.uri_f }}" alt="{{ object.get_title }}" 
+             width="{{ object.width_f }}" height="{{ object.height_f }}" />
+    </div>
+</div>
+{% endblock %}

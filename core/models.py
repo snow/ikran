@@ -212,7 +212,7 @@ class ImageFile(models.Model):
         
         return imgf
         
-    id_str = models.CharField(max_length=255, unique=True)
+    id_str = models.CharField(max_length=255, unique=True, null=True)
     md5 = models.CharField(max_length=255, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     
@@ -256,6 +256,7 @@ class ImageCopy(models.Model):
     
     Owned by unique user
     '''
+    id_str = models.CharField(max_length=255, unique=True, null=True)
     description = models.CharField(max_length=255)
     # serilzed exif data
     exif_str = models.TextField(blank=True)
@@ -399,6 +400,9 @@ class ImageCopy(models.Model):
         img.exif_str = json.dumps(exif_dict)
             
         img.file = ImageFile.from_file(file)
+        img.save()
+        
+        img.id_str = struk.int2str(img.id)
         img.save()
         
         return img

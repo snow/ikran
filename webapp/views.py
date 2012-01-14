@@ -45,8 +45,7 @@ class DashboardV(gv.ListView):
     
     def get_context_data(self, **kwargs):
         context = super(DashboardV, self).get_context_data(**kwargs)
-        context['username'] = self.request.user.username
-        context['cur_user'] = self.request.user
+        context['owner'] = self.request.user
         return context
     
     def get(self, request, *args, **kwargs):
@@ -93,6 +92,12 @@ class PublicStreamV(gv.ListView):
         self.queryset = ikr.ImageCopy.objects.order_by('-id')[0:20]
             
         return super(PublicStreamV, self).get(request, *args, **kwargs)
+    
+class ImageV(gv.DetailView):
+    '''Show single image'''
+    model = ikr.ImageCopy
+    template_name = 'webapp/image.html'  
+    slug_field = 'id_str'
     
 class SettingsV(gv.TemplateView):
     template_name = 'webapp/settings.html'
