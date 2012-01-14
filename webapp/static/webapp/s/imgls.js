@@ -67,7 +67,7 @@
             var dis_to_btm = rcp.j_doc.height() - rcp.j_doc.scrollTop() - 
                              window.innerHeight;
                              
-            if(200 > dis_to_btm){
+            if(400 > dis_to_btm){
                 //loadmore();
                 ikr.j_imgls.trigger(ikr.imgls.E_LOADMORE);
             }
