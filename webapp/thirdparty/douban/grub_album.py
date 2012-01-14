@@ -86,20 +86,13 @@ class AlbumHTMLParser(HTMLParser):
 
 class AlbumGrubber(object):
     '''TODO'''
-    _title = None
-    _imgls = None
+    #_title = None
+    #_imgls = None
     _album = None
     
     def __init__(self, uri, user, ua=None, referer=None):
         if '://' not in uri:
             uri = 'http://' + uri
-        
-        try:
-            self._album = ikr.Album.objects.filter(source=uri, owner=user).get()
-        except ikr.Album.DoesNotExist:
-            pass # so grub it later
-        else:
-            return # already got it
         
         # build command for later call
         #cmd = [sys.executable, abspath(__file__)]    
@@ -111,12 +104,18 @@ class AlbumGrubber(object):
             Request.referer = referer
             # no need to pass referer
             #cmd.append('--ref='+referer)
-            
-        self._title, self._imgls = AlbumHTMLParser.parse_uri(uri)
-        self._album = ikr.Album(title=self._title, owner=user, source=uri)
-        self._album.save()
         
-        for img_src in self._imgls:
+        title, imgls = AlbumHTMLParser.parse_uri(uri)
+        
+        try:
+            self._album = ikr.Album.objects.get(source=uri, owner=user)
+        except ikr.Album.DoesNotExist:
+            self._album = ikr.Album(title=title, owner=user, source=uri)
+            self._album.save()
+        else:
+            return # already got it            
+        
+        for img_src in imgls:
             job = ikr.GrubJob(source=img_src, user=user, album=self._album)
             job.save()
         
