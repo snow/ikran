@@ -36,7 +36,7 @@ class GrubService(BaseBackgroundService):
             # if image with same owner and album exist, skip
             if e.album == job.album:
                 job.delete()
-                return
+                return True
                 
         grubber = grubbers.get(job.source.split('://')[-1])(job.source)                
         img = ikr.ImageCopy.from_string(grubber.get_data(),
