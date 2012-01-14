@@ -189,7 +189,6 @@
         var j_thumb = j_db_thumb_tpl.clone();
         
         j_thumb.attr('imgid', imgid);
-        j_thumb.find('img').attr('src', j_origin.attr('uri_ts'));   
         
         if(true === prepend){
             j_db_thumbs.prepend(j_thumb);
@@ -198,8 +197,9 @@
         }
         
         thumbls_initialized || init_thumbs();
-        
         j_db_thumbs.width(parseInt(thumb_width) + parseInt(j_db_thumbs.width()));
+        
+        j_thumb.find('img').attr('src', j_origin.attr('uri_ts'));
     }
     
     function on_next(evt){
