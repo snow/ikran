@@ -112,8 +112,6 @@ class AlbumGrubber(object):
         except ikr.Album.DoesNotExist:
             self._album = ikr.Album(title=title, owner=user, source=uri)
             self._album.save()
-        else:
-            return # already got it            
         
         for img_src in imgls:
             job = ikr.GrubJob(source=img_src, user=user, album=self._album)
