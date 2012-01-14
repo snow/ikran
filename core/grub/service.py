@@ -22,11 +22,13 @@ from core.bgservice import BaseBackgroundService
 import grubbers
 
 class GrubService(BaseBackgroundService):
-    _BREATH_TIMEOUT_SUCCESS = 1
     
     def serve(self):
         ''''''
-        job = ikr.GrubJob.objects.order_by('id')[0]      
+        try:
+            job = ikr.GrubJob.objects.order_by('id')[0]
+        except IndexError:
+            return False
         #print 'got job:', job.source
         
         exist = ikr.ImageCopy.objects.filter(source=job.source, owner=job.user)
@@ -45,11 +47,9 @@ class GrubService(BaseBackgroundService):
             img.album = job.album            
         img.save()
             
-        job.delete()
-        time.sleep(self._BREATH_TIMEOUT_SUCCESS)
+        job.delete()        
                                         
-                #break
-        
+        return True        
             
         
 if '__main__' == __name__:

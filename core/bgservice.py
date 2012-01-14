@@ -24,6 +24,7 @@ def _get_pid(pidfile):
 
 class BaseBackgroundService(threading.Thread):
     '''TODO'''
+    _BREATH_TIMEOUT_SUCCESS = 1
     _BREATH_TIMEOUT_ERR = 10
     
     def __init__(self):
@@ -34,7 +35,10 @@ class BaseBackgroundService(threading.Thread):
         '''TODO'''
         while not self.shutdown_flag:
             try:
-                self.serve()
+                if self.serve():
+                    time.sleep(self._BREATH_TIMEOUT_SUCCESS)
+                else:
+                    time.sleep(self._BREATH_TIMEOUT_ERR)                
             except:
                 # @todo: increase sleep time by error count
                 time.sleep(self._BREATH_TIMEOUT_ERR)
