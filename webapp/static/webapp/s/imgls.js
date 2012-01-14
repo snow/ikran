@@ -20,14 +20,16 @@
         initialized = false,
         
         selected = [],
+        is_selection_locked = false,
         
         API_DEL_URI = '/api/img/delete/',
-        API_LSMINE_URI = '/api/img/list/mine.html/till{till}/20/';
+        API_LSMINE_URI = '/api/img/list/mine.html/till{till}/20/',
+        API_MOVE2ALBUM_URI = '/api/img/move_to_album/{album_id}/';
         
     function init(){
         if(initialized){return;}
         
-        j_actionbar = $('.actionbar');
+        j_actionbar = $('.actionbar.batch');
         j_selected_count = j_actionbar.find('.stat .count');
         
         j_imgctn_tpl = ikr.j_imgls.find('.imgctn.tpl').remove().removeClass('tpl');
@@ -35,7 +37,9 @@
         //rcp.l(ikr.j_imgls);
         //rcp.l(ikr.j_imgls.find('.imgctn.tpl'));
         
-        ikr.j_imgls.on('click', 'img', function(evt){
+        ikr.j_imgls.on('click', '.wrap', function(evt){
+            if(is_selection_locked){return;}
+            
             $(evt.target).closest('.imgctn').toggleClass('on');
             ikr.j_imgls.trigger(ikr.imgls.E_SELECTION_CHANGE);
         }).
@@ -71,24 +75,59 @@
         
         j_actionbar.on('click', '.select .clear', function(evt){
             evt.preventDefault();
+            if(is_selection_locked){return;}
             
             ikr.j_imgls.find('.imgctn').removeClass('on');
             ikr.j_imgls.trigger(ikr.imgls.E_SELECTION_CHANGE);
         }).
         on('click', '.select .all', function(evt){
             evt.preventDefault();
+            if(is_selection_locked){return;}
             
             ikr.j_imgls.find('.imgctn').addClass('on');
             ikr.j_imgls.trigger(ikr.imgls.E_SELECTION_CHANGE);
         }).
         on('click', '.select .inverse', function(evt){
             evt.preventDefault();
+            if(is_selection_locked){return;}
             
             ikr.j_imgls.find('.imgctn').toggleClass('on');
             ikr.j_imgls.trigger(ikr.imgls.E_SELECTION_CHANGE);
         }).
+        on('click', '.move2album .ext a', function(evt){
+            evt.preventDefault();
+            is_selection_locked = true;
+            
+            var album_id = /^\/album\/(\d+)\//.exec($(this).attr('href'))[1],
+                j_2move = ikr.j_imgls.find('.imgctn.on'),
+                ids = [];
+            
+            $.each(j_2move, function(idx, el){
+                var j_t = $(el);
+                
+                j_t.addClass('ing').find('.status').text('moving');
+                    
+                ids.push(j_t.attr('imgid'));
+            });
+            
+            $.ajax(API_MOVE2ALBUM_URI.replace('{album_id}', album_id), {
+                type: 'POST',
+                data: {'ids':ids.join(',')},
+                success: function(data){
+                    ;
+                },
+                error: function(xhr, textStatus, errorThrown){
+                    j_2move.removeClass('ing').addClass('err');
+                    j_2move.find('.status').text('error');
+                },
+                complete: function(){
+                    is_selection_locked = false;
+                }
+            });
+        }).
         on('click', '.del', function(evt){
             evt.preventDefault();
+            is_selection_locked = true;
             
             var j_2del = ikr.j_imgls.find('.imgctn.on'),
                 ids = [];
@@ -96,13 +135,10 @@
             $.each(j_2del, function(idx, el){
                 var j_t = $(el);
                 
-                j_t.addClass('ing').removeClass('on').
-                    find('.status').text('deleting');
+                j_t.addClass('ing').find('.status').text('deleting');
                     
                 ids.push(j_t.attr('imgid'));
             });
-            
-            ikr.j_imgls.trigger(ikr.imgls.E_SELECTION_CHANGE);
             
             $.ajax(API_DEL_URI, {
                 type: 'POST',
@@ -110,13 +146,17 @@
                 success: function(data){
                     j_2del.fadeOut(function(){
                         j_2del.remove();
+                        ikr.j_imgls.trigger(ikr.imgls.E_SELECTION_CHANGE);
                     });
                     
                     ikr.j_imgls.trigger(ikr.imgls.E_IMG_REMOVED, [j_2del]);
                 },
                 error: function(xhr, textStatus, errorThrown){
                     j_2del.removeClass('ing').addClass('err');
-                    j_2del.find('.status').text('error');
+                    j_2del.find('.status').text('error');                    
+                },
+                complete: function(){
+                    is_selection_locked = false;
                 }
             });
         });

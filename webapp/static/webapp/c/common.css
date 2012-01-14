@@ -265,7 +265,9 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
         
     .actionbar>div {float:left}
     
-    .actionbar .blk {display:block; padding:4px 8px}
+    .actionbar .blk,
+    .actionbar .move2album .ext a,
+    .actionbar .move2album .ext span {display:block; padding:4px 8px}
     
     .actionbar .sp {padding:4px}
         
@@ -274,7 +276,7 @@ body>.dropzone .bg {width:100%; height:100%; background:#fff; opacity:0.6}
                      padding:0 2px 4px; background:#fff}
     .actionbar :hover>.ext {display:block}
     
-    .actionbar .del {float:left; margin-left:50px; color:#999}
+    .actionbar .del {float:left; color:#999}
         
 /*
  * 404 and 500

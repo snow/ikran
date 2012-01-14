@@ -24,7 +24,7 @@ rcp.j_doc.one('ready', function(){
         
         var d = new Date(),
             title = prompt('Please input album title', d.getFullYear()+'-'+
-                                                       d.getMonth()+'-'+
+                                                       (d.getMonth()+1)+'-'+
                                                        d.getDate()+' '+
                                                        d.getHours()+':'+
                                                        d.getMinutes());
