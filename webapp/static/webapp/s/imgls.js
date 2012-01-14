@@ -26,6 +26,7 @@
         is_selection_locked = false,
         
         API_DEL_URI = '/api/img/delete/',
+        API_PUBLIC_STREAM_URI = '/api/img/list/public/till{till}.html/',
         API_PEOPLE_STREAM_URI = '/api/img/list/people/{username}/till{till}.html/',
         API_ALBUM_STREAM_URI = '/api/album/list/{album_id}/till{till}.html/',
         API_MOVE2ALBUM_URI = '/api/img/move_to_album/{album_id}/';
@@ -187,9 +188,11 @@
         if(ikr.imgls.album_id){
             api = API_ALBUM_STREAM_URI.replace('{album_id}', 
                                                ikr.imgls.album_id);
-        } else {
+        } else if(ikr.imgls.owner_name) {
             api = API_PEOPLE_STREAM_URI.replace('{username}', 
                                                 ikr.imgls.owner_name);
+        } else {
+            api = API_PUBLIC_STREAM_URI;
         }
         
         api = api.replace('{till}', j_lastimg.attr('imgid'));

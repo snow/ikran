@@ -83,7 +83,16 @@ class AlbumV(gv.DetailView):
         context = super(AlbumV, self).get_context_data(**kwargs)
         context['object_list'] = self.object.imagecopy_set.order_by('-id')
         context['owner'] = self.object.owner
-        return context  
+        return context
+    
+class PublicStreamV(gv.ListView):
+    '''List recent public images'''
+    template_name = 'webapp/public_stream.html'
+    
+    def get(self, request, *args, **kwargs):
+        self.queryset = ikr.ImageCopy.objects.order_by('-id')[0:20]
+            
+        return super(PublicStreamV, self).get(request, *args, **kwargs)
     
 class SettingsV(gv.TemplateView):
     template_name = 'webapp/settings.html'

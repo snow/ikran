@@ -38,8 +38,10 @@
         <a class="logo" href="/{% if user.is_authenticated %}dashboard/{% endif %}">Ikran</a>
         
         <nav>
-            <a href="#">Mine</a>
-            <a href="#">Explore</a>
+            {% if user.is_authenticated %}
+            <a href="/people/{{ user.username }}/recent/">Mine</a>
+            {% endif %}
+            <a href="/public/">Explore</a>
         </nav>
         
         {% if user.is_authenticated %}
