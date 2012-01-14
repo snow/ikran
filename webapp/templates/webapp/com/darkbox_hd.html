@@ -8,12 +8,15 @@
             <a class="twitter" href="#">Twitter</a>
         </div>
     </div>
+    {% if owner == user %}
     <div class="move2album">
         <span>Move to album:</span>
         <div class="ext">
-            {% album_list user cur_album %}
+            {% album_list owner cur_album %}
         </div>
-    </div>-->
+    </div>
+    {% endif %}
+    -->
     <div class="right">
         <!--<a class="del" href="#">delete</a>-->
         <a class="x" href="#">close</a>

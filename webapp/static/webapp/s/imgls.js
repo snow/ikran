@@ -9,7 +9,10 @@
         
         E_LOADMORE: 'evt-ikr-loadmore',
         
-        E_SELECTION_CHANGE: 'evt-ikr-selection_change'
+        E_SELECTION_CHANGE: 'evt-ikr-selection_change',
+        
+        owner_name: false,
+        album_id: false
     };
     
     var j_imgctn_tpl, 
@@ -23,10 +26,11 @@
         is_selection_locked = false,
         
         API_DEL_URI = '/api/img/delete/',
-        API_LSMINE_URI = '/api/img/list/mine.html/till{till}/20/',
+        API_PEOPLE_STREAM_URI = '/api/img/list/people/{username}/till{till}.html/',
+        API_ALBUM_STREAM_URI = '/api/album/list/{album_id}/till{till}.html/',
         API_MOVE2ALBUM_URI = '/api/img/move_to_album/{album_id}/';
         
-    function init(){
+    ikr.imgls.init = function(){
         if(initialized){return;}
         
         j_actionbar = $('.actionbar.batch');
@@ -177,11 +181,20 @@
         
         ikr.j_imgls.addClass('ing');
         
-        var j_lastimg = ikr.j_imgls.find('.imgctn:last');
+        var j_lastimg = ikr.j_imgls.find('.imgctn:last'),
+            api = false;
+            
+        if(ikr.imgls.album_id){
+            api = API_ALBUM_STREAM_URI.replace('{album_id}', 
+                                               ikr.imgls.album_id);
+        } else {
+            api = API_PEOPLE_STREAM_URI.replace('{username}', 
+                                                ikr.imgls.owner_name);
+        }
         
-        $('<div />').load(API_LSMINE_URI.replace('{till}', 
-                                                 j_lastimg.attr('imgid')), 
-                          function(){
+        api = api.replace('{till}', j_lastimg.attr('imgid'));
+        
+        $('<div />').load(api, function(){
             var j_tmp = $(this),
                 j_imgs = j_tmp.find('.imgctn');
                 
@@ -229,6 +242,4 @@
             j_imgctn.prependTo(ikr.j_imgls);
         }
     };
-    
-    rcp.j_doc.one('ready', init);
 })(jQuery);

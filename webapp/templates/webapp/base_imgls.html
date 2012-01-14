@@ -4,9 +4,8 @@
 {% load ikr_tags %}
 
 {% block layout_bd %}
-    {% block left %}
-    {% include 'webapp/com/left/albumls.html' with user=request.user cur_album=False %}
-    {% endblock %}
+    {% block left %}{% endblock %}
+    
     {% block main %}
 <section class="sec-main">
     <h2>{% block list_title %}{% endblock %}</h2>
@@ -14,7 +13,11 @@
         {% if object_list|length %}
         {% include 'webapp/com/plain_imgls.html' %}
         {% else %}
+            {% if owner == user %}
         <p class="empty">Drag images onto this page</p>
+            {% else %}
+        <p class="empty">It's empty</p>
+            {% endif %}
         {% endif %}
         <figure class="imgctn tpl">
             <div class="wrap">
@@ -30,13 +33,17 @@
             </figcaption>
         </figure>
     </div>
+    <script>ikr.j_imgls = $('.imgls');</script>
+    {% block extra_imgls_script %}{% endblock %}
     <div class="c"></div>
 </section>
     {% endblock %}
 
     {% block right %}
 <section class="sec-right">
-    {% include 'webapp/com/right/upload_form.html' %}
+    {% if owner == user %}
+        {% include 'webapp/com/right/upload_form.html' %}
+    {% endif %}
     <section class="help">
         <h3>help</h3>
         <h4>viewing image <em>(aka. darkbox)</em></h4>            
@@ -92,6 +99,7 @@
             <!--<a class="twitter blk" href="#">Twitter</a>-->
         </div>
     </div>
+    {% if owner == user %}
     <div class="sp">-</div>
     <div class="move2album">
         <span class="blk">Move to album</span>
@@ -101,7 +109,9 @@
             {% album_list user %}-->
         </div>
     </div>
-    <div class="sp">-</div>
+    <div class="sp">-</div>    
     <a class="del blk" href="#">delete</a>
+    {% endif %}
 </div>
+<script>ikr.imgls.init();ikr.darkbox.init();</script>
 {% endblock %}

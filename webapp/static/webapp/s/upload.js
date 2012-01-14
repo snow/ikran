@@ -81,7 +81,7 @@
     rcp.preimg('/s/common/i/loading-16.gif');
     rcp.preimg('/s/common/i/alert-16.png');
     
-    function init_dnd(){
+    ikr.upload.init_dnd = function(){
         j_mask = $(settings.MASK_TPL);
         j_inr = j_mask.find('.inr');
         
@@ -98,8 +98,6 @@
         ikr.j_imgls.on(ikr.upload.E_UPLOAD_DONE, on_upload_start);
         ikr.j_imgls.on('click', '.retry', on_retry);
     }
-    
-    rcp.j_doc.one('ready', init_dnd);
     
     function on_drag_over(evt){
         if(!is_drag_evt_handled){

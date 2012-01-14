@@ -136,7 +136,7 @@
         thumbls_initialized = true;
     }
         
-    function init(){
+    ikr.darkbox.init = function(){
         init_dom();
         init_evt();
         init_keyboard();
@@ -155,8 +155,6 @@
         
         //j_db_thumbs.find('[imgid]').length && init_thumbs();
     }
-    
-    rcp.j_doc.one('ready', init);
     
     function set_darkbox_size(){
         j_db_img.css({

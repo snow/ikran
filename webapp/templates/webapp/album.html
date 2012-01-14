@@ -10,6 +10,10 @@
     {% include 'webapp/com/left/albumls.html' with user=request.user cur_album=object %}
 {% endblock %}
 
+{% block extra_imgls_script %}
+<script>ikr.imgls.album_id= '{{ object.id }}'</script>
+{% endblock %}
+
 {% block darkbox_hd %}
     {% include 'webapp/com/darkbox_hd.html' with user=request.user cur_album=object %}
 {% endblock %}

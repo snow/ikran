@@ -46,12 +46,13 @@ class DashboardV(gv.ListView):
     def get_context_data(self, **kwargs):
         context = super(DashboardV, self).get_context_data(**kwargs)
         context['username'] = self.request.user.username
+        context['cur_user'] = self.request.user
         return context
     
     def get(self, request, *args, **kwargs):
         user = User.objects.filter(username=request.user.username).get()
         self.queryset = ikr.ImageCopy.objects.filter(owner=user).\
-                            order_by('-created')[0:20]
+                            order_by('-id')[0:20]
             
         return super(DashboardV, self).get(request, *args, **kwargs)
     
@@ -62,13 +63,14 @@ class PeopleStreamV(gv.ListView):
     
     def get_context_data(self, **kwargs):
         context = super(PeopleStreamV, self).get_context_data(**kwargs)
-        context['username'] = self.kwargs['username']
+        context['owner'] = self.kwargs['owner']
         return context
     
     def get(self, request, username, *args, **kwargs):
         user = User.objects.filter(username=username).get()
+        self.kwargs['owner'] = user
         self.queryset = ikr.ImageCopy.objects.filter(owner=user).\
-                                              order_by('-created')
+                                              order_by('-id')[0:20]
             
         return super(PeopleStreamV, self).get(request, *args, **kwargs)
 
@@ -79,7 +81,8 @@ class AlbumV(gv.DetailView):
     
     def get_context_data(self, **kwargs):
         context = super(AlbumV, self).get_context_data(**kwargs)
-        context['object_list'] = self.object.imagecopy_set.order_by('-created')
+        context['object_list'] = self.object.imagecopy_set.order_by('-id')
+        context['owner'] = self.object.owner
         return context  
     
 class SettingsV(gv.TemplateView):

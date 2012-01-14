@@ -5,9 +5,7 @@
 (function($){
     window.ikr = {};
     
-    rcp.j_doc.one('ready', function(evt){
-        ikr.j_imgls = $('.imgls');
-    });
+    ikr.j_imgls = false;
     
     ikr.byte2mb = function(value){
         return Math.round(value / 1024 / 1024 * 100) / 100; 

@@ -1,5 +1,7 @@
 {% load ikr_tags %}
 <nav class="sec-left albumls">
+    {% if owner == user %}
     <a class="create_album" href="#">+ Create Album</a>
-    {% album_list user cur_album %}
+    {% endif %}
+    {% album_list owner cur_album %}
 </nav>
