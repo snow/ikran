@@ -35,7 +35,7 @@
     function init_dom(){
         j_darkbox = $('.darkbox');
         j_db_hd = j_darkbox.find('header');
-        j_db_img = j_darkbox.find('img');
+        j_db_img = j_darkbox.find('.bd').find('img');
         j_db_hd = j_darkbox.find('header');
         j_db_ft = j_darkbox.find('footer');
         j_db_thumbs = j_db_ft.find('.thumbs');
@@ -187,7 +187,6 @@
         }
         
         var j_thumb = j_db_thumb_tpl.clone();
-        
         j_thumb.attr('imgid', imgid);
         
         if(true === prepend){
@@ -217,7 +216,7 @@
         return $('.imgctn').filter('[imgid='+j_thumb.attr('imgid')+']');
     }
     
-    var PRELOAD_NEXT_LIMIT = 10;        
+    var PRELOAD_NEXT_LIMIT = 5;        
     function preload_next(j_thumb, depth){
         setTimeout(function(){
             var j_next = j_thumb.next('[imgid]');
@@ -233,7 +232,7 @@
         }, BREATH_TIMEOUT);
     }
     
-    var PRELOAD_PREV_LIMIT = 3;
+    var PRELOAD_PREV_LIMIT = 2;
     function preload_prev(j_thumb, depth){
         setTimeout(function(){
             var j_prev = j_thumb.prev('[imgid]');
