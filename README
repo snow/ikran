@@ -1,9 +1,10 @@
 requirments
 ===============
-* python-tweepy
 * python-pyexiv2
 * python-oauth
 * python-openid
+* python-tweepy
+* python-flickrapi
 
 notes 4 myself
 --------------

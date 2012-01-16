@@ -21,4 +21,7 @@ urlpatterns = patterns('',
     url(r'^twitter/authenticate_return/$', TwitterAuthenticateReturnV.as_view()),
     url(r'^twitter/authorize/$', TwitterAuthorizeStartV.as_view()),
     url(r'^twitter/authorize_return/$', TwitterAuthorizeReturnV.as_view()),
+    
+    url(r'^flickr/authorize/$', FlickrAuthorizeStartV.as_view()),
+    url(r'^flickr/authorize_return/$', FlickrAuthorizeReturnV.as_view()),
 )

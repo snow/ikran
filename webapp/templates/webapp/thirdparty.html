@@ -34,6 +34,15 @@
         {% endif %}
     </section>
     
+    <section>
+        <h4>Flickr</h4>
+        {% if flickr_account %}
+        <span>connected with {{ flickr_account.username }}</span>
+        {% else %}
+        <a href="/thirdparty/flickr/authorize/">Connect with flickr</a>
+        {% endif %}
+    </section>
+    
     <div class="c"></div>
 </section>
 

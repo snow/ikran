@@ -57,4 +57,14 @@ class DoubanAccount(models.Model):
     key = models.CharField(max_length=255)
     secret = models.CharField(max_length=255)
     
-    user = models.ForeignKey(User, unique=True)    
+    user = models.ForeignKey(User, unique=True)
+    
+class FlickrAccount(models.Model):
+    '''A flickr account that linked with a django user'''
+    nsid = models.CharField(max_length=255, unique=True)
+    username = models.CharField(max_length=255, unique=True)
+    fullname = models.CharField(max_length=255)
+    
+    token = models.CharField(max_length=255)
+    
+    user = models.ForeignKey(User, unique=True)

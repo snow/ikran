@@ -2,10 +2,12 @@
 from django.http import HttpResponse, HttpResponseRedirect
 import django.views.generic as gv
 
-from pyfyd.models import TwitterAccount, GoogleAccount, DoubanAccount
+from pyfyd.models import TwitterAccount, GoogleAccount, DoubanAccount, \
+                         FlickrAccount
 import pyfyd.google.views as pgv
 import pyfyd.twitter.views as ptv
 import pyfyd.douban.views as pdv
+import pyfyd.flickr.views as pfv
 
 class IndexV(gv.TemplateView):
     template_name = 'webapp/thirdparty.html'
@@ -15,21 +17,27 @@ class IndexV(gv.TemplateView):
         
         try:
             context['douban_account'] = DoubanAccount.objects.\
-                                            filter(user=self.request.user).get()
+                                            get(user=self.request.user)
         except DoubanAccount.DoesNotExist:
             context['douban_account'] = False
             
         try:
             context['google_account'] = GoogleAccount.objects.\
-                                            filter(user=self.request.user).get()
+                                            get(user=self.request.user)
         except GoogleAccount.DoesNotExist:
             context['google_account'] = False
             
         try:
             context['twitter_account'] = TwitterAccount.objects.\
-                                            filter(user=self.request.user).get()
+                                            get(user=self.request.user)
         except TwitterAccount.DoesNotExist:
             context['twitter_account'] = False
+            
+        try:
+            context['flickr_account'] = FlickrAccount.objects.\
+                                            get(user=self.request.user)
+        except FlickrAccount.DoesNotExist:
+            context['flickr_account'] = False
             
         return context
 
@@ -98,5 +106,18 @@ class TwitterAuthorizeReturnV(ptv.AuthorizeReturnV):
     
     def get(self, request, *args, **kwargs):
         super(TwitterAuthorizeReturnV, self).get(request, *args, **kwargs)
+        
+        return HttpResponseRedirect(self.success_uri)    
+    
+class FlickrAuthorizeStartV(pfv.AuthStartV):
+    '''super handles every thing'''    
+    #callback = '/thirdparty/flickr/authorize_return/'
+    
+class FlickrAuthorizeReturnV(pfv.AuthorizeReturnV):
+    '''super handles every thing'''
+    success_uri = '/thirdparty/'    
+    
+    def get(self, request, *args, **kwargs):
+        super(FlickrAuthorizeReturnV, self).get(request, *args, **kwargs)
         
         return HttpResponseRedirect(self.success_uri)    
