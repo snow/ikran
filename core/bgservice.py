@@ -27,13 +27,17 @@ class BaseBackgroundService(threading.Thread):
     _BREATH_TIMEOUT_SUCCESS = 1
     _BREATH_TIMEOUT_ERR = 10
     
+    _NUM_WORKERS = 1
+    
+    _workers = []
+    
     def __init__(self):
         threading.Thread.__init__(self)
-        self.shutdown_flag = False
+        self.__shutdown_flag = False
         
     def run(self):
         '''TODO'''
-        while not self.shutdown_flag:
+        while not self.__shutdown_flag:
             try:
                 if self.serve():
                     time.sleep(self._BREATH_TIMEOUT_SUCCESS)
@@ -48,6 +52,31 @@ class BaseBackgroundService(threading.Thread):
     def serve(self):
         '''Subclass MUST override this method and put business logic here'''
         raise NotImplementedError()
+    
+    def _shutdown(self):
+        '''DO call super in subclass'''
+        self.__shutdown_flag = True
+    
+    @classmethod
+    def _init_workers(cls):
+        for i in range(cls._NUM_WORKERS):                   
+            worker = cls()
+            worker.daemon = True
+            worker.start()
+            cls._workers.append(worker)
+            
+    @classmethod
+    def _shutdown_workers(cls):
+        for worker in cls._workers:                    
+            worker._shutdown()
+        
+        for worker in cls._workers:                    
+            if worker.is_alive():
+                worker.join()
+                
+    @classmethod
+    def _on_exception(cls, err):
+        ''''''
                 
     @classmethod
     def start_(cls, pidfile):
@@ -60,20 +89,19 @@ class BaseBackgroundService(threading.Thread):
                 # force SIGINT go to main thread
                 signal.signal(signal.SIGINT, _interrupt_handler)
                 
-                worker = cls()
-                worker.daemon = True
-                worker.start()
+                cls._init_workers()
                 
                 while 1 < threading.active_count(): # more threads than the main
                     time.sleep(0.1) # just waiting for KeyboardInterrupt...
-            except KeyboardInterrupt:
-                print 'shutting down...'
                     
-                worker.shutdown_flag = True
-                worker.join()
+            except KeyboardInterrupt:
+                print 'shutting down...'                
+                cls._shutdown_workers() 
+                                       
             except Exception as err:
-                mail_admins('{} dead'.format(cls.__name__), err)
-                raise  
+                if not cls._on_exception(err):
+                    raise
+            
             finally:
                 f.close()
                 os.remove(pidfile)
@@ -84,6 +112,12 @@ class BaseBackgroundService(threading.Thread):
     def stop_(cls, pidfile):
         pid = _get_pid(pidfile)
         if pid:
-            os.kill(pid, signal.SIGINT)
+            try:
+                os.kill(pid, signal.SIGINT)
+            except OSError as err:
+                if 3 == errno:
+                    os.remove(pidfile)
+                else:
+                    raise
         else:
             print '{} is not running'.format(cls.__name__)

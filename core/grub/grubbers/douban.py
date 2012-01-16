@@ -60,21 +60,21 @@ class DoubanPhotoHTMLParser(BaseHTMLParser):
 
 class DoubanPhotoGrubber(BaseGrubber):
     ''''''
-    def __init__(self, source):
-        ''''''
-        src, self._desc = DoubanPhotoHTMLParser.parse_uri(source)
-        if src and self._desc:
-            self._data = get_image(src, source)
+    def grub(self, job):
+        src, desc = DoubanPhotoHTMLParser.parse_uri(job.source)
+        if src:
+            raw_data = get_image(src, job.source)
         else:
             raise Exception('failed to parse {}, is it a douban photo?'.\
                             format(source))
         
-    def get_data(self):
-        ''''''
-        return self._data
-    
-    def get_desc(self):
-        ''''''
-        return self._desc
+        return raw_data, desc
+#    def get_data(self):
+#        ''''''
+#        return self._data
+#    
+#    def get_desc(self):
+#        ''''''
+#        return self._desc
     
 #register_grubber('www.douban.com', DoubanPhotoGrubber)

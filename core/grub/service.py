@@ -8,6 +8,7 @@ import argparse
 #import os
 #import urllib2
 from os.path import abspath, splitext
+from Queue import Queue
 
 #from tweepy import OAuthHandler, API
 
@@ -22,6 +23,28 @@ from core.bgservice import BaseBackgroundService
 import grubbers
 
 class GrubService(BaseBackgroundService):
+    _queue_map = None
+    _grubber_map = None
+    
+    def __init__(self):
+        super(GrubService, self).__init__()
+        
+        self._queue_map = {}
+        self._grubber_map = {}
+        for key in grubbers.list.keys():       
+            self._queue_map[key] = Queue()
+                        
+            grubber = grubbers.list[key](self._queue_map[key])
+            grubber.daemon = True
+            grubber.start()
+            self._grubber_map[key] = grubber
+            
+    def _shutdown(self):
+        super(GrubService, self)._shutdown()
+        
+        # wait all queued jobs to be done
+        for queue in self._queue_map.values():
+            queue.join()
     
     def serve(self):
         ''''''
@@ -37,19 +60,27 @@ class GrubService(BaseBackgroundService):
             if e.album == job.album:
                 job.delete()
                 return True
-                
-        grubber = grubbers.get(job.source.split('://')[-1])(job.source)                
-        img = ikr.ImageCopy.from_string(grubber.get_data(),
-                                        job.user,
-                                        grubber.get_desc())        
-        img.source = job.source        
-        if job.album:
-            img.album = job.album            
-        img.save()
             
-        job.delete()        
+        for key in self._queue_map:
+            if job.source.split('://')[-1].startswith(key):
+                self._queue_map[key].put(job)
+                job.delete()
+                return True
+        
+        raise Exception('could not find grubber for ' + job.source)
+                
+#        grubber = grubbers.get(job.source.split('://')[-1])(job.source)
+#        img = ikr.ImageCopy.from_string(grubber.get_data(),
+#                                        job.user,
+#                                        grubber.get_desc())        
+#        img.source = job.source        
+#        if job.album:
+#            img.album = job.album            
+#        img.save()
+#            
+#        job.delete()        
                                         
-        return True        
+#        return True        
             
         
 if '__main__' == __name__:

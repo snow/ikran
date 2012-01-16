@@ -1,10 +1,13 @@
 import urllib2
+import threading
 from HTMLParser import HTMLParser
 
 from pyrcp.django.cli import setup_env
 settings = setup_env(__file__)
 
 from django.core.mail import mail_admins
+
+import core.models as ikr
 
 _DEFAULT_UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.7 ' + \
                 '(KHTML, like Gecko) Chrome/16.0.912.63 Safari/535.7'
@@ -60,18 +63,46 @@ class BaseHTMLParser(HTMLParser):
         return parser._uri, parser._desc
 
 
-class BaseGrubber(object):
-    '''Interface of image grubber'''
-    def __init__(self, source):
-        ''''''
-        raise NotImplementedError()
-        
-    def get_data(self):
-        ''''''
+#class BaseGrubber(object):
+#    '''Interface of image grubber'''
+#    def __init__(self, source):
+#        ''''''
+#        raise NotImplementedError()
+#        
+#    def get_data(self):
+#        ''''''
+#        raise NotImplementedError()
+#    
+#    def get_desc(self):
+#        ''''''
+#        raise NotImplementedError()
+
+class BaseGrubber(threading.Thread):
+    '''Base class of image grubber'''
+    __queue = None
+    
+    def __init__(self, queue):
+        threading.Thread.__init__(self)
+        self.__queue = queue
+    
+    def run(self):
+        while True:
+            job = self.__queue.get()
+            
+            raw_data, desc = self.grub(job)
+                        
+            img = ikr.ImageCopy.from_string(raw_data, job.user, desc)        
+            img.source = job.source        
+            if job.album:
+                img.album = job.album            
+            img.save()
+            
+            self.__queue.task_done()
+    
+    def grub(self, job):
+        '''Should return raw image data string and description string in tuple'''
         raise NotImplementedError()
     
-    def get_desc(self):
-        ''''''
-        raise NotImplementedError()
-
-
+    @classmethod
+    def _on_exception(cls, err):
+        mail_admins('exception in {}'.format(cls.__name__), err)
