@@ -1,86 +1,44 @@
 #! /usr/bin/env python2.7
 
-#import threading
-#from datetime import datetime, timedelta
 import time
 import argparse
-#import signal
-#import os
-#import urllib2
 from os.path import abspath, splitext
 from Queue import Queue
-
-#from tweepy import OAuthHandler, API
 
 from pyrcp.django.cli import setup_env
 settings = setup_env(__file__)
 
-#from django.core.mail import mail_admins
 from django.contrib.auth.models import User
 import core.models as ikr
 from core.bgservice import BaseBackgroundService
-#import lib
 import grubbers
 
 class GrubService(BaseBackgroundService):
-    _queue_map = None
-    _grubber_map = None
+    '''Load GrubJob from db and distribute to corresponding grubber'''
+    _grubber = None
     
-    def __init__(self):
-        super(GrubService, self).__init__()
-        
-        self._queue_map = {}
-        self._grubber_map = {}
-        for key in grubbers.list.keys():       
-            self._queue_map[key] = Queue()
-                        
-            grubber = grubbers.list[key](self._queue_map[key])
-            grubber.daemon = True
-            grubber.start()
-            self._grubber_map[key] = grubber
-            
-    def _shutdown(self):
-        super(GrubService, self)._shutdown()
-        
-        # wait all queued jobs to be done
-        for queue in self._queue_map.values():
-            queue.join()
+    def __init__(self, grubber):
+        super(GrubService, self).__init__()        
+        self._grubber = grubber
     
     def serve(self):
         ''''''
         try:
-            job = ikr.GrubJob.objects.order_by('id')[0]
+            job = ikr.GrubJob.objects.filter(type=self._grubber.TYPE).\
+                    order_by('priority', 'id')[0]
         except IndexError:
             return False
-        #print 'got job:', job.source
         
-        exist = ikr.ImageCopy.objects.filter(source=job.source, owner=job.user)
-        for e in exist:
-            # if image with same owner and album exist, skip
-            if e.album == job.album:
-                job.delete()
-                return True
+        if self._grubber.grub(job) is not False:
+            job.delete()
             
-        for key in self._queue_map:
-            if job.source.split('://')[-1].startswith(key):
-                self._queue_map[key].put(job)
-                job.delete()
-                return True
-        
-        raise Exception('could not find grubber for ' + job.source)
-                
-#        grubber = grubbers.get(job.source.split('://')[-1])(job.source)
-#        img = ikr.ImageCopy.from_string(grubber.get_data(),
-#                                        job.user,
-#                                        grubber.get_desc())        
-#        img.source = job.source        
-#        if job.album:
-#            img.album = job.album            
-#        img.save()
-#            
-#        job.delete()        
-                                        
-#        return True        
+    @classmethod
+    def _init_workers(cls):
+        for grubber in grubbers.list:                   
+            worker = cls(grubber())
+            worker.daemon = True
+            worker.start()
+            cls._workers.append(worker)
             
         
 if '__main__' == __name__:

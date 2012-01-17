@@ -115,7 +115,7 @@ class BaseBackgroundService(threading.Thread):
             try:
                 os.kill(pid, signal.SIGINT)
             except OSError as err:
-                if 3 == errno:
+                if 3 == err.errno:
                     os.remove(pidfile)
                 else:
                     raise

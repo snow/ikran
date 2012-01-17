@@ -78,7 +78,7 @@ class AlbumHTMLParser(HTMLParser):
             self._in_title = False
     
     @classmethod            
-    def parse_uri(cls, uri, imgls=None):
+    def parse_uri(cls, uri, imgls=None):        
         parser = cls()
         parser._imgls = imgls or []
         parser.feed(Request.get_content(uri))
@@ -114,7 +114,8 @@ class AlbumGrubber(object):
             self._album.save()
         
         for img_src in imgls:
-            job = ikr.GrubJob(source=img_src, user=user, album=self._album)
+            job = ikr.GrubJob(type='douban.photo', data=img_src, 
+                              user=user, album=self._album)
             job.save()
         
         #cmd.append('--album_id='+str(self._album.id))

@@ -50,7 +50,7 @@ class BaseBackend(ModelBackend):
         if linked.exists():
             account = cls.update_account(linked.get(), account)
             
-        account.user = user
+        account.owner = user
         account.save()
     
     def authenticate(self, cid, key, secret, **kwargs):
@@ -73,8 +73,8 @@ class BaseBackend(ModelBackend):
             else:
                 email = '{}@n.cc'.format(account.username)
                 
-            account.user = User.objects.create_user(account.username, email)
+            account.owner = User.objects.create_user(account.username, email)
             account.save()
             
-        return account.user
+        return account.owner
         

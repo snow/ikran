@@ -34,14 +34,57 @@
         {% endif %}
     </section>
     
-    <section>
+    <section class="flickr">
         <h4>Flickr</h4>
         {% if flickr_account %}
-        <span>connected with {{ flickr_account.username }}</span>
+        <span>connected with {{ flickr_account.username }}</span><br />
+        <a id="import_flickr" href="/thirdparty/flickr/import/">import your flickr photos</a>
         {% else %}
         <a href="/thirdparty/flickr/authorize/">Connect with flickr</a>
         {% endif %}
     </section>
+    
+    <script>
+(function($){
+    var j_dialog = $('<div class="" title="Import your flickr photos">'+
+                         '<p class="ing">Analyzing your stream</p>'+
+                         '<p class="done" style="display:none">Your photos has been queued.<br />'+
+                             'It may take quite a white to complete.</p>'+
+                     '</div>').dialog({
+                         modal: true,
+                         autoOpen: false,
+                         closeOnEscape: false,
+                         buttons:{
+                            OK: function(){
+                                $(this).dialog('close');
+                            }
+                        }
+                     }),
+        j_active_link = $('#import_flickr').removeAttr('id'),
+        j_dialog_ctn = j_dialog.closest('.ui-dialog'),
+        j_OK = j_dialog_ctn.find('.ui-dialog-buttonpane button');    
+    
+    j_dialog_ctn.find('.ui-dialog-titlebar-close').remove();    
+    j_OK.attr('disabled', 'disabled');
+    
+    j_active_link.click(function(evt){
+        evt.preventDefault();
+        
+        j_dialog.dialog('open');
+        
+        $.ajax(j_active_link.attr('href'), {
+            type: 'POST',
+            success: function(){
+                j_dialog.find('.ing').remove();
+                j_dialog.find('.done').show();
+            },
+            complete: function(){
+                j_OK.removeAttr('disabled');
+            }
+        });
+    });
+})(jQuery);        
+    </script>
     
     <div class="c"></div>
 </section>

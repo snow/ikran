@@ -409,6 +409,12 @@ class ImageCopy(models.Model):
     
 class GrubJob(models.Model):
     '''Item in image grub queue'''
-    source = models.CharField(max_length=255)
-    album = models.ForeignKey(Album)
+    HIGH_PRIORITY = 0
+    MID_PRIORITY = 1
+    LOW_PRIORITY = 2
+    
+    type = models.CharField(max_length=255)
+    data = models.TextField()
+    album = models.ForeignKey(Album, null=True, blank=True)
     user = models.ForeignKey(User, null=True, blank=True)
+    priority = models.PositiveSmallIntegerField(default=LOW_PRIORITY)

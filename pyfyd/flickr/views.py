@@ -12,7 +12,8 @@ class BaseV(View):
         super(BaseV, self).__init__(*args, **kwargs)
         
         self.client = flickrapi.FlickrAPI(settings.FLICKR_CONSUMER_KEY,
-                                          settings.FLICKR_CONSUMER_SECRET)
+                                          settings.FLICKR_CONSUMER_SECRET,
+                                          store_token=False)
         
 class AuthStartV(AuthStartMixin, BaseV):        
     '''
@@ -62,11 +63,11 @@ class AuthorizeReturnV(AuthReturnV):
         try:
             linked_account = FlickrAccount.objects.get(nsid=self.account.nsid)
         except FlickrAccount.DoesNotExist:
-            self.account.user = request.user
+            self.account.owner = request.user
             self.account.save()
         else:
             linked_account.username = self.account.username
             linked_account.fullname = self.account.fullname
             linked_account.token = self.account.token
-            linked_account.user = request.user
+            linked_account.owner = request.user
             linked_account.save()

@@ -30,7 +30,7 @@ class TwitterAccount(models.Model):
     key = models.CharField(max_length=255)
     secret = models.CharField(max_length=255)
     
-    user = models.ForeignKey(User, unique=True)
+    owner = models.ForeignKey(User, unique=True)
     
             
 class GoogleAccount(models.Model):
@@ -44,7 +44,7 @@ class GoogleAccount(models.Model):
     key = models.CharField(max_length=255)
     secret = models.CharField(max_length=255)
     
-    user = models.ForeignKey(User, unique=True)
+    owner = models.ForeignKey(User, unique=True)
     
     
 class DoubanAccount(models.Model):
@@ -57,7 +57,7 @@ class DoubanAccount(models.Model):
     key = models.CharField(max_length=255)
     secret = models.CharField(max_length=255)
     
-    user = models.ForeignKey(User, unique=True)
+    owner = models.ForeignKey(User, unique=True)
     
 class FlickrAccount(models.Model):
     '''A flickr account that linked with a django user'''
@@ -67,4 +67,4 @@ class FlickrAccount(models.Model):
     
     token = models.CharField(max_length=255)
     
-    user = models.ForeignKey(User, unique=True)
+    owner = models.ForeignKey(User, unique=True)

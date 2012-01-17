@@ -1,23 +1,9 @@
-#import sys
-#import time
-#import urllib2
-#import argparse
-#import subprocess
-#from HTMLParser import HTMLParser
-#from os.path import abspath
-#from datetime import datetime
-#import logging
+from lib import save_image, BaseHTMLParser   
 
-#from pyrcp.django.cli import setup_env
-#settings = setup_env(__file__)
+from pyrcp.django.cli import setup_env
+settings = setup_env(__file__)
 
-#from django.contrib.auth.models import User
-
-#import persistent_messages
-#from persistent_messages.storage import PersistentMessageStorage 
-
-#import core.models as ikr
-from lib import get_image, BaseHTMLParser, BaseGrubber   
+import core.models as ikr
 
 class DoubanPhotoHTMLParser(BaseHTMLParser):
     '''Parse photo view page in douban'''
@@ -58,23 +44,16 @@ class DoubanPhotoHTMLParser(BaseHTMLParser):
                 self._in_photo_desc = False
 
 
-class DoubanPhotoGrubber(BaseGrubber):
+class PhotoGrubber(object):
     ''''''
+    TYPE = 'douban.photo'
+    
     def grub(self, job):
-        src, desc = DoubanPhotoHTMLParser.parse_uri(job.source)
+        uri = job.data
+        
+        src, desc = DoubanPhotoHTMLParser.parse_uri(uri)
         if src:
-            raw_data = get_image(src, job.source)
+            save_image(src, job.user, referer=uri, desc=desc, album=job.album)            
         else:
             raise Exception('failed to parse {}, is it a douban photo?'.\
                             format(source))
-        
-        return raw_data, desc
-#    def get_data(self):
-#        ''''''
-#        return self._data
-#    
-#    def get_desc(self):
-#        ''''''
-#        return self._desc
-    
-#register_grubber('www.douban.com', DoubanPhotoGrubber)

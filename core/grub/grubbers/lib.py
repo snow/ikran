@@ -11,7 +11,11 @@ import core.models as ikr
 
 _DEFAULT_UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.7 ' + \
                 '(KHTML, like Gecko) Chrome/16.0.912.63 Safari/535.7'
-                
+
+class UnsupportedTypeError(Exception):
+    def __init__(self, type):
+        super(UnsupportedTypeError, self).__init__()
+        self.message = 'response type {} is not supported'.format(type)                
                 
 def get_html(uri):
     if '://' not in uri:
@@ -31,20 +35,36 @@ def get_html(uri):
         
     return resp
 
-def get_image(uri, referer):
-    if '://' not in uri:
-        uri = 'http://' + uri
+
+def save_image(src, owner, referer='', desc='', album=False):
+    if '://' not in src:
+        src = 'http://' + src
+        
+    if '://' not in referer:
+        referer = 'http://' + referer
+        
+    exist = ikr.ImageCopy.objects.filter(source=referer, owner=owner)
+    for e in exist:
+        # if image with same owner and album exist, skip
+        if e.album == album:
+            return
     
-    request = urllib2.Request(uri, headers={
+    request = urllib2.Request(src, headers={
                                        'User-Agent': _DEFAULT_UA,
                                        'Referer': referer
-                                   })               
+                                   })
     conn = urllib2.urlopen(request)
     
     if 'image' != conn.headers.getmaintype():
-        raise Exception('response is not html: '+conn.headers.gettype())
+        raise UnsupportedTypeError(conn.headers.gettype())
     
-    return conn.read()
+    raw_data = conn.read()
+    
+    img = ikr.ImageCopy.from_string(raw_data, owner, desc)
+    img.source = referer
+    if album:
+        img.album = album            
+    img.save()
 
 
 class BaseHTMLParser(HTMLParser):
@@ -62,47 +82,3 @@ class BaseHTMLParser(HTMLParser):
         parser.feed(content)
         return parser._uri, parser._desc
 
-
-#class BaseGrubber(object):
-#    '''Interface of image grubber'''
-#    def __init__(self, source):
-#        ''''''
-#        raise NotImplementedError()
-#        
-#    def get_data(self):
-#        ''''''
-#        raise NotImplementedError()
-#    
-#    def get_desc(self):
-#        ''''''
-#        raise NotImplementedError()
-
-class BaseGrubber(threading.Thread):
-    '''Base class of image grubber'''
-    __queue = None
-    
-    def __init__(self, queue):
-        threading.Thread.__init__(self)
-        self.__queue = queue
-    
-    def run(self):
-        while True:
-            job = self.__queue.get()
-            
-            raw_data, desc = self.grub(job)
-                        
-            img = ikr.ImageCopy.from_string(raw_data, job.user, desc)        
-            img.source = job.source        
-            if job.album:
-                img.album = job.album            
-            img.save()
-            
-            self.__queue.task_done()
-    
-    def grub(self, job):
-        '''Should return raw image data string and description string in tuple'''
-        raise NotImplementedError()
-    
-    @classmethod
-    def _on_exception(cls, err):
-        mail_admins('exception in {}'.format(cls.__name__), err)

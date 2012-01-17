@@ -12,12 +12,14 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}common/c/blueprint-1.0.1/forms.css" />
     <!--<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}common/c/fileuploader.css" />-->
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}webapp/c/common.css?r=0.1.5" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}common/c/jquery-ui-1.8.17.custom.css?r=0.1.0" />
     
     {% if debug %}    
-    <script src="{{ STATIC_URL }}common/s/jquery-1.7.1.min.js"></script>
+    <script src="{{ STATIC_URL }}common/s/jquery-1.7.1.min.js"></script>    
     {% else %}    
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
     {% endif %}
+    <script src="{{ STATIC_URL }}common/s/jquery-ui-1.8.17.custom.min.js?r=0.1.0"></script>
     <!--<script src="{{ STATIC_URL }}common/s/jquery-ui-1.8.17.custom.min.js"></script>-->
     <script src="{{ STATIC_URL }}common/s/jquery.cookie.js"></script>
     <!--<script type="text/javascript" src="{{ STATIC_URL }}common/s/jquery.ba-bbq-1.2.1.min.js"></script>-->
